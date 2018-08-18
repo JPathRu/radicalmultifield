@@ -31,9 +31,7 @@
 ### Участники разработки
 
 В разработке принимал участие Алексей Морозов. Благодаря ему появился этот плагин.
-* https://alekvolsk.pw
-* https://github.com/AlekVolsk
+* https://alekvolsk.pw ( https://github.com/AlekVolsk )
 
 В разработке принимал участие Дмитрий Цымбал. 
-* http://delo-design.ru
-* https://github.com/dmitriitux
+* http://delo-design.ru (https://github.com/dmitriitux)
