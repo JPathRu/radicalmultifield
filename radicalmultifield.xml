@@ -5,15 +5,13 @@
 	<author>delo-design.ru</author>
 	<authorEmail>info@delo-design.ru</authorEmail>
 	<authorUrl>https://delo-design.ru</authorUrl>
-	<copyright>A copyright</copyright>
+	<copyright>Copyright (C) 2018 "Delo Design". All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<version>1.0</version>
 	<description>PLG_RADICAL_MULTI_FIELD_XML_DESCRIPTION</description>
 
-	<!-- Scripts to run on installation -->
 	<scriptfile>script.php</scriptfile>
 
-	<!-- Language files -->
 	<languages folder="language">
 		<language tag="en-GB">en-GB/en-GB.plg_fields_radicalmultifield.ini</language>
 		<language tag="en-GB">en-GB/en-GB.plg_fields_radicalmultifield.sys.ini</language>
@@ -21,7 +19,13 @@
 		<language tag="ru-RU">ru-RU/ru-RU.plg_fields_radicalmultifield.sys.ini</language>
 	</languages>
 
-	<!-- Plugin files -->
+
+	<updateservers>
+		<server type="extension" priority="1" name="Radical Form">
+			https://hika.su/update/free/plg_radicalmultifield.xml
+		</server>
+	</updateservers>
+
 	<files>
 		<filename plugin="radicalmultifield">radicalmultifield.php</filename>
 		<filename>LICENSE.txt</filename>
