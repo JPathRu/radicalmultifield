@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="fieldparams" addfieldpath="/plugins/fields/radicalmultifield/fields">
+        <fieldset name="fieldparams">
+
+            <field
+                name="template"
+                description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TEMPLATE_DESC"
+                type="pluginlayout"
+                label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TEMPLATE_LABEL"
+                required="true"
+            />
+
+            <field
+                name="aview"
+                type="list"
+                label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_AVIEW_LABEL"
+                required="true"
+                default="joomla.form.field.subform.repeatable"
+            >
+                <option value="joomla.form.field.subform.repeatable">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_AVIEW_OPLION_LIST</option>
+                <option value="joomla.form.field.subform.repeatable-table">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_AVIEW_OPLION_TABLE</option>
+            </field>
+
+            <field name="listtype" type="subform"
+                multiple="true"
+                required="true"
+                label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_LABEL"
+                layout="joomla.form.field.subform.repeatable"
+            >
+                <form>
+                    <field name="name"
+                        type="text"
+                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_NAME"
+                        required="true"
+                        class="input-xlarge"
+                    />
+                    <field name="title"
+                        type="text"
+                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_TITLE"
+                        required="true"
+                        class="input-xlarge"
+                    />
+                    <field name="type" 
+                        type="list" 
+                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_SELECT" 
+                        default="text" 
+                    >
+                        <option value="text">Text</option>
+                        <option value="textarea">Textarea</option>
+                        <option value="list">List</option>
+                        <option value="calendar">Calendar</option>
+                        <option value="media">Media</option>
+                        <option value="user">User</option>
+                        <option value="url">Url</option>
+                        <option value="email">E-mail</option>
+                        <option value="color">Color</option>
+                        <option value="editor">Editor</option>
+                    </field>
+                    <field name="required"
+                        type="radio"
+                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_REQUIRED"
+                        default="0"
+                        class="btn-group"
+                    >
+                        <option value="1">JYES</option>
+                        <option value="0">JNO</option>
+                    </field>
+                    <field name="listview"
+                        type="list"
+                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_LISTVIEW"
+                        showon="type:list"
+                    >
+                        <option value="list">Select</option>
+                        <option value="radio">Radio</option>
+                    </field>
+                    <field name="multiple"
+                        type="radio"
+                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_MULTIPLE"
+                        default="0"
+                        showon="type:list[AND]listview:list"
+                        class="btn-group"
+                    >
+                        <option value="1">JYES</option>
+                        <option value="0">JNO</option>
+                    </field>
+                    <field name="options"
+                        type="textarea"
+                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_OPTIONS"
+                        description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_OPTIONS_DESC"
+                        class="input-xlarge"
+                        showon="type:list"
+                    />
+                    <field name="attrs"
+                        type="text"
+                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_ATTRS"
+                        description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_ATTRS_DESC"
+                        class="input-xxlarge"
+                    />
+                </form>
+            </field>
+
+        </fieldset>
+    </fields>
+</form>

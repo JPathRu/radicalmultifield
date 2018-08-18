@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" version="3.7" group="fields" method="upgrade">
+	<name>PLG_RADICAL_MULTI_FIELD</name>
+	<creationDate>18.08.2018</creationDate>
+	<author>delo-design.ru</author>
+	<authorEmail>info@delo-design.ru</authorEmail>
+	<authorUrl>https://delo-design.ru</authorUrl>
+	<copyright>A copyright</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<version>1.0</version>
+	<description>PLG_RADICAL_MULTI_FIELD_XML_DESCRIPTION</description>
+
+	<!-- Scripts to run on installation -->
+	<scriptfile>script.php</scriptfile>
+
+	<!-- Language files -->
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.plg_fields_radicalmultifield.ini</language>
+		<language tag="en-GB">en-GB/en-GB.plg_fields_radicalmultifield.sys.ini</language>
+		<language tag="ru-RU">ru-RU/ru-RU.plg_fields_radicalmultifield.ini</language>
+		<language tag="ru-RU">ru-RU/ru-RU.plg_fields_radicalmultifield.sys.ini</language>
+	</languages>
+
+	<!-- Plugin files -->
+	<files>
+		<filename plugin="radicalmultifield">radicalmultifield.php</filename>
+		<filename>LICENSE.txt</filename>
+		<folder>assets</folder>
+		<folder>language</folder>
+		<folder>fields</folder>
+		<folder>params</folder>
+		<folder>tmpl</folder>
+	</files>
+
+</extension>
