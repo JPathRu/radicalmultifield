@@ -1,7 +1,6 @@
 # Radical Multifield
 
-![Github Releases](https://img.shields.io/github/downloads/Delo-Design/radicalmultifield
-/latest/total.svg)
+![Github Releases](https://img.shields.io/github/downloads/Delo-Design/radicalmultifield/latest/total.svg)
 ### Описание
 Вам хотелось бы добавить галерею картинок к статье на сайте? Или слайдшоу?
 
