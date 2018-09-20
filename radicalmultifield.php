@@ -306,8 +306,35 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
     {
     	$app = Factory::getApplication();
     	$data = $app->input->getArray();
+	    $admin = $app->isAdmin();
+	    $allow = true;
 
 	    JLoader::register('RadicalmultifieldHelper', JPATH_SITE . '/plugins/fields/radicalmultifield/radicalmultifieldhelper.php');
+
+	    $params = RadicalmultifieldHelper::getParams($data['importfield']);
+
+	    if(isset($params['filesimportadmin']))
+	    {
+
+		    if((int)$params['filesimportadmin'] && !$admin)
+		    {
+			    $allow = false;
+		    }
+
+	    }
+	    else
+	    {
+	    	$allow = false;
+	    }
+
+
+	    if(!$allow)
+	    {
+		    $output = [];
+		    $output["error"] = Text::_('PLG_RADICAL_MULTI_FIELD_IMPORT_ERROR_UPLOAD');
+			return $output;
+	    }
+
 
 	    if(!isset($data['importfieldpath']))
     	{
@@ -321,7 +348,6 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
     	if($data['type'] === 'get_files')
     	{
-    		$params = RadicalmultifieldHelper::getParams($data['importfield']);
     		$exs = explode(',', $params['filesimportexc']);
     		$directory = ($data['importfieldpath'] ? $data['importfieldpath'] . '/' : '') . preg_replace('/^root/isu', '', $data['directory']);
 		    $directory = str_replace("//", '/', $directory);
@@ -383,7 +409,6 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 				    $nameSafe = File::makeSafe($lang->transliterate(implode('-', $nameSplit)), ['#^\.#', '#\040#']);
 				    $uploadedFileName =  $nameSafe . '_' . rand(11111, 99999) . '.' . $nameExs;
 
-				    $params = RadicalmultifieldHelper::getParams($data['importfield']);
 				    $exs = explode(',', $params['filesimportexc']);
 				    $type = preg_replace("/^.*?\//isu", '', $file['type']);
 
@@ -392,6 +417,8 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 					    $output["error"] = Text::_('PLG_RADICAL_MULTI_FIELD_IMPORT_ERROR_MIME_TYPE_UPLOAD') . ' (' . Text::_('PLG_RADICAL_MULTI_FIELD_IMPORT_ERROR_MIME_TYPE_LABEL'). ': ' . $type.')';
 					    return $output;
 				    }
+
+			        $data['name'] = isset($data['name']) ? $data['name'] : '';
 
 				    $path = JPATH_ROOT . '/' . ($data['importfieldpath'] ? $data['importfieldpath'] . '/' : '') . preg_replace('/^root/isu', '', $data['path']) . '/' . $data['name'];
 				    $path = str_replace("//", '/', $path);
