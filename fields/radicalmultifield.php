@@ -15,6 +15,7 @@ use Joomla\CMS\Factory;
 defined('_JEXEC') or die;
 
 JFormHelper::loadFieldClass('subform');
+JFormHelper::loadFieldClass('folderlist');
 
 /**
  * Class JFormFieldRadicalmultifield
@@ -34,55 +35,141 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
     public function getInput()
     {
         $this->multiple = true;
-        $this->min = 1;
-        $this->buttons =  [ 'add' => true, 'remove' => true, 'move' => true ];
+        $this->buttons =  [
+        	'add' => true,
+	        'remove' => true,
+	        'move' => true
+        ];
 
         $db = Factory::getDBO();
-        $query = $db->getQuery( true )
-            ->select( 'fieldparams' )
-            ->from( '#__fields' )
-            ->where( 'name=' . $db->quote( $this->fieldname ) );
-        $field = $db->setQuery( $query )->loadResult();
+        $query = $db->getQuery(true)
+            ->select($db->quoteName(array('params', 'fieldparams')))
+            ->from('#__fields')
+            ->where( 'name=' . $db->quote($this->fieldname));
+        $field = $db->setQuery( $query )->loadObject();
 
-        $params = json_decode( $field, JSON_OBJECT_AS_ARRAY );
+	    $query = $db->getQuery(true)
+		    ->select($db->quoteName(array('params')))
+		    ->from('#__extensions')
+		    ->where( 'element=' . $db->quote('radicalmultifield'));
+	    $extension = $db->setQuery( $query )->loadObject();
 
-        $this->layout = $params[ 'aview' ];
+        $fieldparams = json_decode($field->fieldparams, JSON_OBJECT_AS_ARRAY);
+        $params = json_decode($extension->params, JSON_OBJECT_AS_ARRAY);
+
+        $this->layout = $fieldparams['aview'];
         $this->formsource = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><form>";
 
-        foreach ( $params[ 'listtype' ] as $param )
+        //подзагружаем кастомные поля
+	    JLoader::import('radicalmultifieldhelper', JPATH_ROOT . '/plugins/fields/radicalmultifield');
+
+	    if(isset($params['extendfield']))
+	    {
+
+		    $extendField = explode("\n", $params['extendfield']);
+		    foreach ($extendField as $extend)
+		    {
+			    RadicalmultifieldHelper::loadClassExtendField($extend);
+		    }
+
+	    }
+
+
+
+        foreach ($fieldparams['listtype'] as $fieldparam)
         {
-            switch ( $param[ 'type' ] )
+            switch ($fieldparam['type'])
             {
                 case 'list':
-                    $required = $param[ 'required' ] ? " required=\"required\"" : '';
-                    $multiple = $param[ 'multiple' ] ? " multiple=\"true\"" : '';
-                    $class = $param[ 'listview' ] == 'radio' ? " class=\"btn-group\"" : '';
-                    $attrs = trim( $param[ 'attrs' ] );
+                    $required = $fieldparam['required'] ? " required=\"required\"" : '';
+                    $multiple = $fieldparam['multiple'] ? " multiple=\"true\"" : '';
+                    $class = $fieldparam['listview'] === 'radio' ? " class=\"btn-group\"" : '';
+                    $attrs = trim($fieldparam['attrs']);
 
-                    $this->formsource .= "<field name=\"{$param['name']}\" type=\"{$param['listview']}\" label=\"{$param['title']}\"{$required}{$multiple}{$class} {$attrs}>";
-                    $options = explode( "\n", $param[ 'options' ] );
+                    $this->formsource .= "<field name=\"{$fieldparam['name']}\" type=\"{$fieldparam['listview']}\" label=\"{$fieldparam['title']}\"{$required}{$multiple}{$class} {$attrs}>";
+                    $options = explode( "\n", $fieldparam['options'] );
+
                     foreach ( $options as $option )
                     {
                         $value = OutputFilter::stringURLSafe( $option );
                         $this->formsource .= "<option value=\"{$value}\">{$option}</option>";
                     }
+
                     $this->formsource .= "</field>";
                     break;
 
                 case 'editor':
-                    $attrs = trim( $param[ 'attrs' ] );
-                    $this->formsource .= "<field name=\"{$param['name']}\" type=\"{$param['type']}\" label=\"{$param['title']}\" filter=\"raw\" {$attrs}/>";
+                    $attrs = trim( $fieldparam['attrs'] );
+                    $this->formsource .= "<field name=\"{$fieldparam['name']}\" type=\"{$fieldparam['type']}\" label=\"{$fieldparam['title']}\" filter=\"raw\" {$attrs}/>";
                     break;
 
                 default:
-                    $attrs = trim( $param[ 'attrs' ] );
-                    $this->formsource .= "<field name=\"{$param['name']}\" type=\"{$param['type']}\" label=\"{$param['title']}\" {$attrs}/>";
+                    $attrs = trim( $fieldparam['attrs'] );
+                    $this->formsource .= "<field name=\"{$fieldparam['name']}\" type=\"{$fieldparam['type']}\" label=\"{$fieldparam['title']}\" {$attrs}/>";
             }
         }
 
         $this->formsource .= "</form>";
 
-        return parent::getInput();
+        $html = parent::getInput();
+
+
+        if(isset($fieldparams['filesimport']))
+        {
+
+	        if((int)$fieldparams['filesimport'])
+	        {
+		        $allow = true;
+
+		        $app = Factory::getApplication();
+		        $admin = $app->isAdmin();
+
+		        if((int)$fieldparams['filesimportadmin'] && !$admin)
+		        {
+			        $allow = false;
+		        }
+
+		        if($allow)
+		        {
+			        $folder = $fieldparams['filesimportpath'];
+			        JLoader::register(
+				        'FormFieldRadicalmultifieldtreecatalog',
+				        JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'elements', 'radicalmultifieldtreecatalog']) . '.php'
+			        );
+
+			        $treeCatalog = new FormFieldRadicalmultifieldtreecatalog;
+
+			        $paramsForField = [
+				        'name' => 'select-directory',
+				        'label' => Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_TREECATALOG_TITLE'),
+				        'class' => '',
+				        'type' => 'radicalmultifieldtreecatalog',
+				        'folder' => $folder,
+				        'folderonly' => 'true',
+				        'showroot' => 'true',
+				        'exs' => $fieldparams['filesimportexc'],
+				        'maxsize' => $fieldparams['filesimportmaxsize'],
+				        'namefield' => $fieldparams['filesimportname'],
+				        'namefile' => $fieldparams['filesimportnamefile'],
+				        'importfield' => $this->fieldname,
+			        ];
+
+			        $dataAttributes = array_map(function($value, $key)
+			        {
+				        return $key.'="'.$value.'"';
+			        }, array_values($paramsForField), array_keys($paramsForField));
+
+			        $treeCatalog->setup(new SimpleXMLElement("<field " . implode(' ', $dataAttributes) . " />"), '');
+			        $html = "<div style='margin-bottom: 15px'>" . $treeCatalog->getInput() . "</div>" . $html;
+
+		        }
+
+	        }
+
+        }
+
+
+        return $html;
     }
 
 }

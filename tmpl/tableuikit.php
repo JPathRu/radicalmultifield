@@ -25,9 +25,10 @@ $listtype = $this->getListTypeFromField($field);
 
     <thead>
     <tr>
-        <?php foreach ($values[$field->name . '0'] as $name => $value) { ?>
-            <th><?php echo $listtype[$name]['title']; ?></th>
-        <?php } ?>
+	    <?php $firstRow = reset($values); ?>
+        <?php foreach ($firstRow as $name => $value) : ?>
+            <th><?= $listtype[$name]['title']; ?></th>
+        <?php endforeach; ?>
     </tr>
     </thead>
 
@@ -42,7 +43,28 @@ $listtype = $this->getListTypeFromField($field);
                     case 'list':
                         if (is_array($data))
                         {
+                            $options = explode( "\n", $listtype[$name]['options']);
+                            foreach ($data as $key => $value) {
+                                foreach ( $options as $option )
+                                {
+                                    $sef = Joomla\CMS\Filter\OutputFilter::stringURLSafe( $option );
+                                    if($sef === $data[$key]) {
+                                        $data[$key] = $option;
+                                    }
+                                }
+                            }
                             $data = '<ul><li>' . implode('</li><li>', $data) . '</li></ul>';
+                        }
+                        else
+                        {
+                            $options = explode( "\n", $listtype[$name]['options']);
+                            foreach ( $options as $option )
+                            {
+                                $value = Joomla\CMS\Filter\OutputFilter::stringURLSafe( $option );
+                                if($value === $data) {
+                                    $data = $option;
+                                }
+                            }
                         }
                         break;
 

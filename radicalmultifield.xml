@@ -19,7 +19,6 @@
 		<language tag="ru-RU">ru-RU/ru-RU.plg_fields_radicalmultifield.sys.ini</language>
 	</languages>
 
-
 	<updateservers>
 		<server type="extension" priority="1" name="Radical MultiField">
 			https://hika.su/update/free/plg_radicalmultifield.xml
@@ -28,12 +27,39 @@
 
 	<files>
 		<filename plugin="radicalmultifield">radicalmultifield.php</filename>
+		<filename plugin="radicalmultifield">radicalmultifieldhelper.php</filename>
 		<filename>LICENSE.txt</filename>
-		<folder>assets</folder>
-		<folder>language</folder>
+		<folder>elements</folder>
 		<folder>fields</folder>
+		<folder>language</folder>
+		<folder>libs</folder>
 		<folder>params</folder>
 		<folder>tmpl</folder>
 	</files>
+
+	<media folder="media" destination="plg_fields_radicalmultifield">
+		<folder>core</folder>
+		<folder>libs</folder>
+	</media>
+
+	<config>
+		<fields name="params" addfieldpath="/plugins/fields/radicalmultifield">
+			<fieldset name="basic">
+				<field
+						name="extendfield"
+						type="textarea"
+						label="PLG_RADICAL_MULTI_FIELD_PARAMS_EXTEND_FIELDS_LABEL"
+						description="PLG_RADICAL_MULTI_FIELD_PARAMS_EXTEND_FIELDS_DESC"
+						required="false"
+						default=""
+						size="10"
+						class="input-xxlarge"
+						readonly="false"
+						disabled="false"
+						filter="">
+				</field>
+			</fieldset>
+		</fields>
+	</config>
 
 </extension>

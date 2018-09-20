@@ -31,12 +31,33 @@ $listtype = $this->getListTypeFromField($field);
 
             switch ($listtype[$name]['type'])
             {
-                case 'list':
-                    if (is_array($data))
-                    {
-                        $data = '<ul><li>' . implode('</li><li>', $data) . '</li></ul>';
-                    }
-                    break;
+	            case 'list':
+		            if (is_array($data))
+		            {
+			            $options = explode( "\n", $listtype[$name]['options']);
+			            foreach ($data as $key => $value) {
+				            foreach ( $options as $option )
+				            {
+					            $sef = Joomla\CMS\Filter\OutputFilter::stringURLSafe( $option );
+					            if($sef === $data[$key]) {
+						            $data[$key] = $option;
+					            }
+				            }
+			            }
+			            $data = '<ul><li>' . implode('</li><li>', $data) . '</li></ul>';
+		            }
+		            else
+		            {
+			            $options = explode( "\n", $listtype[$name]['options']);
+			            foreach ( $options as $option )
+			            {
+				            $value = Joomla\CMS\Filter\OutputFilter::stringURLSafe( $option );
+				            if($value === $data) {
+					            $data = $option;
+				            }
+			            }
+		            }
+		            break;
 
                 case 'media':
                     $data = "<img src=\"{$data}\" alt=\"\">";

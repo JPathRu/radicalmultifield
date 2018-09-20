@@ -1,0 +1,71 @@
+.drop-area {
+    border: 2px dashed #ccc;
+    border-radius: 20px;
+    width: auto;
+    margin-bottom: 15px;
+    padding: 15px;
+    text-align: center;
+}
+.drop-area.highlight {
+    border-color: #d8d7d8;
+}
+.drop-area .my-form {
+    margin-bottom: 10px;
+    text-align: center;
+}
+.drop-area p {
+    display: inline-block;
+    margin: 0;
+}
+.drop-area .button {
+    display: inline-block;
+    cursor: pointer;
+    color: #6f9cbf;
+    margin: 0;
+}
+.drop-area .button:hover {
+    color: #4d6e85;
+}
+.drop-area .fileElem {
+    display: none;
+}
+.drop-area progress {
+    display: none;
+    width: 100%;
+}
+
+.upload-errors {
+    display: none;
+    position: relative;
+    background: #fef4f6;
+    color: #f0506e;
+    padding: 15px 29px 15px 15px;
+}
+
+.upload-errors div {
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.upload-errors .uk-alert-close {
+    position: absolute;
+    top: 17px;
+    right: 15px;
+    color: inherit;
+    opacity: .4;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+    font: inherit;
+    text-transform: none;
+    padding: 0;
+    background-color: transparent;
+    display: inline-block;
+    fill: currentcolor;
+    line-height: 0;
+}
+
+.upload-errors .uk-alert-close:hover {
+    cursor: pointer;
+}

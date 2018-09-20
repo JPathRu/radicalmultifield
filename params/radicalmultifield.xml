@@ -8,6 +8,7 @@
                 description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TEMPLATE_DESC"
                 type="pluginlayout"
                 label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TEMPLATE_LABEL"
+                default="_:default"
                 required="true"
             />
 
@@ -16,11 +17,159 @@
                 type="list"
                 label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_AVIEW_LABEL"
                 required="true"
-                default="joomla.form.field.subform.repeatable"
+                default="joomla.form.field.subform.repeatable-table"
             >
                 <option value="joomla.form.field.subform.repeatable">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_AVIEW_OPLION_LIST</option>
                 <option value="joomla.form.field.subform.repeatable-table">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_AVIEW_OPLION_TABLE</option>
             </field>
+
+            <field name="filesimport"
+                   type="radio"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORT_LABEL"
+                   default="0"
+                   class="btn-group"
+                   showon="aview:joomla.form.field.subform.repeatable-table"
+            >
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field name="filesimportadmin"
+                   type="radio"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTADMIN_LABEL"
+                   description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTADMIN_DESC"
+                   required="true"
+                   class="btn-group"
+                   default="1"
+                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field name="filesimportname"
+                   type="text"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTNAME_LABEL"
+                   description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTNAME_DESC"
+                   required="true"
+                   class="input-xlarge"
+                   default="image"
+                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table"
+            />
+
+            <field name="filesimportnamefile"
+                   type="text"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTNAMEFILE_LABEL"
+                   class="input-xlarge"
+                   default=""
+                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table"
+            />
+
+            <field name="filesimportexc"
+                   type="text"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTEXC_LABEL"
+                   required="true"
+                   class="input-xlarge"
+                   default="gif,png,jpg,jpeg,xcf,bmp,svg"
+                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table"
+            />
+
+
+            <field name="filesimportpath"
+                   type="text"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPATH_LABEL"
+                   description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPATH_DESC"
+                   required="true"
+                   default="images"
+                   class="input-xlarge"
+                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table"
+            />
+
+            <field name="filesimportmaxsize"
+                   type="text"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTMAXSIZE_LABEL"
+                   required="true"
+                   default="2"
+                   class="input-xlarge"
+                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table"
+            />
+
+
+            <field name="filesimportresize"
+                   type="radio"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTRESIZE_LABEL"
+                   description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTRESIZE_DESC"
+                   required="true"
+                   class="btn-group"
+                   default="0"
+                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field name="filesimportrezizemaxwidth"
+                   type="text"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTRESIZEMAXWIDTH_LABEL"
+                   required="true"
+                   default="1980"
+                   class="input-xlarge"
+                   showon="filesimportresize:1[AND]aview:joomla.form.field.subform.repeatable-table[AND]filesimport:1"
+            />
+
+            <field name="filesimportrezizemaxheight"
+                   type="text"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTRESIZEMAXHEIGHT_LABEL"
+                   required="true"
+                   default="1280"
+                   class="input-xlarge"
+                   showon="filesimportresize:1[AND]aview:joomla.form.field.subform.repeatable-table[AND]filesimport:1"
+            />
+
+            <field name="filesimportrezizeoverlay"
+                   type="radio"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTRESIZEOVERLAY_LABEL"
+                   required="true"
+                   default="0"
+                   class="btn-group"
+                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table[AND]filesimport:1">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field name="filesimportrezizeoverlayfile"
+                   type="media"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTRESIZEOVERLAYFILE_LABEL"
+                   folder="images"
+                   default="images/joomla_black.png"
+                   class="input-xlarge"
+                   showon="filesimportrezizeoverlay:1[AND]aview:joomla.form.field.subform.repeatable-table[AND]filesimport:1"
+            />
+
+            <field name="filesimportrezizeoverlaypos"
+                   type="list"
+                   required="true"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTRESIZEOVERLAYPOS_LABEL"
+                   default="topleft"
+                   showon="filesimportrezizeoverlay:1[AND]aview:joomla.form.field.subform.repeatable-table[AND]filesimport:1"
+            >
+                <option value="topleft">Top Left</option>
+                <option value="topcenter">Top center</option>
+                <option value="topright">Top right</option>
+                <option value="centerleft">Center left</option>
+                <option value="centercenter">Center center</option>
+                <option value="centerright">Center right</option>
+                <option value="bottomleft">Bottom left</option>
+                <option value="bottomcenter">Bottom center</option>
+                <option value="bottomright">Bottom right</option>
+            </field>
+
+            <field name="filesimportrezizeoverlaypadding"
+                   type="text"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTRESIZEOVERLAYPADDING_LABEL"
+                   class="input-xlarge"
+                   required="true"
+                   default="10"
+                   showon="filesimportrezizeoverlay:1[AND]aview:joomla.form.field.subform.repeatable-table[AND]filesimport:1"
+            />
 
             <field name="listtype" type="subform"
                 multiple="true"
