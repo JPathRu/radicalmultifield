@@ -42,6 +42,12 @@ class RadicalmultifieldHelper
         $db->setQuery($query);
         $fieldAndValue->value = $db->loadObject();
 
+        if(empty($fieldAndValue->value) || is_null($fieldAndValue->value))
+        {
+	        $fieldAndValue->value = new stdClass();
+	        $fieldAndValue->value->value = '';
+        }
+
         return $fieldAndValue;
     }
 
@@ -251,6 +257,7 @@ class RadicalmultifieldHelper
     public static function check($field_id, $item_id, $data = [], $column_find_all = true)
     {
         $fieldAndValue = self::getFieldAndValue($field_id, $item_id);
+
         $value = json_decode($fieldAndValue->value->value, JSON_OBJECT_AS_ARRAY);
         $find = false;
         $countFind = 0;

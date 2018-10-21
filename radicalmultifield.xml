@@ -7,7 +7,7 @@
 	<authorUrl>https://delo-design.ru</authorUrl>
 	<copyright>Copyright (C) 2018 "Delo Design". All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<version>1.1</version>
+	<version>1.2</version>
 	<description>PLG_RADICAL_MULTI_FIELD_XML_DESCRIPTION</description>
 
 	<scriptfile>script.php</scriptfile>
@@ -31,7 +31,6 @@
 		<filename>LICENSE.txt</filename>
 		<folder>elements</folder>
 		<folder>fields</folder>
-		<folder>language</folder>
 		<folder>libs</folder>
 		<folder>params</folder>
 		<folder>tmpl</folder>
