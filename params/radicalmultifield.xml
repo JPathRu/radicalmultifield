@@ -205,6 +205,7 @@
                         <option value="email">E-mail</option>
                         <option value="color">Color</option>
                         <option value="editor">Editor</option>
+                        <option value="sql">Sql</option>
                     </field>
                     <field name="required"
                         type="radio"
