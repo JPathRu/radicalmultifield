@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 if (!$field->value)
 {
-    return;
+	return;
 }
 
 $values = json_decode($field->value, JSON_OBJECT_AS_ARRAY);
@@ -20,9 +20,8 @@ $listtype = $this->getListTypeFromField($field);
 
 ?>
 
-
-<div class="uk-grid-1-5@m" uk-grid uk-lightbox="animation: slide">
-    <?php foreach ($values as $key => $row): ?>
+<div class="uk-child-width-1-5@m" uk-grid uk-height-match="img" uk-lightbox="animation: slide">
+	<?php foreach ($values as $key => $row): ?>
 
         <div>
             <a class="uk-inline" href="<?= $row['image'] ?>" data-caption="<?= $row['alt'] ?>">
@@ -30,5 +29,5 @@ $listtype = $this->getListTypeFromField($field);
             </a>
         </div>
 
-    <?php endforeach; ?>
+	<?php endforeach; ?>
 </div>

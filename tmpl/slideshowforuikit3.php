@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 if (!$field->value)
 {
-    return;
+	return;
 }
 
 $values = json_decode($field->value, JSON_OBJECT_AS_ARRAY);
@@ -20,18 +20,25 @@ $listtype = $this->getListTypeFromField($field);
 
 ?>
 
-<div class="uk-position-relative uk-visible-toggle uk-light" uk-slideshow>
-    <ul class="uk-slideshow-items">
+<div uk-slideshow="animation: push">
 
-        <?php foreach ($values as $key => $row): ?>
+    <div class="uk-position-relative uk-visible-toggle uk-light">
 
-            <li>
-                <img src="<?= $row['image']?>" alt="<?= $row['alt'] ?>" uk-cover/>
-            </li>
+        <ul class="uk-slideshow-items">
+			<?php foreach ($values as $key => $row): ?>
 
-        <?php endforeach; ?>
+                <li>
+                    <img src="<?= $row['image']?>" alt="<?= $row['alt'] ?>" uk-cover/>
+                </li>
 
-    </ul>
-    <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slideshow-item="previous"></a>
-    <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slideshow-item="next"></a>
+			<?php endforeach; ?>
+        </ul>
+
+        <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slideshow-item="previous"></a>
+        <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slideshow-item="next"></a>
+
+    </div>
+
+    <ul class="uk-slideshow-nav uk-dotnav uk-flex-center uk-margin"></ul>
+
 </div>

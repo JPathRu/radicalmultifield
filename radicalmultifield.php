@@ -582,6 +582,9 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 		    return $treeCatalog->getInput(true);
 	    }
 
+
+
+	    
 	    return [];
     }
 

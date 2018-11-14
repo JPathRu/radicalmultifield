@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 if (!$field->value)
 {
-    return;
+	return;
 }
 
 $values = json_decode($field->value, JSON_OBJECT_AS_ARRAY);
@@ -21,14 +21,14 @@ $listtype = $this->getListTypeFromField($field);
 ?>
 
 
-<div class="uk-grid uk-grid-width-medium-1-5">
-    <?php foreach ($values as $key => $row): ?>
+<div class="uk-grid uk-grid-width-medium-1-5" data-uk-grid-match="{target:'img'}" data-uk-grid-margin>
+	<?php foreach ($values as $key => $row): ?>
 
         <div>
-            <a href="<?= $row['image']?>" data-uk-lightbox title="<?= $row['alt'] ?>">
+            <a href="<?= $row['image']?>" data-uk-lightbox="{group:'group-fields-<?= $field->id ?>'}" title="<?= $row['alt'] ?>">
                 <img src="<?= $row['image']?>" alt="<?= $row['alt'] ?>"/>
             </a>
         </div>
 
-    <?php endforeach; ?>
+	<?php endforeach; ?>
 </div>

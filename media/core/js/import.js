@@ -227,8 +227,8 @@ jQuery(function(){
     });
 
     jQuery('.modal-import-file').on('click', '.upload-errors-close', function () {
-       jQuery(this).parent().hide();
-       return false;
+        jQuery(this).parent().hide();
+        return false;
     });
 
     function reloadListfullpath() {
@@ -502,13 +502,13 @@ jQuery(function(){
 
             let subformRepeatableGroup;
 
-            if (subform.attr('data-repeatable-element') === 'div.subform-repeatable-group') {
+            if(/^div.subform-repeatable-group.*?$/.test(subform.attr('data-repeatable-element'))) {
                 //subform.find('.group-add').click();
                 subformRepeatableGroup = '.subform-repeatable-group:last-child input';
             }
 
-            if(subform.attr('data-repeatable-element') === 'tr.subform-repeatable-group') {
-                subform.find('thead .group-add').click();
+            if(/^tr.subform-repeatable-group.*?$/.test(subform.attr('data-repeatable-element'))) {
+                subform.find('thead .btn').click();
                 subformRepeatableGroup = 'tbody tr:last-child input';
             }
 
