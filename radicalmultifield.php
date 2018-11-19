@@ -108,6 +108,29 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
         $types[] = $data;
 
+        if(file_exists(JPATH_ROOT . '/plugins/radicalmultifield'))
+        {
+
+	        $directories = Folder::folders(JPATH_ROOT . '/plugins/radicalmultifield');
+
+	        if(count($directories) > 0)
+	        {
+
+		        foreach ($directories as $directory)
+		        {
+			        Factory::getLanguage()->load('plg_radicalmultifield_' . $directory, JPATH_ROOT . '/plugins/radicalmultifield/' . $directory, null, true);
+
+			        $types[] = [
+				        'type' => 'radicalmultifield_' . $directory,
+				        'label' => 'Radical MultiField ' . Text::_('PLG_RADICALMULTIFIELD_PLUGIN_NAME_' . mb_strtoupper($directory)),
+				        'path' => JPATH_ROOT . '/plugins/radicalmultifield/' . $directory,
+			        ];
+
+		        }
+
+	        }
+
+        }
 
         // Add to cache and return the data
         $types_cache[ $this->_type . $this->_name ] = $types;
@@ -166,9 +189,18 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
         // Merge the params from the plugin and field which has precedence
         $fieldParams = clone $this->params;
         $fieldParams->merge( $field->fieldparams );
-        
-        // Get the path for the layout file
-        $path = PluginHelper::getLayoutPath( 'fields', $field->type, $fieldParams->get( 'template' ) );
+
+
+	    // Get the path for the layout file
+	    if(substr_count($field->type, '_') > 0)
+	    {
+	    	$tmp = explode('_', $field->type);
+		    $path = PluginHelper::getLayoutPath( 'radicalmultifield', $tmp[1], $fieldParams->get( 'template' ) );
+	    }
+	    else
+	    {
+		    $path = PluginHelper::getLayoutPath( 'fields', $field->type, $fieldParams->get( 'template' ) );
+	    }
 
 
         // Render the layout
@@ -194,6 +226,8 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 	 */
 	public function onContentPrepareForm(JForm $form, $data)
 	{
+
+
 		// Check if the field form is calling us
 		if (strpos($form->getName(), 'com_fields.field') !== 0)
 		{
@@ -217,6 +251,18 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 			return;
 		}
 
+		if(substr_count($type, '_') > 0) {
+			$tmp = explode('_', $type);
+			$type = $tmp[0];
+			$pluginType = $tmp[1];
+			$pathType = JPATH_PLUGINS . '/radicalmultifield/' . $pluginType . '/params';
+		}
+		else
+		{
+			$pluginType = '';
+			$pathType = '';
+		}
+
 		$path = JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/params/' . $type . '.xml';
 
 		// Check if params file exists
@@ -228,6 +274,17 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 		JLoader::import('radicalmultifieldhelper', JPATH_ROOT . '/plugins/fields/radicalmultifield');
 
 		$paramsfield = file_get_contents($path);
+
+		if(!empty($pluginType)) {
+
+			if(file_exists($pathType . '/newparams.xml')) {
+				$newParams = file_get_contents($pathType . '/newparams.xml');
+				$paramsfield = str_replace('</fieldset>', $newParams . '</fieldset>', $paramsfield);
+			}
+
+		}
+
+
 		$paramsfieldXml = new SimpleXMLElement($paramsfield);
 
 		$extendfield = explode("\n", $this->params->get('extendfield'));
@@ -265,8 +322,57 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 			}
 		}
 
+
 		// Load the specific plugin parameters
 		$form->load($paramsfieldXml, true, '/form/*');
+
+		if(!empty($pluginType))
+		{
+
+			if(file_exists($pathType))
+			{
+				$paramsfieldValues = file_get_contents($pathType . '/default.xml');
+				$paramsfieldValuesXML = new SimpleXMLElement($paramsfieldValues);
+
+				for ($i = 0; $i < count($paramsfieldValuesXML->fields->fieldset->field); $i++)
+				{
+
+					$flag = false;
+					$count = count($paramsfieldXml->fields->fieldset->field);
+
+					for ($j = 0; $j < $count; $j++)
+					{
+
+						if((string) $paramsfieldXml->fields->fieldset->field[$j]['name'] == (string) $paramsfieldValuesXML->fields->fieldset->field[$i]['name'])
+						{
+							$form->setFieldAttribute((string) $paramsfieldXml->fields->fieldset->field[$j]['name'], 'default', $paramsfieldValuesXML->fields->fieldset->field[$i]['default'], 'fieldparams');
+							break;
+						}
+
+						if($j === ($count - 1))
+						{
+							$flag = true;
+						}
+
+					}
+
+
+					if($flag)
+					{
+						$field =  $paramsfieldValuesXML->fields->fieldset->field[$i]->asXML();
+						$form->load($field, true, '/field/*');
+					}
+
+
+				}
+
+			}
+
+			//echo( $form->getXml()->asXML());
+
+		}
+
+
 	}
 
     /**
@@ -297,7 +403,6 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
         return $data;
     }
-
 
 	/**
 	 * @return array|string
@@ -582,11 +687,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 		    return $treeCatalog->getInput(true);
 	    }
 
-
-
-	    
 	    return [];
     }
-
 
 }

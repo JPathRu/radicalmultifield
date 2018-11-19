@@ -64,11 +64,22 @@ class JFormFieldPluginlayout extends FormField
 		{
 			$plugin = $this->form->getValue( 'type' );
 		}
-		
-		$plugin = preg_replace( '#\W#', '', $plugin );
-		$folder = 'fields';
-		
-		$pluginFullName = 'plg_' . $folder . '_' . $plugin;
+
+		if(substr_count($plugin, '_') > 0)
+		{
+			$tmp = explode('_', $plugin);
+			$plugin = $tmp[1];
+			$pluginOriginal = $tmp[0];
+			$plugin = preg_replace( '#\W#', '', $plugin );
+			$folder = 'radicalmultifield';
+			$pluginFullName = 'plg_' . $folder . '_' . $plugin;
+		}
+		else
+		{
+			$plugin = preg_replace( '#\W#', '', $plugin );
+			$folder = 'fields';
+			$pluginFullName = 'plg_' . $folder . '_' . $plugin;
+		}
 
 		// Get the template.
 		$template = (string) $this->element[  'template'  ];

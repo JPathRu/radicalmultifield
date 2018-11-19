@@ -1,3 +1,7 @@
+.import-wrap > .btn {
+    margin-right: 15px;
+}
+
 .modal.modal-import-file {
     width: 50%;
     left: 65%;

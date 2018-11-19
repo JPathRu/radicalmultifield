@@ -29,11 +29,27 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
     public $type = 'RadicalMultiField';
 
 
+	/**
+	 * Allow to override renderer include paths in child fields
+	 *
+	 * @return  array
+	 *
+	 * @since   3.5
+	 */
+	protected function getLayoutPaths()
+	{
+		return [
+			JPATH_ROOT . '/plugins/fields/radicalmultifield/layouts',
+			JPATH_ROOT . '/layouts'
+		];
+	}
+
     /**
      * @return string
      */
     public function getInput()
     {
+
         $this->multiple = true;
         $this->buttons =  [
         	'add' => true,
@@ -73,8 +89,6 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 		    }
 
 	    }
-
-
 
         foreach ($fieldparams['listtype'] as $fieldparam)
         {
@@ -167,7 +181,6 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 	        }
 
         }
-
 
         return $html;
     }

@@ -234,8 +234,9 @@ class FormFieldRadicalmultifieldtreecatalog extends JFormField
 			]);
 
 
-			$html = "
-		        <a href=\"#impot-modal-" . $this->uid . "\" role=\"button\" class=\"btn button-open-modal\" data-exs=\"" . $exs . "\" data-namefile=\"" . $namefile . "\" data-namefield=\"" . $namefield . "\" data-maxsize=\"" . $maxsize . "\" data-importfield=\"" . $importfield . "\" data-importfieldpath=\"" . $folder . "\" data-toggle=\"modal\">" . Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_MODAL_BUTTON_OPEN') . "</a>
+			$html = "<div class='import-wrap'>
+		        <a href=\"#impot-modal-" . $this->uid . "\" role=\"button\" class=\"btn button-open-modal\" data-exs=\"" . $exs . "\" data-namefile=\"" . $namefile . "\" data-namefield=\"" . $namefield . "\" data-maxsize=\"" . $maxsize . "\" data-importfield=\"" . $importfield . "\" data-importfieldpath=\"" . $folder . "\" data-toggle=\"modal\"><span class='icon-archive'></span>" . Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_MODAL_BUTTON_OPEN') . "</a>
+		         <button role=\"button\" class=\"btn speed-upload\"><span class='icon-upload'></span> " . Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_MODAL_BUTTON_SPEED_UPLOAD') . "</button>
 		         
 		        <!-- Modal -->
 		        <div id=\"impot-modal-" . $this->uid . "\" class=\"modal modal-small modal-import-file hide fade\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"impot-modal-" . $this->uid . "\" aria-hidden=\"true\">
@@ -270,6 +271,7 @@ class FormFieldRadicalmultifieldtreecatalog extends JFormField
 		            <button class=\"btn\" data-dismiss=\"modal\" aria-hidden=\"true\">". Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_MODAL_BUTTON_CLOSE') . "</button>
 		            <button class=\"btn btn-primary button-import-start\">". Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_MODAL_BUTTON_IMPORT_START') . "</button>
 		          </div>
+		        </div>
 		        </div>";
 		}
 		else

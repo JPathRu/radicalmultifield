@@ -20,6 +20,7 @@
                 default="joomla.form.field.subform.repeatable-table"
             >
                 <option value="joomla.form.field.subform.repeatable">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_AVIEW_OPLION_LIST</option>
+                <option value="repeatable-cards">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_AVIEW_OPLION_CARDS</option>
                 <option value="joomla.form.field.subform.repeatable-table">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_AVIEW_OPLION_TABLE</option>
             </field>
 
@@ -28,7 +29,7 @@
                    label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORT_LABEL"
                    default="0"
                    class="btn-group"
-                   showon="aview:joomla.form.field.subform.repeatable-table"
+                   showon="aview:joomla.form.field.subform.repeatable-table[OR]aview:repeatable-cards"
             >
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
@@ -41,7 +42,7 @@
                    required="true"
                    class="btn-group"
                    default="1"
-                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table">
+                   showon="filesimport:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
@@ -53,7 +54,7 @@
                    required="true"
                    class="input-xlarge"
                    default="image"
-                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table"
+                   showon="filesimport:1"
             />
 
             <field name="filesimportnamefile"
@@ -61,7 +62,7 @@
                    label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTNAMEFILE_LABEL"
                    class="input-xlarge"
                    default=""
-                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table"
+                   showon="filesimport:1"
             />
 
             <field name="filesimportexc"
@@ -70,7 +71,7 @@
                    required="true"
                    class="input-xlarge"
                    default="gif,png,jpg,jpeg,xcf,bmp,svg"
-                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table"
+                   showon="filesimport:1"
             />
 
 
@@ -81,7 +82,7 @@
                    required="true"
                    default="images"
                    class="input-xlarge"
-                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table"
+                   showon="filesimport:1"
             />
 
             <field name="filesimportmaxsize"
@@ -90,7 +91,7 @@
                    required="true"
                    default="2"
                    class="input-xlarge"
-                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table"
+                   showon="filesimport:1"
             />
 
 
@@ -101,7 +102,7 @@
                    required="true"
                    class="btn-group"
                    default="0"
-                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table">
+                   showon="filesimport:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
@@ -112,7 +113,7 @@
                    required="true"
                    default="1980"
                    class="input-xlarge"
-                   showon="filesimportresize:1[AND]aview:joomla.form.field.subform.repeatable-table[AND]filesimport:1"
+                   showon="filesimportresize:1[AND]filesimport:1"
             />
 
             <field name="filesimportrezizemaxheight"
@@ -121,7 +122,7 @@
                    required="true"
                    default="1280"
                    class="input-xlarge"
-                   showon="filesimportresize:1[AND]aview:joomla.form.field.subform.repeatable-table[AND]filesimport:1"
+                   showon="filesimportresize:1[AND]filesimport:1"
             />
 
             <field name="filesimportrezizeoverlay"
@@ -130,7 +131,7 @@
                    required="true"
                    default="0"
                    class="btn-group"
-                   showon="filesimport:1[AND]aview:joomla.form.field.subform.repeatable-table[AND]filesimport:1">
+                   showon="filesimport:1[AND]filesimport:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
@@ -141,7 +142,7 @@
                    folder="images"
                    default="images/joomla_black.png"
                    class="input-xlarge"
-                   showon="filesimportrezizeoverlay:1[AND]aview:joomla.form.field.subform.repeatable-table[AND]filesimport:1"
+                   showon="filesimportrezizeoverlay:1[AND]filesimport:1"
             />
 
             <field name="filesimportrezizeoverlaypos"
@@ -149,7 +150,7 @@
                    required="true"
                    label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTRESIZEOVERLAYPOS_LABEL"
                    default="topleft"
-                   showon="filesimportrezizeoverlay:1[AND]aview:joomla.form.field.subform.repeatable-table[AND]filesimport:1"
+                   showon="filesimportrezizeoverlay:1[AND]filesimport:1"
             >
                 <option value="topleft">Top Left</option>
                 <option value="topcenter">Top center</option>
@@ -168,10 +169,11 @@
                    class="input-xlarge"
                    required="true"
                    default="10"
-                   showon="filesimportrezizeoverlay:1[AND]aview:joomla.form.field.subform.repeatable-table[AND]filesimport:1"
+                   showon="filesimportrezizeoverlay:1[AND]filesimport:1"
             />
 
-            <field name="listtype" type="subform"
+            <field name="listtype"
+                type="radicalsubform"
                 multiple="true"
                 required="true"
                 label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_LABEL"

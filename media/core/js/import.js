@@ -28,6 +28,7 @@ jQuery(function(){
     let countFiles = 0;
     let progressBar;
     let uploadI = [];
+    let speedUpload = false;
     vex.defaultOptions.className = 'vex-theme-plain';
     vex.dialog.buttons.YES.text = 'Ок';
     vex.dialog.buttons.NO.text = 'Нет';
@@ -51,6 +52,7 @@ jQuery(function(){
         inputPath = document.querySelector(modalName + " .pathElem");
         inputFile = document.querySelector(modalName + " .fileElem");
         errorsWrap = document.querySelector(modalName + " .upload-errors");
+        speedUpload = false;
         reloadListfullpath();
         openDirectoryAndActive(active, 'root');
     });
@@ -100,6 +102,13 @@ jQuery(function(){
             } else {
                 filesListWrap.scrollTop = 0;
             }
+
+            setTimeout(function () {
+                if(speedUpload) {
+                    speedUpload = false;
+                    jQuery(modalName + ' .button-import-start').click();
+                }
+            }, 200);
 
         });
     });
@@ -228,6 +237,15 @@ jQuery(function(){
 
     jQuery('.modal-import-file').on('click', '.upload-errors-close', function () {
         jQuery(this).parent().hide();
+        return false;
+    });
+
+
+    jQuery('.import-wrap').on('click', '.speed-upload', function () {
+        let modalTmp = jQuery(this).closest('.import-wrap');
+        speedUpload = true;
+        modalTmp.find('.button-open-modal').click();
+        modalTmp.find('.fileElem').click();
         return false;
     });
 
@@ -512,6 +530,10 @@ jQuery(function(){
                 subformRepeatableGroup = 'tbody tr:last-child input';
             }
 
+            if(/^div.subform-repeatable-group.*?$/.test(subform.attr('data-repeatable-element'))) {
+                subform.find('.btn-toolbar:first .btn').click();
+                subformRepeatableGroup = '.subform-card:last input';
+            }
 
             subform.find(subformRepeatableGroup).each(function (k, elt) {
                 let name = jQuery(elt).attr('name');
