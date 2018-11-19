@@ -356,19 +356,9 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 					}
 
-
-					if($flag)
-					{
-						$field =  $paramsfieldValuesXML->fields->fieldset->field[$i]->asXML();
-						$form->load($field, true, '/field/*');
-					}
-
-
 				}
 
 			}
-
-			//echo( $form->getXml()->asXML());
 
 		}
 
