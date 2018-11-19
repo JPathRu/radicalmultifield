@@ -3,11 +3,25 @@
 }
 
 .modal.modal-import-file {
+    position: fixed;
     width: 50%;
-    left: 65%;
+    max-height: 100%;
+    left: 50%;
+    margin-left: -25%;
 }
+
 .modal.modal-import-file .modal-body {
     overflow: hidden;
+}
+
+@media screen and (max-width: 1500px){
+
+    .modal.modal-import-file {
+        width: 70%;
+        left: 70%;
+        margin-left: -35%;
+    }
+
 }
 
 .av-modal {
@@ -32,6 +46,8 @@
 }
 .av-modal-actions button {
     margin-right: 5px;
+    padding: 2px 10px;
+    font-size: 12px;
 }
 .av-modal-actions .search {
     display: inline-block;
@@ -494,4 +510,52 @@
     margin: 0;
     border-radius: 0;
     font: inherit;
+}
+
+.modal-import-file .modal-footer button {
+    padding: 7px 13px;
+    font-size: 13px;
+}
+
+.modal-speed-upload {
+    display: block !important;
+    top: 5% !important;
+    left: 0 !important;
+    position: relative !important;
+    margin: 0 !important;
+    margin-top: 10px;
+    z-index: 1 !important;
+    opacity: 1 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent;
+}
+
+.modal-speed-upload .modal-header,
+.modal-speed-upload .field-wrapper,
+.modal-speed-upload .field-list-files .list,
+.modal-speed-upload .modal-footer {
+    display: none;
+}
+
+.modal-speed-upload .field-list-files {
+    width: 100% !important;
+    padding-left: 0 !important;
+}
+
+.modal-speed-upload .drop-area {
+    padding-left: 0 !important;
+    margin-bottom: 15px !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.modal-speed-upload .drop-area  input,
+.modal-speed-upload .drop-area label,
+.modal-speed-upload .drop-area p {
+    display: none;
+}
+
+.modal-speed-upload .drop-area progress{
+    display: block;
 }

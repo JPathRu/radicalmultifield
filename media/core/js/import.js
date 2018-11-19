@@ -29,6 +29,7 @@ jQuery(function(){
     let progressBar;
     let uploadI = [];
     let speedUpload = false;
+    let speedUploadComplete = false;
     vex.defaultOptions.className = 'vex-theme-plain';
     vex.dialog.buttons.YES.text = 'Ок';
     vex.dialog.buttons.NO.text = 'Нет';
@@ -52,15 +53,29 @@ jQuery(function(){
         inputPath = document.querySelector(modalName + " .pathElem");
         inputFile = document.querySelector(modalName + " .fileElem");
         errorsWrap = document.querySelector(modalName + " .upload-errors");
-        speedUpload = false;
         reloadListfullpath();
         openDirectoryAndActive(active, 'root');
+        modal.removeClass('modal-speed-upload');
+        progressBar.style.display = "none";
+
+        if(speedUpload) {
+            //окно не показываем
+            speedUpload = false;
+            speedUploadComplete = false;
+            modal.hide();
+            modal.addClass('modal-speed-upload');
+            return false;
+        } else {
+            modal.removeClass('modal-speed-upload');
+        }
+
     });
 
 
     jQuery('.modal-import-file').on('click', '.av-folderlist-tree', function() {
         jQuery(this).parent().toggleClass('open');
     });
+
 
     jQuery('.modal-import-file').on('click', '.av-folderlist-label', function() {
         let modal = jQuery(this).closest('.modal-import-file');
@@ -104,10 +119,13 @@ jQuery(function(){
             }
 
             setTimeout(function () {
-                if(speedUpload) {
+
+                if(speedUploadComplete && modal.hasClass('modal-speed-upload')) {
                     speedUpload = false;
+                    speedUploadComplete = false;
                     jQuery(modalName + ' .button-import-start').click();
                 }
+
             }, 200);
 
         });
@@ -414,6 +432,7 @@ jQuery(function(){
             countFiles--;
 
             if(countFiles === 0) {
+                modal.removeClass('modal-speed-upload');
                 progressBar.style.display = "none";
             }
 
@@ -429,6 +448,7 @@ jQuery(function(){
             countFiles--;
 
             if(countFiles === 0) {
+                modal.removeClass('modal-speed-upload');
                 progressBar.style.display = "none";
             }
 
@@ -465,6 +485,7 @@ jQuery(function(){
                 uploadI.push((i + 1));
 
                 if(countFiles === uploadI.length) {
+                    speedUploadComplete = true;
                     active.find('.av-folderlist-label[path="' + inputPath.value + '"]').click();
                     progressBar.style.display = "none";
 
@@ -481,6 +502,7 @@ jQuery(function(){
                 uploadI.push((i + 1));
 
                 if(countFiles === uploadI.length) {
+                    speedUploadComplete = true;
                     active.find('.av-folderlist-label[path="' + inputPath.value + '"]').click();
                     progressBar.style.display = "none";
 
@@ -502,6 +524,8 @@ jQuery(function(){
     }
 
     jQuery('.button-import-start').on('click', function () {
+
+        modal.removeClass('modal-speed-upload');
 
         if(activeLists.length === 0) {
 
@@ -550,7 +574,7 @@ jQuery(function(){
             });
         });
 
-        jQuery(modalName).modal('toggle');
+        jQuery(modalName).modal('hide');
 
         return false;
     });

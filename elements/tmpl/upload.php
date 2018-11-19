@@ -2,7 +2,7 @@
 
 <?php $id = rand(11111, 99999)?>
 <div class="drop-area">
-    <form class="my-form">
+    <form class="form-upload">
         <input type="hidden" class="pathElem" name="path">
         <p><?= \Joomla\CMS\Language\Text::_("PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_MODAL_UPLOAD_DROP") ?></p>
         <label class="button" for="fileElem-<?= $id ?>"><?= \Joomla\CMS\Language\Text::_("PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_MODAL_UPLOAD_SELECT") ?></label>

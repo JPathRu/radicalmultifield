@@ -108,29 +108,23 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
         $types[] = $data;
 
-        if(file_exists(JPATH_ROOT . '/plugins/radicalmultifield'))
+
+	    PluginHelper::importPlugin('radicalmultifield');
+	    $radicalmultifieldPlugins     = PluginHelper::getPlugin('radicalmultifield');
+	    $language = Factory::getLanguage();
+
+        foreach ($radicalmultifieldPlugins as $radicalmultifieldPlugin)
         {
+	        $language->load('plg_radicalmultifield_' . $radicalmultifieldPlugin->name, JPATH_ROOT . '/plugins/radicalmultifield/' . $radicalmultifieldPlugin->name, $language->getTag(), true);
 
-	        $directories = Folder::folders(JPATH_ROOT . '/plugins/radicalmultifield');
-
-	        if(count($directories) > 0)
-	        {
-
-		        foreach ($directories as $directory)
-		        {
-			        Factory::getLanguage()->load('plg_radicalmultifield_' . $directory, JPATH_ROOT . '/plugins/radicalmultifield/' . $directory, null, true);
-
-			        $types[] = [
-				        'type' => 'radicalmultifield_' . $directory,
-				        'label' => 'Radical MultiField ' . Text::_('PLG_RADICALMULTIFIELD_PLUGIN_NAME_' . mb_strtoupper($directory)),
-				        'path' => JPATH_ROOT . '/plugins/radicalmultifield/' . $directory,
-			        ];
-
-		        }
-
-	        }
+	        $types[] = [
+		        'type' => 'radicalmultifield_' . $radicalmultifieldPlugin->name,
+		        'label' => 'Radical MultiField ' . Text::_('PLG_RADICALMULTIFIELD_PLUGIN_NAME_' . mb_strtoupper($radicalmultifieldPlugin->name)),
+		        'path' => JPATH_ROOT . '/plugins/radicalmultifield/' . $radicalmultifieldPlugin->name,
+	        ];
 
         }
+
 
         // Add to cache and return the data
         $types_cache[ $this->_type . $this->_name ] = $types;

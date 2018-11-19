@@ -20,7 +20,6 @@ jQuery(document).ready(function(){
     function generateTile(el, i) {
 
         if(i === null || i === undefined) {
-            console.log(jQuery(el).attr('data-i'));
             i = parseInt(jQuery(el).attr('data-i'));
         }
 
@@ -47,8 +46,9 @@ jQuery(document).ready(function(){
                     image = '/' + image;
                 }
 
-                tile.find('.subform-card-tile-background').css('background', 'linear-gradient(0deg,rgba(0,0,0,0.6),rgba(0,0,0,0.7)),url(' + image + ') no-repeat 0 0 fixed');
+                tile.find('.subform-card-tile-background').css('background', 'linear-gradient(0deg,rgba(0,0,0,0.6),rgba(0,0,0,0.7)),url(' + image + ') no-repeat 50% 50%');
                 tile.find('.subform-card-tile-background').css('color', '#fff');
+                tile.find('.subform-card-tile-background').css('background-size', 'auto');
             }
         }
     }
@@ -56,23 +56,39 @@ jQuery(document).ready(function(){
 
     jQuery('body').on('mousemove', '.subform-card-tile-background', function (e) {
 
-        console.log(e.pageX);
+        let x = parseFloat(jQuery(this).attr('data-x'));
+        let y = parseFloat(jQuery(this).attr('data-y'));
+        let oldX = parseFloat(jQuery(this).attr('data-oldX'));
+        let oldY = parseFloat(jQuery(this).attr('data-oldY'));
 
-        let x = jQuery(this).attr('data-x');
-        let y = jQuery(this).attr('data-y');
-
-        if(x === undefined) {
-            x = 0;
+        if(x === undefined || isNaN(x)) {
+            x = 50;
         }
 
-        if(y === undefined) {
-            y = 0;
+        if(y === undefined || isNaN(y)) {
+            y = 50;
         }
+
+        if(oldX === undefined || isNaN(oldX)) {
+            oldX = e.pageX;
+        }
+
+        if(oldY === undefined || isNaN(oldY)) {
+            oldY = e.pageY;
+        }
+
+        x = x + ((e.pageX - oldX)/5);
+        y = y + ((e.pageY - oldY)/5);
+
+        oldX = e.pageX;
+        oldY = e.pageY;
 
         jQuery(this).attr('data-x', x);
         jQuery(this).attr('data-y', y);
+        jQuery(this).attr('data-oldX', oldX);
+        jQuery(this).attr('data-oldY', oldY);
 
-        jQuery(this).css('background-position', x + 'px ' + y + 'px');
+        jQuery(this).css('background-position', x + '% ' + y + '%');
     });
 
     jQuery('body').on('click', '.subform-card-tile', function (e) {
