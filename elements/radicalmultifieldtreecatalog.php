@@ -146,6 +146,8 @@ class FormFieldRadicalmultifieldtreecatalog extends JFormField
 		]);
 
 
+		$app = Factory::getApplication();
+
 		// get attributes
 		$importfield = $this->getAttribute('importfield');
 		$exs = $this->getAttribute('exs');
@@ -154,6 +156,7 @@ class FormFieldRadicalmultifieldtreecatalog extends JFormField
 		$maxsize = $this->getAttribute('maxsize');
 		$folder = $this->getAttribute('folder');
 		$folder = $folder ? $folder : 'images';
+		$administrator = $app->isAdmin() ? 'true' : 'false';
 
 		if(substr_count($folder, '{user_id}'))
 		{
@@ -235,7 +238,7 @@ class FormFieldRadicalmultifieldtreecatalog extends JFormField
 
 
 			$html = "<div class='import-wrap'>
-		        <a href=\"#impot-modal-" . $this->uid . "\" role=\"button\" class=\"btn button-open-modal\" data-exs=\"" . $exs . "\" data-namefile=\"" . $namefile . "\" data-namefield=\"" . $namefield . "\" data-maxsize=\"" . $maxsize . "\" data-importfield=\"" . $importfield . "\" data-importfieldpath=\"" . $folder . "\" data-toggle=\"modal\"><span class='icon-archive'></span>" . Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_MODAL_BUTTON_OPEN') . "</a>
+		        <a href=\"#impot-modal-" . $this->uid . "\" role=\"button\" class=\"btn button-open-modal\" data-administrator=\"" . $administrator . "\" data-exs=\"" . $exs . "\" data-namefile=\"" . $namefile . "\" data-namefield=\"" . $namefield . "\" data-maxsize=\"" . $maxsize . "\" data-importfield=\"" . $importfield . "\" data-importfieldpath=\"" . $folder . "\" data-toggle=\"modal\"><span class='icon-archive'></span>" . Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_MODAL_BUTTON_OPEN') . "</a>
 		         <button role=\"button\" class=\"btn speed-upload\"><span class='icon-upload'></span> " . Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_MODAL_BUTTON_SPEED_UPLOAD') . "</button>
 		         
 		        <!-- Modal -->

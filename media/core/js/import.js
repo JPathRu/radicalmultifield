@@ -30,6 +30,8 @@ jQuery(function(){
     let uploadI = [];
     let speedUpload = false;
     let speedUploadComplete = false;
+    let administrator;
+    let prefix = '';
     vex.defaultOptions.className = 'vex-theme-plain';
     vex.dialog.buttons.YES.text = 'Ок';
     vex.dialog.buttons.NO.text = 'Нет';
@@ -39,6 +41,7 @@ jQuery(function(){
         modalName = jQuery(this).attr('href');
         modal = jQuery(modalName);
         filesListWrap = document.querySelector(modalName + ' .field-list-files');
+        administrator = jQuery(this).attr('data-administrator');
         importfieldpath = jQuery(this).attr('data-importfieldpath');
         importfield = jQuery(this).attr('data-importfield');
         maxsize = parseFloat(jQuery(this).attr('data-maxsize'));
@@ -53,6 +56,15 @@ jQuery(function(){
         inputPath = document.querySelector(modalName + " .pathElem");
         inputFile = document.querySelector(modalName + " .fileElem");
         errorsWrap = document.querySelector(modalName + " .upload-errors");
+
+        console.log(administrator);
+
+        if(administrator === 'true') {
+            prefix = 'administrator/';
+        } else {
+            prefix = '';
+        }
+
         reloadListfullpath();
         openDirectoryAndActive(active, 'root');
         modal.removeClass('modal-speed-upload');
@@ -87,7 +99,7 @@ jQuery(function(){
         jQuery(this).closest('.field-wrapper').find('.import-directory').val(path);
         jQuery(this).addClass('selected');
         inputPath.value = path;
-        jQuery.get("/administrator/index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=json&type=get_files&directory=" + encodeURIComponent(path) +
+        jQuery.get("/" + prefix + "index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=json&type=get_files&directory=" + encodeURIComponent(path) +
             "&importfieldpath=" + encodeURIComponent(importfieldpath) +
             "&importfield=" + encodeURIComponent(importfield)
         ).done(function (response) {
@@ -456,7 +468,7 @@ jQuery(function(){
         }
 
 
-        let url = "/administrator/index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=json&type=upload_file"
+        let url = "/" + prefix + "index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=json&type=upload_file"
             + "&importfieldpath=" + encodeURIComponent(importfieldpath)
             + "&importfield=" + encodeURIComponent(importfield);
         let xhr = new XMLHttpRequest();
