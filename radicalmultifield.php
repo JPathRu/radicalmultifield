@@ -331,7 +331,6 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 				for ($i = 0; $i < count($paramsfieldValuesXML->fields->fieldset->field); $i++)
 				{
 
-					$flag = false;
 					$count = count($paramsfieldXml->fields->fieldset->field);
 
 					for ($j = 0; $j < $count; $j++)
@@ -341,11 +340,6 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 						{
 							$form->setFieldAttribute((string) $paramsfieldXml->fields->fieldset->field[$j]['name'], 'default', $paramsfieldValuesXML->fields->fieldset->field[$i]['default'], 'fieldparams');
 							break;
-						}
-
-						if($j === ($count - 1))
-						{
-							$flag = true;
 						}
 
 					}
