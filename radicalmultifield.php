@@ -249,7 +249,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 			$tmp = explode('_', $type);
 			$type = $tmp[0];
 			$pluginType = $tmp[1];
-			$pathType = JPATH_PLUGINS . '/radicalmultifield/' . $pluginType . '/params';
+			$pathType = JPATH_PLUGINS . DIRECTORY_SEPARATOR . 'radicalmultifield' . DIRECTORY_SEPARATOR . $pluginType . DIRECTORY_SEPARATOR . 'params';
 		}
 		else
 		{
@@ -257,7 +257,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 			$pathType = '';
 		}
 
-		$path = JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/params/' . $type . '.xml';
+		$path = JPATH_PLUGINS . DIRECTORY_SEPARATOR . $this->_type . DIRECTORY_SEPARATOR . $this->_name . DIRECTORY_SEPARATOR . 'params' . DIRECTORY_SEPARATOR . $type . '.xml';
 
 		// Check if params file exists
 		if (!file_exists($path))
@@ -265,14 +265,14 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 			return;
 		}
 
-		JLoader::import('radicalmultifieldhelper', JPATH_ROOT . '/plugins/fields/radicalmultifield');
+		JLoader::register('RadicalmultifieldHelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'radicalmultifieldhelper']) . '.php');
 
 		$paramsfield = file_get_contents($path);
 
 		if(!empty($pluginType)) {
 
-			if(file_exists($pathType . '/newparams.xml')) {
-				$newParams = file_get_contents($pathType . '/newparams.xml');
+			if(file_exists($pathType . DIRECTORY_SEPARATOR . 'newparams.xml')) {
+				$newParams = file_get_contents($pathType . DIRECTORY_SEPARATOR . 'newparams.xml');
 				$paramsfield = str_replace('</fieldset>', $newParams . '</fieldset>', $paramsfield);
 			}
 
@@ -325,7 +325,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 			if(file_exists($pathType))
 			{
-				$paramsfieldValues = file_get_contents($pathType . '/default.xml');
+				$paramsfieldValues = file_get_contents($pathType . DIRECTORY_SEPARATOR . 'default.xml');
 				$paramsfieldValuesXML = new SimpleXMLElement($paramsfieldValues);
 
 				for ($i = 0; $i < count($paramsfieldValuesXML->fields->fieldset->field); $i++)
@@ -392,7 +392,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 	    $admin = $app->isAdmin();
 	    $allow = true;
 
-	    JLoader::register('RadicalmultifieldHelper', JPATH_SITE . '/plugins/fields/radicalmultifield/radicalmultifieldhelper.php');
+	    JLoader::register('RadicalmultifieldHelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'radicalmultifieldhelper']) . '.php');
 
 	    $params = RadicalmultifieldHelper::getParams($data['importfield']);
 
@@ -432,10 +432,10 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
     	if($data['type'] === 'get_files')
     	{
     		$exs = explode(',', $params['filesimportexc']);
-    		$directory = ($data['importfieldpath'] ? $data['importfieldpath'] . '/' : '') . preg_replace('/^root/isu', '', $data['directory']);
-		    $directory = str_replace("//", '/', $directory);
+    		$directory = ($data['importfieldpath'] ? $data['importfieldpath'] . DIRECTORY_SEPARATOR : '') . preg_replace('/^root/isu', '', $data['directory']);
+		    $directory = str_replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $directory);
 		    $filesOutput = [];
-		    $files = Folder::files(JPATH_ROOT . '/' .(string) $directory);
+		    $files = Folder::files(JPATH_ROOT . DIRECTORY_SEPARATOR .(string) $directory);
 		    foreach ($files as $file)
 		    {
 		    	$tmpExs = explode('.', $file);
@@ -503,15 +503,15 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 			        $data['name'] = isset($data['name']) ? $data['name'] : '';
 
-				    $path = JPATH_ROOT . '/' . ($data['importfieldpath'] ? $data['importfieldpath'] . '/' : '') . preg_replace('/^root/isu', '', $data['path']) . '/' . $data['name'];
-				    $path = str_replace("//", '/', $path);
+				    $path = JPATH_ROOT . DIRECTORY_SEPARATOR . ($data['importfieldpath'] ? $data['importfieldpath'] . DIRECTORY_SEPARATOR : '') . preg_replace('/^root/isu', '', $data['path']) . DIRECTORY_SEPARATOR . $data['name'];
+				    $path = str_replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $path);
 
 				    if (!file_exists($path))
 				    {
 					    Folder::create($path);
 				    }
 
-				    if (File::upload($file['tmp_name'], $path . "/" . $uploadedFileName))
+				    if (File::upload($file['tmp_name'], $path . DIRECTORY_SEPARATOR . $uploadedFileName))
 				    {
 
 				    	if(in_array($type, ['jpg', 'gif', 'png', 'jpeg', 'jpg', 'webp']))
@@ -519,9 +519,9 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 						    if((int)$params['filesimportresize'])
 						    {
 
-							    JLoader::registerNamespace('Gumlet', JPATH_SITE . '/' . implode(DIRECTORY_SEPARATOR , ['plugins', 'fields', 'radicalmultifield', 'libs', 'gumlet', 'lib']));
+							    JLoader::registerNamespace('Gumlet', JPATH_SITE . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR , ['plugins', 'fields', 'radicalmultifield', 'libs', 'gumlet', 'lib']));
 
-							    $image = new ImageResize($path . "/" . $uploadedFileName);
+							    $image = new ImageResize($path . DIRECTORY_SEPARATOR . $uploadedFileName);
 
 							    $maxWidth = (int)$params['filesimportrezizemaxwidth'];
 							    $maxHeight = (int)$params['filesimportrezizemaxheight'];
@@ -533,7 +533,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 							    if((int)$params['filesimportrezizeoverlay'])
 							    {
 
-								    $file = JPATH_SITE . '/' . $params['filesimportrezizeoverlayfile'];
+								    $file = JPATH_SITE . DIRECTORY_SEPARATOR . $params['filesimportrezizeoverlayfile'];
 								    $position = $params['filesimportrezizeoverlaypos'];
 								    $padding = $params['filesimportrezizeoverlaypadding'];
 
@@ -618,7 +618,12 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 							    }
 
-							    $image->save($path . "/" . $uploadedFileName);
+							    $image->save($path . DIRECTORY_SEPARATOR . $uploadedFileName);
+
+							    if((int)$params['filesimportpreview'])
+							    {
+								    RadicalmultifieldHelper::generateThumb($params, $path . DIRECTORY_SEPARATOR . $uploadedFileName);
+							    }
 
 						    }
 					    }
@@ -640,11 +645,11 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 	    {
 		    $lang = Factory::getLanguage();
 	    	$data['name'] = JFILE::makeSafe($lang->transliterate($data['name']));
-    		$path = JPATH_ROOT . '/' . ($data['importfieldpath'] ? $data['importfieldpath'] . '/' : '') . preg_replace('/^root/isu', '', $data['path']) . '/' . $data['name'];
-		    $path = str_replace("//", '/', $path);
+    		$path = JPATH_ROOT . DIRECTORY_SEPARATOR . ($data['importfieldpath'] ? $data['importfieldpath'] . DIRECTORY_SEPARATOR : '') . preg_replace('/^root/isu', '', $data['path']) . DIRECTORY_SEPARATOR . $data['name'];
+		    $path = str_replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $path);
     		Folder::create($path);
 
-		    JLoader::register('FormFieldRadicalmultifieldtreecatalog', JPATH_ROOT . '/plugins/fields/radicalmultifield/elements/radicalmultifieldtreecatalog.php');
+		    JLoader::register('FormFieldRadicalmultifieldtreecatalog', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'elements', 'radicalmultifieldtreecatalog']) . '.php');
 		    $treeCatalog = new FormFieldRadicalmultifieldtreecatalog;
 		    $paramsForField = [
 		    	'name' => 'select-directory',
@@ -656,8 +661,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 		    	'showroot' => 'true',
 		    ];
 
-		    $dataAttributes = array_map(function($value, $key)
-		    {
+		    $dataAttributes = array_map(function($value, $key) {
 			    return $key . '="' . $value . '"';
 		    }, array_values($paramsForField), array_keys($paramsForField));
 

@@ -18,6 +18,8 @@ if (!$field->value)
 $values = json_decode($field->value, JSON_OBJECT_AS_ARRAY);
 $listtype = $this->getListTypeFromField($field);
 
+jimport('radicalmultifieldhelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield'])); //подключаем хелпер
+
 ?>
 
 
@@ -26,7 +28,7 @@ $listtype = $this->getListTypeFromField($field);
 
         <div>
             <a href="<?= $row['image']?>" data-uk-lightbox="{group:'group-fields-<?= $field->id ?>'}" title="<?= $row['alt'] ?>">
-                <img src="<?= $row['image']?>" alt="<?= $row['alt'] ?>"/>
+                <img src="<?= RadicalmultifieldHelper::generateThumb($field, $row['image'])?>" alt="<?= $row['alt'] ?>"/>
             </a>
         </div>
 

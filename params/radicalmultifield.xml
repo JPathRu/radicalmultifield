@@ -125,6 +125,36 @@
                    showon="filesimportresize:1[AND]filesimport:1"
             />
 
+            <field name="filesimportpreview"
+                   type="radio"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEW_LABEL"
+                   description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEW_DESC"
+                   required="true"
+                   class="btn-group"
+                   default="0"
+                   showon="filesimport:1">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field name="filesimportpreviewmaxwidth"
+                   type="text"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWMAXWIDTH_LABEL"
+                   required="true"
+                   default="360"
+                   class="input-xlarge"
+                   showon="filesimportpreview:1[AND]filesimport:1"
+            />
+
+            <field name="filesimportpreviewmaxheight"
+                   type="text"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWMAXHEIGHT_LABEL"
+                   required="true"
+                   default="360"
+                   class="input-xlarge"
+                   showon="filesimportpreview:1[AND]filesimport:1"
+            />
+
             <field name="filesimportrezizeoverlay"
                    type="radio"
                    label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTRESIZEOVERLAY_LABEL"

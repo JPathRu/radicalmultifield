@@ -2,6 +2,7 @@
 
 use Joomla\CMS\Factory;
 use Joomla\Filesystem\Folder;
+use Gumlet\ImageResize;
 
 
 defined('_JEXEC') or die;
@@ -277,7 +278,8 @@ class RadicalmultifieldHelper
             foreach ($item as $keyRow => $row)
             {
 
-                if($column_find_all) {
+                if($column_find_all)
+                {
 
                     if(!isset($data[$keyRow]) || ((string)$row !== (string)$data[$keyRow]))
                     {
@@ -285,7 +287,9 @@ class RadicalmultifieldHelper
                         break;
                     }
 
-                } else {
+                }
+                else
+                {
 
                     if(isset($data[$keyRow]) && ((string)$row == (string)$data[$keyRow]))
                     {
@@ -379,5 +383,89 @@ class RadicalmultifieldHelper
 
 		return $fileListsName;
 	}
+
+
+	/**
+	 * @param $fieldOrParams
+	 * @param $source
+	 *
+	 * @return mixed|string
+	 */
+	public static function generateThumb(&$fieldOrParams, $source)
+	{
+		$source = str_replace(JPATH_ROOT . DIRECTORY_SEPARATOR, '', $source);
+		$paths = explode(DIRECTORY_SEPARATOR, $source);
+		$file = array_pop($paths);
+		$fileSplit = explode('.', $file);
+		$fileExt = array_pop($fileSplit);
+		$extAccept = ['jpg', 'jpeg', 'png', 'gif'];
+
+		if(!in_array($fileExt, $extAccept))
+		{
+			return $file;
+		}
+
+		$pathThumb = implode(DIRECTORY_SEPARATOR, array_merge($paths, ['_thumb']));
+		$pathFileThumb = implode(DIRECTORY_SEPARATOR, array_merge($paths, ['_thumb'])) . DIRECTORY_SEPARATOR . $file;
+		$fullPathThumb =  JPATH_ROOT . DIRECTORY_SEPARATOR . $pathThumb . DIRECTORY_SEPARATOR . $file;
+
+		//если есть проевью, то отдаем ссылку на файл
+		if(file_exists($fullPathThumb))
+		{
+			return $pathFileThumb;
+		}
+
+		//если нет, генерируем превью
+
+		//проверяем создан ли каталог для превью
+		if(!file_exists(JPATH_ROOT . DIRECTORY_SEPARATOR . $pathThumb))
+		{
+			//создаем каталог
+			Folder::create(JPATH_ROOT . DIRECTORY_SEPARATOR . $pathThumb);
+		}
+
+		//подгружаем библиотеку для фото
+		JLoader::registerNamespace('Gumlet', JPATH_SITE . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR , ['plugins', 'fields', 'radicalmultifield', 'libs', 'gumlet', 'lib']));
+
+		$params = [];
+
+		if(is_object($fieldOrParams))
+		{
+			if(!isset($fieldOrParams->name))
+			{
+				return $source;
+			}
+
+			//подгружаем параметры поля
+			$params = self::getParams($fieldOrParams->name);
+
+		}
+
+		if(is_array($fieldOrParams))
+		{
+			$params = $fieldOrParams;
+		}
+
+
+		if(!isset($params['filesimportpreviewmaxwidth']) || !isset($params['filesimportpreviewmaxheight']))
+		{
+			return $source;
+		}
+
+		copy(JPATH_ROOT . DIRECTORY_SEPARATOR . $source, $fullPathThumb);
+		$image = new ImageResize($fullPathThumb);
+
+		$maxWidth = (int)$params['filesimportpreviewmaxwidth'];
+		$maxHeight = (int)$params['filesimportpreviewmaxheight'];
+
+		$image->resizeToBestFit($maxWidth, $maxHeight);
+		$image->save($fullPathThumb);
+		unset($image);
+
+		return $pathFileThumb;
+
+	}
+
+
 
 }
