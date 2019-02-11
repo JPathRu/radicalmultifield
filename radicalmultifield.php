@@ -125,17 +125,8 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
         }
 
-
         // Add to cache and return the data
         $types_cache[ $this->_type . $this->_name ] = $types;
-
-        HTMLHelper::_( 'jquery.framework' );
-
-
-	    HTMLHelper::script('plg_fields_radicalmultifield/core/radicalmultifield.js', [
-		    'version' => filemtime ( __FILE__ ),
-		    'relative' => true,
-	    ]);
 
         return $types;
     }
@@ -156,6 +147,8 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
         $path = URI::base( true ) . '/templates/' . Factory::getApplication()->getTemplate() . '/';
 
         $fieldNode->setAttribute('template', $path);
+
+
 
         return $fieldNode;
     }
@@ -350,6 +343,12 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 		}
 
+		HTMLHelper::_( 'jquery.framework' );
+
+		HTMLHelper::script('plg_fields_radicalmultifield/core/radicalmultifield.js', [
+			'version' => filemtime ( __FILE__ ),
+			'relative' => true,
+		]);
 
 	}
 
