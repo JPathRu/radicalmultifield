@@ -452,15 +452,16 @@ class RadicalmultifieldHelper
 			return $source;
 		}
 
-		copy(JPATH_ROOT . DIRECTORY_SEPARATOR . $source, $fullPathThumb);
-		$image = new ImageResize($fullPathThumb);
+		if(copy(JPATH_ROOT . DIRECTORY_SEPARATOR . $source, $fullPathThumb)) {
+			$image = new ImageResize($fullPathThumb);
 
-		$maxWidth = (int)$params['filesimportpreviewmaxwidth'];
-		$maxHeight = (int)$params['filesimportpreviewmaxheight'];
+			$maxWidth = (int)$params['filesimportpreviewmaxwidth'];
+			$maxHeight = (int)$params['filesimportpreviewmaxheight'];
 
-		$image->resizeToBestFit($maxWidth, $maxHeight);
-		$image->save($fullPathThumb);
-		unset($image);
+			$image->resizeToBestFit($maxWidth, $maxHeight);
+			$image->save($fullPathThumb);
+			unset($image);
+		}
 
 		return $pathFileThumb;
 

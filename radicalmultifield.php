@@ -539,7 +539,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 								    if(file_exists($file))
 								    {
 
-									    $image->addFilter(function ($imageDesc) use ($file, $position, $padding)
+									    $image->addFilter(function ($imageDesc) use ($file, $position, $padding, $params)
 									    {
 
 									    	if(!file_exists($file))
@@ -554,6 +554,32 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 										    $imageHeight = imagesy($imageDesc);
 										    $imageX = $padding;
 										    $imageY = $padding;
+
+										    if(isset($params['filesimportrezizeoverlaypercent']) && (int)$params['filesimportrezizeoverlaypercent'])
+										    {
+									            //сжимаем водяной знак по процентному соотношению от изоюражения на который накладывается
+											    $precent = (int)$params['filesimportrezizeoverlaypercentvalue'];
+											    $logoWidthMax = (int) ($imageWidth / 100 * $precent);
+											    $logoHeightMax = (int) ($imageHeight / 100 * $precent);
+
+											    $ratio  = $logoHeight / $logoWidth;
+											    $tmpWidth = $logoWidthMax;
+											    $tmpHeight = $tmpWidth * $ratio;
+
+											    if ($tmpHeight > $logoHeightMax) {
+												    $tmpHeight = $logoHeightMax;
+												    $tmpWidth = $tmpHeight / $ratio;
+											    }
+
+											    $logoNew = imagecreatetruecolor($tmpWidth, $tmpHeight);
+											    imagesavealpha($logoNew, true);
+											    imagefill($logoNew,0,0,0x7fff0000);
+											    imagecopyresampled($logoNew, $logo, 0, 0, 0, 0, $tmpWidth, $tmpHeight, $logoWidth, $logoHeight);
+											    $logo = $logoNew;
+											    $logoWidth = $tmpWidth;
+											    $logoHeight = $tmpHeight;
+											    unset($logoNew);
+										    }
 
 										    if($logoWidth > $imageWidth && $logoHeight > $imageHeight)
 										    {
