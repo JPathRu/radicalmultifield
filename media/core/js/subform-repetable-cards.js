@@ -19,6 +19,7 @@ jQuery(document).ready(function(){
 
     function generateTile(el, i) {
 
+
         if(i === null || i === undefined) {
             i = parseInt(jQuery(el).attr('data-i'));
         }
@@ -28,12 +29,51 @@ jQuery(document).ready(function(){
         let input = jQuery(el).find('input[type=text]');
         let inputImage = jQuery(el).find('.field-media-input');
 
-        if(input.length > 0) {
-            text = input.val();
+        if(inputImage.length === 0) {
+            if(el === undefined || el === null) {
+                return;
+            }
+
+            let inputs = el.querySelectorAll('input');
+
+            for(let i=0;i<inputs.length;i++) {
+                let val = inputs[i].value;
+
+                //проверка на картинку
+                if(val.test('.')) {
+                    let arrayVal = val.split('.');
+                    let exs = arrayVal.pop();
+                    let exsImage = ['jpg', 'png', 'svg', 'jpeg', 'bmp', 'xcf', 'gif'];
+                    if(exsImage.indexOf(exs.toLowerCase()) !== -1) {
+                        let image = val;
+
+                        if(image.charAt(0) !== '/') {
+                            image = '/' + image;
+                        }
+
+                        tile.find('.subform-card-tile-background').css('background-image', 'url(' + image + ')');
+                        tile.find('.subform-card-tile-background').css('color', '#fff');
+                        tile.find('.subform-card-tile-background').css('background-size', 'auto');
+                    }
+                }
+
+                //проверка на ютуб
+                if(val.test('youtu')) {
+                    let id = youtube_parser(val);
+                    let image = 'https://img.youtube.com/vi/' + id + '/hqdefault.jpg';
+
+                    tile.find('.subform-card-tile-background').css('background-image', 'url(' + image + ')');
+                    tile.find('.subform-card-tile-background').css('color', '#fff');
+                    tile.find('.subform-card-tile-background').css('background-size', 'auto');
+                }
+            }
+
+            return;
         }
 
-        if(text === '') {
-            text = 'Элемент ' + i;
+
+        if(input.length > 0) {
+            text = input.val();
         }
 
         tile.find('.subform-card-tile-title').html(capitalizeFirstLetter(text));
@@ -111,7 +151,7 @@ jQuery(document).ready(function(){
         let grid = jQuery(this).closest('.subform-repeatable-cards');
         let content = card.find('.subform-card-content');
         content.hide();
-        generateTile(card);
+        generateTile(this.closest('.subform-card'));
         grid.find('.subform-card-tile').each(function (i, el) {
             jQuery(el).css('display', 'block');
         });
@@ -145,5 +185,10 @@ jQuery(document).ready(function(){
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
+    function youtube_parser(url){
+        var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+        var match = url.match(regExp);
+        return (match&&match[7].length==11)? match[7] : false;
+    }
 
 });

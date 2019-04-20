@@ -637,6 +637,9 @@
     font-size: 13px;
     transition: all 0.2s;
 }
+.field-list-files .files-toolbar button.button-directory-trash {
+    display: none;
+}
 .field-list-files .files-toolbar button:hover {
     background: #ebebeb;
     transition: all 0.2s;

@@ -26,9 +26,24 @@ jimport('radicalmultifieldhelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DI
 <div class="uk-grid uk-grid-width-medium-1-5" data-uk-grid-match="{target:'img'}" data-uk-grid-margin>
 	<?php foreach ($values as $key => $row): ?>
 
+		<?php
+            $preview = '';
+            if(preg_match("/^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$/isu", $row['image']))
+            {
+                $link = preg_replace("|.*?watch\?v\=|isu", '', $row['image']);
+                $link = preg_replace("|.*?\.be\/|isu", '', $link); //для коротких ссылок
+                $link = preg_replace("|[\&\?]{1,}.+|isu", '', $link);
+                $preview = 'https://img.youtube.com/vi/'. $link . '/hqdefault.jpg';
+            }
+            else
+            {
+                $preview = RadicalmultifieldHelper::generateThumb($field, $row['image']);
+            }
+		?>
+
         <div>
             <a href="<?= $row['image']?>" data-uk-lightbox="{group:'group-fields-<?= $field->id ?>'}" title="<?= $row['alt'] ?>">
-                <img src="<?= RadicalmultifieldHelper::generateThumb($field, $row['image'])?>" alt="<?= $row['alt'] ?>"/>
+                <img src="<?= $preview ?>" alt="<?= $row['alt'] ?>"/>
             </a>
         </div>
 

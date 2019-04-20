@@ -594,7 +594,6 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 							    if(file_exists($file))
 							    {
-
 								    $image->addFilter(function ($imageDesc) use ($file, $position, $padding, $params)
 								    {
 
@@ -695,10 +694,6 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 									    imagecopy($imageDesc, $logo, $imageX, $imageY, 0, 0, $logoWidth, $logoHeight);
 								    });
-
-
-								    //TODO дописать вотермарку для превью, чтобы было без искажений
-
 							    }
 
 						    }

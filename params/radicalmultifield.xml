@@ -160,7 +160,7 @@
                    required="true"
                    class="btn-group"
                    default="0"
-                   showon="filesimport:1">
+                   showon="filesimport:1[AND]filesimportreoriginal:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
@@ -171,7 +171,7 @@
                    required="true"
                    default="360"
                    class="input-xlarge"
-                   showon="filesimportpreview:1[AND]filesimport:1"
+                   showon="filesimportpreview:1[AND]filesimport:1[AND]filesimportreoriginal:1"
             />
 
             <field name="filesimportpreviewmaxheight"
@@ -180,7 +180,7 @@
                    required="true"
                    default="360"
                    class="input-xlarge"
-                   showon="filesimportpreview:1[AND]filesimport:1"
+                   showon="filesimportpreview:1[AND]filesimport:1[AND]filesimportreoriginal:1"
             />
 
             <field name="filesimportrezizeoverlay"
