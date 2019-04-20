@@ -257,7 +257,7 @@ class FormFieldRadicalmultifieldtreecatalog extends JFormField
 
 					// modal
 					$html .= '<div id="' . $this->uid . 'modal" class="av-modal">';
-					$html .= '<div class="av-modal-actions"><button class="btn btn-primary btn-small create-directory">' . Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_MODAL_BUTTON_CREATE_PATH') . '</button><div class="search"><input type="text" name="" placeholder="'. Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_MODAL_SEARCH') . '"/><div class="results"></div></div></div>';
+					$html .= '<div class="av-modal-actions"><button class="btn btn-primary btn-small create-directory">' . Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_MODAL_BUTTON_CREATE_PATH') . '</button><button class="tree-reload"><span></span></button><div class="search"><input type="text" name="" placeholder="'. Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_MODAL_SEARCH') . '"/><div class="results"></div></div></div>';
 					$html .= $this->showdir(JPATH_ROOT . DIRECTORY_SEPARATOR . $folder, $folderOnly, $showRoot);
 					$html .= '</div>';
 					$html .= '</div>';

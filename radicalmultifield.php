@@ -428,13 +428,16 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 		    $data['importfield'] = '';
 	    }
 
+	    //получение файлов
     	if($data['type'] === 'get_files')
     	{
     		$exs = explode(',', $params['filesimportexc']);
     		$directory = ($data['importfieldpath'] ? $data['importfieldpath'] . DIRECTORY_SEPARATOR : '') . preg_replace('/^root/isu', '', $data['directory']);
 		    $directory = str_replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $directory);
+		    $directory = str_replace('..' .DIRECTORY_SEPARATOR , '', $directory);
 		    $filesOutput = [];
-		    $files = Folder::files(JPATH_ROOT . DIRECTORY_SEPARATOR .(string) $directory);
+		    $files = Folder::files(JPATH_ROOT . DIRECTORY_SEPARATOR . (string) $directory);
+		    $directories = Folder::folders(JPATH_ROOT . DIRECTORY_SEPARATOR . (string) $directory);
 		    foreach ($files as $file)
 		    {
 		    	$tmpExs = explode('.', $file);
@@ -450,9 +453,49 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 			    }
 		    }
 
-    		return $filesOutput;
+    		return [
+    			'files' => $filesOutput,
+		        'directories' => $directories
+		    ];
 	    }
 
+	    //получение директорий
+	    if($data['type'] === 'get_directories')
+	    {
+	    	$data = Factory::getApplication()->input->getArray();
+		    $directory = $params['filesimportpath'];
+
+		    if($directory === '') {
+		        return "";
+		    }
+
+		    JLoader::register(
+			    'FormFieldRadicalmultifieldtreecatalog',
+			    JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'elements', 'radicalmultifieldtreecatalog']) . '.php'
+		    );
+
+		    $treeCatalog = new FormFieldRadicalmultifieldtreecatalog;
+
+		    $paramsForField = [
+			    'name' => 'select-directory',
+			    'label' => Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_TREECATALOG_TITLE'),
+			    'class' => '',
+			    'type' => 'radicalmultifieldtreecatalog',
+			    'folder' => $directory,
+			    'folderonly' => 'true',
+			    'showroot' => 'true',
+		    ];
+
+		    $dataAttributes = array_map(function($value, $key)
+		    {
+			    return $key.'="'.$value.'"';
+		    }, array_values($paramsForField), array_keys($paramsForField));
+
+		    $treeCatalog->setup(new SimpleXMLElement("<field " . implode(' ', $dataAttributes) . " />"), '');
+		    return $treeCatalog->getInput(true);
+	    }
+
+	    //загрузка файлов
 	    if($data['type'] === 'upload_file')
 	    {
 		    $output = [];
@@ -487,9 +530,10 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 		        {
 				    $lang = Factory::getLanguage();
 				    $nameSplit = explode('.', $file['name']);
-				    $nameExs = array_pop($nameSplit);
+				    $nameExs = mb_strtolower(array_pop($nameSplit));
 				    $nameSafe = File::makeSafe($lang->transliterate(implode('-', $nameSplit)), ['#^\.#', '#\040#']);
-				    $uploadedFileName =  $nameSafe . '_' . rand(11111, 99999) . '.' . $nameExs;
+				    //$uploadedFileName =  $nameSafe . '_' . rand(11111, 99999) . '.' . $nameExs;
+				    $uploadedFileName =  $nameSafe . '.' . $nameExs;
 
 				    $exs = explode(',', $params['filesimportexc']);
 				    $type = preg_replace("/^.*?\//isu", '', $file['type']);
@@ -504,8 +548,9 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 				    $path = JPATH_ROOT . DIRECTORY_SEPARATOR . ($data['importfieldpath'] ? $data['importfieldpath'] . DIRECTORY_SEPARATOR : '') . preg_replace('/^root/isu', '', $data['path']) . DIRECTORY_SEPARATOR . $data['name'];
 				    $path = str_replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $path);
+			        $path = str_replace('..' . DIRECTORY_SEPARATOR , '', $path);
 
-				    if (!file_exists($path))
+			        if (!file_exists($path))
 				    {
 					    Folder::create($path);
 				    }
@@ -515,12 +560,21 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 				    	if(in_array($type, ['jpg', 'gif', 'png', 'jpeg', 'jpg', 'webp']))
 				    	{
+						    if((int)$params['filesimportreoriginal'])
+						    {
+						    	if(!file_exists($path . DIRECTORY_SEPARATOR . '_original'))
+						    	{
+									Folder::create($path . DIRECTORY_SEPARATOR . '_original');
+							    }
+
+								File::copy($path . DIRECTORY_SEPARATOR . $uploadedFileName, $path . DIRECTORY_SEPARATOR . '_original' . DIRECTORY_SEPARATOR . $uploadedFileName);
+						    }
+
+						    JLoader::registerNamespace('Gumlet', JPATH_SITE . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR , ['plugins', 'fields', 'radicalmultifield', 'libs', 'gumlet', 'lib']));
+						    $image = new ImageResize($path . DIRECTORY_SEPARATOR . $uploadedFileName);
+
 						    if((int)$params['filesimportresize'])
 						    {
-
-							    JLoader::registerNamespace('Gumlet', JPATH_SITE . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR , ['plugins', 'fields', 'radicalmultifield', 'libs', 'gumlet', 'lib']));
-
-							    $image = new ImageResize($path . DIRECTORY_SEPARATOR . $uploadedFileName);
 
 							    $maxWidth = (int)$params['filesimportrezizemaxwidth'];
 							    $maxHeight = (int)$params['filesimportrezizemaxheight'];
@@ -528,129 +582,134 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 							    //resize
 							    $image->resizeToBestFit($maxWidth, $maxHeight);
 
-							    //overlay
-							    if((int)$params['filesimportrezizeoverlay'])
+						    }
+
+						    //overlay
+						    if((int)$params['filesimportrezizeoverlay'])
+						    {
+
+							    $file = JPATH_SITE . DIRECTORY_SEPARATOR . $params['filesimportrezizeoverlayfile'];
+							    $position = $params['filesimportrezizeoverlaypos'];
+							    $padding = $params['filesimportrezizeoverlaypadding'];
+
+							    if(file_exists($file))
 							    {
 
-								    $file = JPATH_SITE . DIRECTORY_SEPARATOR . $params['filesimportrezizeoverlayfile'];
-								    $position = $params['filesimportrezizeoverlaypos'];
-								    $padding = $params['filesimportrezizeoverlaypadding'];
-
-								    if(file_exists($file))
+								    $image->addFilter(function ($imageDesc) use ($file, $position, $padding, $params)
 								    {
 
-									    $image->addFilter(function ($imageDesc) use ($file, $position, $padding, $params)
+									    if(!file_exists($file))
+									    {
+										    return false;
+									    }
+
+									    $logo = imagecreatefromstring(file_get_contents($file));
+									    $logoWidth = imagesx($logo);
+									    $logoHeight = imagesy($logo);
+									    $imageWidth = imagesx($imageDesc);
+									    $imageHeight = imagesy($imageDesc);
+									    $imageX = $padding;
+									    $imageY = $padding;
+
+									    if(isset($params['filesimportrezizeoverlaypercent']) && (int)$params['filesimportrezizeoverlaypercent'])
+									    {
+										    //сжимаем водяной знак по процентному соотношению от изображения на который накладывается
+										    $precent = (int)$params['filesimportrezizeoverlaypercentvalue'];
+										    $logoWidthMax = $imageWidth / 100 * $precent;
+										    $logoHeightMax = $imageHeight / 100 * $precent;
+
+										    $ratio  = $logoHeight / $logoWidth;
+										    $tmpWidth = $logoWidthMax;
+										    $tmpHeight = $tmpWidth * $ratio;
+
+										    if ($tmpHeight > $logoHeightMax)
+										    {
+											    $tmpHeight = $logoHeightMax;
+											    $tmpWidth = $tmpHeight / $ratio;
+										    }
+
+										    $logoNew = imagecreatetruecolor($tmpWidth, $tmpHeight);
+										    imagesavealpha($logoNew, true);
+										    imagefill($logoNew,0,0,0x7fff0000);
+										    imagecopyresampled($logoNew, $logo, 0, 0, 0, 0, $tmpWidth, $tmpHeight, $logoWidth, $logoHeight);
+										    $logo = $logoNew;
+										    $logoWidth = $tmpWidth;
+										    $logoHeight = $tmpHeight;
+										    unset($logoNew);
+									    }
+
+									    if($logoWidth > $imageWidth && $logoHeight > $imageHeight)
+									    {
+										    return false;
+									    }
+
+									    switch ($position)
 									    {
 
-									    	if(!file_exists($file))
-									    	{
-									    	    return false;
-										    }
+										    case "topleft":
+											    $imageX = $padding;
+											    $imageY = $padding;
+											    break;
 
-										    $logo = imagecreatefromstring(file_get_contents($file));
-										    $logoWidth = imagesx($logo);
-										    $logoHeight = imagesy($logo);
-										    $imageWidth = imagesx($imageDesc);
-										    $imageHeight = imagesy($imageDesc);
-										    $imageX = $padding;
-										    $imageY = $padding;
+										    case "topcenter":
+											    $imageX = ($imageWidth/2) - ($logoWidth/2);
+											    $imageY = $padding;
+											    break;
 
-										    if(isset($params['filesimportrezizeoverlaypercent']) && (int)$params['filesimportrezizeoverlaypercent'])
-										    {
-									            //сжимаем водяной знак по процентному соотношению от изоюражения на который накладывается
-											    $precent = (int)$params['filesimportrezizeoverlaypercentvalue'];
-											    $logoWidthMax = (int) ($imageWidth / 100 * $precent);
-											    $logoHeightMax = (int) ($imageHeight / 100 * $precent);
+										    case "topright":
+											    $imageX = $imageWidth - $padding - $logoWidth;
+											    $imageY = $padding;
+											    break;
 
-											    $ratio  = $logoHeight / $logoWidth;
-											    $tmpWidth = $logoWidthMax;
-											    $tmpHeight = $tmpWidth * $ratio;
+										    case "centerleft":
+											    $imageX = $padding;
+											    $imageY = ($imageHeight/2) - ($logoHeight/2);
+											    break;
 
-											    if ($tmpHeight > $logoHeightMax) {
-												    $tmpHeight = $logoHeightMax;
-												    $tmpWidth = $tmpHeight / $ratio;
-											    }
+										    case "centercenter":
+											    $imageX = ($imageWidth/2) - ($logoWidth/2);
+											    $imageY = ($imageHeight/2) - ($logoHeight/2);
+											    break;
 
-											    $logoNew = imagecreatetruecolor($tmpWidth, $tmpHeight);
-											    imagesavealpha($logoNew, true);
-											    imagefill($logoNew,0,0,0x7fff0000);
-											    imagecopyresampled($logoNew, $logo, 0, 0, 0, 0, $tmpWidth, $tmpHeight, $logoWidth, $logoHeight);
-											    $logo = $logoNew;
-											    $logoWidth = $tmpWidth;
-											    $logoHeight = $tmpHeight;
-											    unset($logoNew);
-										    }
+										    case "centerright":
+											    $imageX = $imageWidth - $padding - $logoWidth;
+											    $imageY = ($imageHeight/2) - ($logoHeight/2);
+											    break;
 
-										    if($logoWidth > $imageWidth && $logoHeight > $imageHeight)
-										    {
-											    return false;
-										    }
+										    case "bottomleft":
+											    $imageX = $padding;
+											    $imageY = $imageHeight - $padding - $logoHeight;
+											    break;
 
-										    switch ($position)
-										    {
+										    case "bottomcenter":
+											    $imageX = ($imageWidth/2) - ($logoWidth/2);
+											    $imageY = $imageHeight - $padding - $logoHeight;
+											    break;
 
-											    case "topleft":
-												    $imageX = $padding;
-												    $imageY = $padding;
-												    break;
+										    case "bottomright":
+											    $imageX = $imageWidth - $padding - $logoWidth;
+											    $imageY = $imageHeight - $padding - $logoHeight;
+											    break;
 
-											    case "topcenter":
-												    $imageX = ($imageWidth/2) - ($logoWidth/2);
-												    $imageY = $padding;
-												    break;
+									    }
 
-											    case "topright":
-												    $imageX = $imageWidth - $padding - $logoWidth;
-												    $imageY = $padding;
-												    break;
+									    imagecopy($imageDesc, $logo, $imageX, $imageY, 0, 0, $logoWidth, $logoHeight);
+								    });
 
-											    case "centerleft":
-												    $imageX = $padding;
-												    $imageY = ($imageHeight/2) - ($logoHeight/2);
-												    break;
 
-											    case "centercenter":
-												    $imageX = ($imageWidth/2) - ($logoWidth/2);
-												    $imageY = ($imageHeight/2) - ($logoHeight/2);
-												    break;
+								    //TODO дописать вотермарку для превью, чтобы было без искажений
 
-											    case "centerright":
-												    $imageX = $imageWidth - $padding - $logoWidth;
-												    $imageY = ($imageHeight/2) - ($logoHeight/2);
-												    break;
-
-											    case "bottomleft":
-												    $imageX = $padding;
-												    $imageY = $imageHeight - $padding - $logoHeight;
-												    break;
-
-											    case "bottomcenter":
-												    $imageX = ($imageWidth/2) - ($logoWidth/2);
-												    $imageY = $imageHeight - $padding - $logoHeight;
-												    break;
-
-											    case "bottomright":
-												    $imageX = $imageWidth - $padding - $logoWidth;
-												    $imageY = $imageHeight - $padding - $logoHeight;
-												    break;
-
-										    }
-
-										    imagecopy($imageDesc, $logo, $imageX, $imageY, 0, 0, $logoWidth, $logoHeight);
-									    });
-
-								    }
-
-							    }
-
-							    $image->save($path . DIRECTORY_SEPARATOR . $uploadedFileName);
-
-							    if((int)$params['filesimportpreview'])
-							    {
-								    RadicalmultifieldHelper::generateThumb($params, $path . DIRECTORY_SEPARATOR . $uploadedFileName);
 							    }
 
 						    }
+
+						    $image->save($path . DIRECTORY_SEPARATOR . $uploadedFileName);
+
+						    if((int)$params['filesimportpreview'])
+						    {
+							    RadicalmultifieldHelper::generateThumb($params, $path . DIRECTORY_SEPARATOR . $uploadedFileName);
+						    }
+
 					    }
 
 					    $output["name"] = $uploadedFileName;
@@ -666,13 +725,27 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 	    }
 
+	    if($app->isAdmin()) {
+		    //уаделение директории, только для административной части
+		    if($data['type'] === 'delete_directory')
+		    {
+			    $path = JPATH_ROOT . DIRECTORY_SEPARATOR . ($data['importfieldpath'] ? $data['importfieldpath'] . DIRECTORY_SEPARATOR : '') . preg_replace('/^root/isu', '', $data['path']) . DIRECTORY_SEPARATOR . $data['name'];
+			    $path = str_replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $path);
+			    $path = str_replace('..' . DIRECTORY_SEPARATOR , '', $path);
+			    //Folder::delete(JPATH_ROOT . DIRECTORY_SEPARATOR . $path);
+		    }
+	    }
+
+	    //создание директории
 	    if($data['type'] === 'create_directory')
 	    {
 		    $lang = Factory::getLanguage();
 	    	$data['name'] = JFILE::makeSafe($lang->transliterate($data['name']));
     		$path = JPATH_ROOT . DIRECTORY_SEPARATOR . ($data['importfieldpath'] ? $data['importfieldpath'] . DIRECTORY_SEPARATOR : '') . preg_replace('/^root/isu', '', $data['path']) . DIRECTORY_SEPARATOR . $data['name'];
 		    $path = str_replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $path);
-    		Folder::create($path);
+		    $path = str_replace('..' . DIRECTORY_SEPARATOR , '', $path);
+
+		    Folder::create($path);
 
 		    JLoader::register('FormFieldRadicalmultifieldtreecatalog', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'elements', 'radicalmultifieldtreecatalog']) . '.php');
 		    $treeCatalog = new FormFieldRadicalmultifieldtreecatalog;

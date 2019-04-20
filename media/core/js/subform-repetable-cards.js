@@ -46,7 +46,7 @@ jQuery(document).ready(function(){
                     image = '/' + image;
                 }
 
-                tile.find('.subform-card-tile-background').css('background', 'linear-gradient(0deg,rgba(0,0,0,0.6),rgba(0,0,0,0.7)),url(' + image + ') no-repeat 50% 50%');
+                tile.find('.subform-card-tile-background').css('background-image', 'url(' + image + ')');
                 tile.find('.subform-card-tile-background').css('color', '#fff');
                 tile.find('.subform-card-tile-background').css('background-size', 'auto');
             }

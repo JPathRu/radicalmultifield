@@ -21,6 +21,7 @@
             >
                 <option value="joomla.form.field.subform.repeatable">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_AVIEW_OPLION_LIST</option>
                 <option value="repeatable-cards">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_AVIEW_OPLION_CARDS</option>
+                <option value="repeatable-uikittable">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_AVIEW_OPLION_TABLEUIKIT</option>
                 <option value="joomla.form.field.subform.repeatable-table">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_AVIEW_OPLION_TABLE</option>
             </field>
 
@@ -29,7 +30,7 @@
                    label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORT_LABEL"
                    default="0"
                    class="btn-group"
-                   showon="aview:joomla.form.field.subform.repeatable-table[OR]aview:repeatable-cards"
+                   showon="aview:joomla.form.field.subform.repeatable-table[OR]aview:repeatable-cards[OR]aview:repeatable-uikittable"
             >
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
@@ -94,6 +95,33 @@
                    showon="filesimport:1"
             />
 
+            <field name="filesimportreoriginal"
+                   type="radio"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTORIGINAL_LABEL"
+                   description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTORIGINAL_DESC"
+                   required="true"
+                   class="btn-group"
+                   default="0"
+                   showon="filesimport:1">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field name="filesimportreoriginalmaxwidth"
+                   type="text"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTORIGINALMAXWIDTH_LABEL"
+                   default="20000"
+                   class="input-xlarge"
+                   showon="filesimportreoriginal:1[AND]filesimport:1"
+            />
+
+            <field name="filesimportreoriginalmaxheight"
+                   type="text"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTORIGINALMAXHEIGHT_LABEL"
+                   default="20000"
+                   class="input-xlarge"
+                   showon="filesimportreoriginal:1[AND]filesimport:1"
+            />
 
             <field name="filesimportresize"
                    type="radio"
@@ -191,7 +219,7 @@
                    label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTRESIZEOVERLAYPERCENT_VALUE_LABEL"
                    default="10"
                    class="input-xlarge"
-                   showon="filesimportrezizeoverlaypercent:1"
+                   showon="filesimportrezizeoverlaypercent:1[AND]filesimport:1[AND]filesimportrezizeoverlay:1"
             />
 
             <field name="filesimportrezizeoverlaypos"

@@ -1,6 +1,7 @@
 jQuery(function(){
 
     let listfullpath = [];
+    let historyDirectories = [];
     let results;
     let modal;
     let modalName;
@@ -24,14 +25,13 @@ jQuery(function(){
     let inputFile;
     let errorsWrap;
     let errorsHtml;
+    let lastTypeViewFiles = 'list-table';
     let uploadProgress = [];
     let countFiles = 0;
     let progressBar;
     let uploadI = [];
     let speedUpload = false;
     let speedUploadComplete = false;
-    let administrator;
-    let prefix = '';
     vex.defaultOptions.className = 'vex-theme-plain';
     vex.dialog.buttons.YES.text = 'Ок';
     vex.dialog.buttons.NO.text = 'Нет';
@@ -41,7 +41,6 @@ jQuery(function(){
         modalName = jQuery(this).attr('href');
         modal = jQuery(modalName);
         filesListWrap = document.querySelector(modalName + ' .field-list-files');
-        administrator = jQuery(this).attr('data-administrator');
         importfieldpath = jQuery(this).attr('data-importfieldpath');
         importfield = jQuery(this).attr('data-importfield');
         maxsize = parseFloat(jQuery(this).attr('data-maxsize'));
@@ -56,19 +55,28 @@ jQuery(function(){
         inputPath = document.querySelector(modalName + " .pathElem");
         inputFile = document.querySelector(modalName + " .fileElem");
         errorsWrap = document.querySelector(modalName + " .upload-errors");
-
-        console.log(administrator);
-
-        if(administrator === 'true') {
-            prefix = 'administrator/';
-        } else {
-            prefix = '';
-        }
-
         reloadListfullpath();
         openDirectoryAndActive(active, 'root');
         modal.removeClass('modal-speed-upload');
         progressBar.style.display = "none";
+
+        if(localStorage !== undefined) {
+            let openLastDir = localStorage.getItem('radicalmultifieldLastDir');
+            if(openLastDir !== null) {
+                for (let i=0;i<=listfullpath.length;i++) {
+                    if(listfullpath[i].p === openLastDir) {
+                        openDirectoryAndActive(listfullpath[i].el, listfullpath[i].p);
+                        break;
+                    }
+                }
+            }
+
+            let currLastTypeViewFiles = localStorage.getItem('lastTypeViewFiles');
+            if(currLastTypeViewFiles !== null) {
+                lastTypeViewFiles = currLastTypeViewFiles;
+            }
+
+        }
 
         if(speedUpload) {
             //окно не показываем
@@ -98,27 +106,55 @@ jQuery(function(){
         list.find('.av-folderlist-label').removeClass('selected');
         jQuery(this).closest('.field-wrapper').find('.import-directory').val(path);
         jQuery(this).addClass('selected');
-        inputPath.value = path;
-        jQuery.get("/" + prefix + "index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=json&type=get_files&directory=" + encodeURIComponent(path) +
+        jQuery.get("/administrator/index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=json&type=get_files&directory=" + encodeURIComponent(path) +
             "&importfieldpath=" + encodeURIComponent(importfieldpath) +
             "&importfield=" + encodeURIComponent(importfield)
         ).done(function (response) {
-            let htmlfiles = '<table class="table table-hover"><thead><tr><th width="5%"><input type="checkbox" class="import-files-check-all"></th><th>Названия файлов</th></tr></thead>';
-            let files = response.data[0];
-            htmlfiles += "<tbody>";
+
+            if(inputPath.value !== '') {
+                if(historyDirectories.length>0) {
+                    if(historyDirectories[historyDirectories.length - 1] !== inputPath.value) {
+                        historyDirectories.push(inputPath.value);
+                    }
+                } else {
+                    historyDirectories.push(inputPath.value);
+                }
+            }
+            inputPath.value = path;
+
+
+            let htmlfilesAndDirectories = '<div class="files-header"><div><label><input type="checkbox" class="import-files-check-all"> Выбрать все файлы</label></div><div><button class="button-grid"><span>Сеткой</span></button><button class="button-table"><span>Списком</span></button></div></div>';
+            htmlfilesAndDirectories += "<div class='files-toolbar'><button class=\"button-prev\"><span>Назад</span></button><button class=\"button-up\"><span>Вверх</span></button><div class=\"button-dropdown\"><button class=\"button-directory-trash\"><span>Удалить директорию</span></button><div class=\"dropdown-content\">Удалить: <b>" + path+ "</b>?<div><button><span>Удалить</span></button></div></div></div></div>";
+            let files = response.data[0].files;
+            let directories = response.data[0].directories;
+
+            for(let i = 0;i<directories.length;i++) {
+                htmlfilesAndDirectories += "<div class='directory-item'><div class='directory'><div class='directory-icon'><span></span></div><div class='directory-name'>" + directories[i] + "</div></div></div>" ;
+            }
+
             for(let i = 0;i<files.length;i++) {
                 let type = files[i].split('.');
                 let findCheck = (activeLists.indexOf(files[i]) !== -1);
-                htmlfiles += "<tr class='" +  (findCheck ? 'active' : '') + "'><td><input type=\"checkbox\" class=\"import-files-check-file\" " + (findCheck ? 'checked="checked"' : '') + "></td><td><div class='file'><div class='file-exs av-folderlist icon-file-" + type.pop() + "'><div class='av-folderlist-label'></div></div><div class='file-name'>" + files[i] + "</div></div></td></tr>" ;
+                htmlfilesAndDirectories += "<div class='file-item'><input type=\"checkbox\" class=\"import-files-check-file\" " + (findCheck ? 'checked="checked"' : '') + "><div class='file'><div class='file-exs av-folderlist icon-file-" + type.pop() + "'><div class='av-folderlist-label'></div></div><div class='file-name'>" + files[i] + "</div></div></div>" ;
             }
-            htmlfiles += "</tbody></table>";
-            if(files.length === 0) {
-                htmlfiles = "<div class='empty'><div>Файлов нет.</div></div>"
-            }
-            listfiles.html(htmlfiles);
 
-            let filesAll = document.querySelectorAll(modalName + ' .field-list-files table tbody tr');
+            htmlfilesAndDirectories += "</div>";
+
+            if(files.length === 0 && directories === 0) {
+                htmlfilesAndDirectories = "<div class='empty'><div>Файлов нет.</div></div>"
+            }
+
+            listfiles.html(htmlfilesAndDirectories);
+            reloadViewFiles();
+
+            let filesAll = document.querySelectorAll(modalName + ' .field-list-files .file-item');
+            let directoriesAll = document.querySelectorAll(modalName + ' .field-list-files .directory-item');
+            let buttonBack = document.querySelector(modalName + ' .button-prev');
+            let buttonUp = document.querySelector(modalName + ' .button-up');
+            let buttonDelete = document.querySelector(modalName + ' .button-directory-trash');
+
             if(errorsHtml === '') {
+
                 for(let i=0;i<filesAll.length;i++) {
                     let input = filesAll[i].querySelector('.import-files-check-file');
                     if(input.checked) {
@@ -126,8 +162,67 @@ jQuery(function(){
                         break;
                     }
                 }
+
             } else {
                 filesListWrap.scrollTop = 0;
+            }
+
+            if(localStorage !== undefined) {
+                localStorage.setItem('radicalmultifieldLastDir', path);
+            }
+
+            buttonBack.addEventListener('click', function (ev) {
+                if(historyDirectories.length > 0) {
+                    let directory = historyDirectories[historyDirectories.length - 1];
+                    for (let j=0;j<=listfullpath.length;j++) {
+                        if(listfullpath[j].p === directory) {
+                            openDirectoryAndActive(listfullpath[j].el, listfullpath[j].p);
+                            historyDirectories.splice(historyDirectories.length - 2, 2);
+                            break;
+                        }
+                    }
+                }
+                ev.preventDefault();
+            });
+
+            buttonUp.addEventListener('click', function (ev) {
+                let currDirectories = inputPath.value.split('/');
+                if(currDirectories.length > 1) {
+                    currDirectories.pop();
+                    let directory = currDirectories.join('/');
+                    for (let j=0;j<=listfullpath.length;j++) {
+                        if(listfullpath[j].p === directory) {
+                            openDirectoryAndActive(listfullpath[j].el, listfullpath[j].p);
+                            break;
+                        }
+                    }
+                }
+                ev.preventDefault();
+            });
+
+            buttonDelete.addEventListener('click', function (ev) {
+                ev.preventDefault();
+            });
+
+            for(let i=0;i<filesAll.length;i++) {
+                filesAll[i].addEventListener('click', function () {
+                    let tmpInput = this.closest('.file-item').querySelector('.import-files-check-file');
+                    tmpInput.checked = !tmpInput.checked;
+                    tmpInput.click();
+                });
+            }
+
+            for(let i=0;i<directoriesAll.length;i++) {
+                directoriesAll[i].addEventListener('click', function () {
+                    let directory = this.querySelector('.directory-name').innerHTML;
+                    directory = path + '/' + directory;
+                    for (let j=0;j<=listfullpath.length;j++) {
+                        if(listfullpath[j].p === directory) {
+                            openDirectoryAndActive(listfullpath[j].el, listfullpath[j].p);
+                            break;
+                        }
+                    }
+                });
             }
 
             setTimeout(function () {
@@ -145,12 +240,6 @@ jQuery(function(){
 
     jQuery('.modal-import-file').on('dblclick', '.av-folderlist-label', function() {
         jQuery(this).prev().click();
-    });
-
-    jQuery('.modal-import-file').on('click', '.field-list-files tr', function(e) {
-        if(event.target.tagName.toLowerCase() !== 'input') {
-            jQuery(this).find('input[type=checkbox]').click();
-        }
     });
 
     jQuery('.av-modal-actions .search input').on('keyup', function(e) {
@@ -214,33 +303,54 @@ jQuery(function(){
             }
         });
 
+        return false;
+    });
 
-
+    jQuery('.modal-import-file .tree-reload').on('click', function() {
+        let lastActive = active.find('.av-folderlist-label').attr('path');
+        let bufferScrollTop = jQuery('.av-folderlist').scrollTop();
+        jQuery.get("/administrator/index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=raw&type=get_directories" +
+            "&importfieldpath=root" +
+            "&importfield=" + encodeURIComponent(importfield)
+        ).done(function (response) {
+            jQuery('.av-modal ul').remove();
+            jQuery('.av-modal').append(response);
+            reloadListfullpath();
+            if(lastActive !== null) {
+                for (let i=0;i<=listfullpath.length;i++) {
+                    if(listfullpath[i].p === lastActive) {
+                        openDirectoryAndActive(listfullpath[i].el, listfullpath[i].p);
+                        break;
+                    }
+                }
+            }
+            jQuery('.av-folderlist').scrollTop(bufferScrollTop);
+        });
         return false;
     });
 
 
     jQuery('.modal-import-file').on('click', '.import-files-check-all', function() {
         if(jQuery(this).attr("checked")) {
-            jQuery('.modal-import-file .field-list-files table tbody tr input').each(function (i, el) {
+            jQuery('.modal-import-file .field-list-files input').each(function (i, el) {
                 if(!jQuery(el).attr("checked")) {
                     jQuery(el).prop('checked', true);
-                    let currFilename = jQuery(this).closest('tr').find('.file-name').html();
+                    let currFilename = jQuery(this).closest('.file-item').find('.file-name').html();
                     let currI = activeLists.indexOf(currFilename);
 
                     if(currI === -1) {
                         activeLists.push(currFilename);
-                        jQuery(this).closest('tr').addClass('active');
+                        //jQuery(this).closest('tr').addClass('active');
                     }
 
                 }
             });
         } else {
             activeLists = [];
-            jQuery('.modal-import-file .field-list-files table tbody tr input').each(function (i, el) {
+            jQuery('.modal-import-file .field-list-files input').each(function (i, el) {
                 if(jQuery(el).attr("checked")) {
                     jQuery(el).prop('checked', false);
-                    jQuery(this).closest('tr').removeClass('active');
+                    //jQuery(this).closest('tr').removeClass('active');
                 }
             });
         }
@@ -255,12 +365,12 @@ jQuery(function(){
         if(jQuery(this).attr("checked")) {
             if(currI === -1) {
                 activeLists.push(currFilename);
-                jQuery(this).closest('tr').addClass('active');
+                //jQuery(this).closest('tr').addClass('active');
             }
         } else {
             if(currI !== -1) {
                 activeLists.splice(currI, 1);
-                jQuery(this).closest('tr').removeClass('active');
+                //jQuery(this).closest('tr').removeClass('active');
             }
         }
     });
@@ -300,6 +410,82 @@ jQuery(function(){
             if(listfullpath[i].p === path) {
                 active = listfullpath[i].el;
             }
+        }
+    }
+
+    function reloadViewFiles() {
+        let buttonGrid = document.querySelector(modalName + ' .field-list-files .button-grid');
+        let buttonTable = document.querySelector(modalName + ' .field-list-files .button-table');
+
+        if(buttonGrid === null && buttonTable === null) {
+            return;
+        }
+
+        buttonGrid.addEventListener('click', function (ev) {
+            if(localStorage !== null) {
+                localStorage.setItem('lastTypeViewFiles', 'list-grid');
+            }
+
+            lastTypeViewFiles = 'list-grid';
+            reloadTypeViewFiles();
+            ev.preventDefault();
+        });
+
+        buttonTable.addEventListener('click', function (ev) {
+            if(localStorage !== null) {
+                localStorage.setItem('lastTypeViewFiles', 'list-table');
+            }
+
+            lastTypeViewFiles = 'list-table';
+            reloadTypeViewFiles();
+            ev.preventDefault();
+        });
+
+        reloadTypeViewFiles();
+    }
+
+    function reloadTypeViewFiles() {
+        let filesAll = document.querySelectorAll(modalName + ' .field-list-files .file-item');
+        let viewFiles = document.querySelector(modalName + ' .field-list-files .list');
+
+        if(lastTypeViewFiles === 'list-grid') {
+            viewFiles.setAttribute('class', 'list list-grid');
+        }
+
+        if(lastTypeViewFiles === 'list-table') {
+            viewFiles.setAttribute('class', 'list list-table');
+        }
+
+        for(let i=0;i<filesAll.length;i++) {
+
+            if(lastTypeViewFiles === 'list-grid') {
+                let fileName = filesAll[i].querySelector('.file-name').innerHTML;
+                let fileExs = filesAll[i].querySelector('.file-exs');
+                let exs = fileName.split('.')[1];
+                let exsImage = ['jpg', 'png', 'svg', 'jpeg', 'bmp', 'xcf', 'gif'];
+                if(exsImage.indexOf(exs) !== -1) {
+                    let file = "/" + importfieldpath + path.replace('root', '') + '/' + fileName;
+                    fileExs.style.backgroundImage = "url(" + file + ")";
+                } else {
+                    let exsAvailable = ['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'mp3', 'ogg', 'flac', 'pdf', 'zip', 'txt'];
+                    if(exsAvailable.indexOf(exs) !== -1) {
+                        let file = "/media/plg_fields_radicalmultifield/img/icons/" + exs + ".svg";
+                        fileExs.style.backgroundImage = "url(" + file + ")";
+                        fileExs.classList.add('file-icons');
+                    } else {
+                        let file = "/media/plg_fields_radicalmultifield/img/icons/other.svg";
+                        fileExs.style.backgroundImage = "url(" + file + ")";
+                        fileExs.classList.add('file-icons');
+                    }
+                }
+
+            }
+
+            if(lastTypeViewFiles === 'list-table') {
+                let fileExs = filesAll[i].querySelector('.file-exs');
+                fileExs.style.backgroundImage = "";
+            }
+
         }
     }
 
@@ -451,7 +637,7 @@ jQuery(function(){
             return false;
         }
 
-        if (exs.indexOf(currExs.pop()) === -1) {
+        if (exs.indexOf(currExs.pop().toLowerCase()) === -1) {
 
             vex.dialog.alert({
                 unsafeMessage: '<b>Файл ' + file.name + ' должен иметь расширения: ' + exs.join(',') + '.</b>'
@@ -468,7 +654,7 @@ jQuery(function(){
         }
 
 
-        let url = "/" + prefix + "index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=json&type=upload_file"
+        let url = "/administrator/index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=json&type=upload_file"
             + "&importfieldpath=" + encodeURIComponent(importfieldpath)
             + "&importfield=" + encodeURIComponent(importfield);
         let xhr = new XMLHttpRequest();
@@ -499,6 +685,7 @@ jQuery(function(){
                 if(countFiles === uploadI.length) {
                     speedUploadComplete = true;
                     active.find('.av-folderlist-label[path="' + inputPath.value + '"]').click();
+                    jQuery('.modal-import-file .tree-reload').click();
                     progressBar.style.display = "none";
 
                     if(errorsHtml !== '') {
@@ -516,6 +703,7 @@ jQuery(function(){
                 if(countFiles === uploadI.length) {
                     speedUploadComplete = true;
                     active.find('.av-folderlist-label[path="' + inputPath.value + '"]').click();
+                    jQuery('.modal-import-file .tree-reload').click();
                     progressBar.style.display = "none";
 
                     if(errorsHtml !== '') {
@@ -548,7 +736,7 @@ jQuery(function(){
             return false;
         }
 
-        jQuery(modalName + ' .field-list-files tbody tr').each(function (i, el) {
+        jQuery(modalName + ' .field-list-files .file-item').each(function (i, el) {
 
             if(!jQuery(el).find('.import-files-check-file').attr('checked')) {
                 return;
@@ -581,7 +769,8 @@ jQuery(function(){
                 }
 
                 if(name.indexOf('[' + namefile + ']') > -1) {
-                    jQuery(elt).val(fileName.split('.')[0].replace(/_[0-9]{0,}$/g, ''));
+                    //jQuery(elt).val(fileName.split('.')[0].replace(/_[0-9]{0,}$/g, ''));
+                    jQuery(elt).val(fileName.split('.')[0]);
                 }
             });
         });
