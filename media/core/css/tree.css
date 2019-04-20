@@ -552,18 +552,20 @@
 .field-list-files .files-header {
     width: 100%;
     margin-bottom: 5px;
-    margin-left: 1%;
+    margin-left: 0;
+    margin-right: 1%;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
 }
 .field-list-files .files-header > div {
-    width: 50%;
+    width: auto;
+    white-space: nowrap;
 }
 .field-list-files .files-header > div:last-child {
     text-align: right;
-}
-.field-list-files .files-header > div button:first-child {
-    margin-right: 10px;
+    margin-right: 0;
 }
 .field-list-files .files-header > div button {
     position: relative;
@@ -574,6 +576,7 @@
     height: 26px;
     font-size: 13px;
     transition: all 0.2s;
+    margin-right: 10px;
 }
 .field-list-files .files-header > div button:hover {
     background: #ebebeb;
@@ -622,36 +625,26 @@
 .field-list-files .files-header label input {
     margin-right: 5px;
 }
-.field-list-files .files-toolbar {
+.field-list-files .files-header {
     width: 100%;
     padding: 0 5px;
     margin-bottom: 10px;
 }
-.field-list-files .files-toolbar button {
-    position: relative;
-    background: transparent;
-    border-radius: 5px;
-    border: 1px solid #dddddd;
-    padding-left: 33px;
-    height: 26px;
-    font-size: 13px;
-    transition: all 0.2s;
-}
-.field-list-files .files-toolbar button.button-directory-trash {
+.field-list-files .files-header button.button-directory-trash {
     display: none;
 }
-.field-list-files .files-toolbar button:hover {
+.field-list-files .files-header button:hover {
     background: #ebebeb;
     transition: all 0.2s;
 }
-.field-list-files .files-toolbar > * {
+.field-list-files .files-header > * {
     display: inline-block;
     margin-right: 10px;
 }
-.field-list-files .files-toolbar > *:last-child {
+.field-list-files .files-header > div > *:last-child {
     margin-right: 0;
 }
-.field-list-files .files-toolbar button:before {
+.field-list-files .files-header button:before {
     content: "";
     display: block;
     position: absolute;
@@ -662,20 +655,20 @@
     background-repeat: no-repeat;
     background-position: 50% 50%;
 }
-.field-list-files .files-toolbar button.button-prev:before {
+.field-list-files .files-header button.button-prev:before {
     background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' data-svg='arrow-left'%3E%3Cpolyline fill='none' stroke='%23444444' points='10 14 5 9.5 10 5'%3E%3C/polyline%3E%3Cline fill='none' stroke='%23444444' x1='16' y1='9.5' x2='5' y2='9.52'%3E%3C/line%3E%3C/svg%3E");
 }
-.field-list-files .files-toolbar button.button-up:before {
+.field-list-files .files-header button.button-up:before {
     background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' data-svg='arrow-up'%3E%3Cpolygon points='10.5,4 15.37,9.4 14.63,10.08 10.5,5.49 6.37,10.08 5.63,9.4' fill='%23444444'%3E%3C/polygon%3E%3Cline fill='none' stroke='%23444444' x1='10.5' y1='16' x2='10.5' y2='5'%3E%3C/line%3E%3C/svg%3E");
 }
-.field-list-files .files-toolbar button.button-directory-trash:before {
+.field-list-files .files-header button.button-directory-trash:before {
     width: 16px;
     height: 16px;
     left: 5px;
     top: 4px;
     background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' data-svg='trash'%3E%3Cpolyline fill='none' stroke='%23444444' points='6.5 3 6.5 1.5 13.5 1.5 13.5 3'%3E%3C/polyline%3E%3Cpolyline fill='none' stroke='%23444444' points='4.5 4 4.5 18.5 15.5 18.5 15.5 4'%3E%3C/polyline%3E%3Crect x='8' y='7' width='1' height='9'%3E%3C/rect%3E%3Crect x='11' y='7' width='1' height='9'%3E%3C/rect%3E%3Crect x='2' y='3' width='16' height='1'%3E%3C/rect%3E%3C/svg%3E");
 }
-.field-list-files .files-toolbar button:after {
+.field-list-files .files-header button:after {
     content: "";
     display: block;
     position: absolute;
@@ -684,11 +677,11 @@
     left: 25px;
     bottom: 0;
 }
-.field-list-files .files-toolbar .button-dropdown {
+.field-list-files .files-header .button-dropdown {
     position: relative;
     display: inline-block;
 }
-.field-list-files .files-toolbar .button-dropdown .dropdown-content {
+.field-list-files .files-header .button-dropdown .dropdown-content {
     display: none;
     position: absolute;
     background-color: #f9f9f9;
@@ -699,28 +692,28 @@
     text-align: center;
     left: -25px;
 }
-.field-list-files .files-toolbar .button-dropdown:hover .dropdown-content {
+.field-list-files .files-header .button-dropdown:hover .dropdown-content {
     display: block;
 }
-.field-list-files .files-toolbar .button-dropdown .dropdown-content > div {
+.field-list-files .files-header .button-dropdown .dropdown-content > div {
     margin-top: 5px;
 }
-.field-list-files .files-toolbar .button-dropdown .dropdown-content > div button {
+.field-list-files .files-header .button-dropdown .dropdown-content > div button {
     background: #83232f;
     color: #fff;
     border: 1px solid #51131d;
 }
-.field-list-files .files-toolbar .button-dropdown .dropdown-content > div button:hover {
+.field-list-files .files-header .button-dropdown .dropdown-content > div button:hover {
     background: #6b1a26;
 }
-.field-list-files .files-toolbar .button-dropdown .dropdown-content > div button:before {
+.field-list-files .files-header .button-dropdown .dropdown-content > div button:before {
     width: 16px;
     height: 16px;
     left: 5px;
     top: 4px;
     background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' data-svg='trash'%3E%3Cpolyline fill='none' stroke='%23ffffff' points='6.5 3 6.5 1.5 13.5 1.5 13.5 3'%3E%3C/polyline%3E%3Cpolyline fill='none' stroke='%23ffffff' points='4.5 4 4.5 18.5 15.5 18.5 15.5 4'%3E%3C/polyline%3E%3Crect x='8' y='7' width='1' fill='%23ffffff' height='9'%3E%3C/rect%3E%3Crect x='11' y='7' width='1' fill='%23ffffff' height='9'%3E%3C/rect%3E%3Crect x='2' y='3' width='16' fill='%23ffffff' height='1'%3E%3C/rect%3E%3C/svg%3E");
 }
-.field-list-files .files-toolbar .button-dropdown .dropdown-content > div button:after {
+.field-list-files .files-header .button-dropdown .dropdown-content > div button:after {
     border: 0.5px solid #51131d;
 }
 .field-list-files .list-grid .file-item {
@@ -788,6 +781,8 @@
     right: 0;
     bottom: 0;
     width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 .field-list-files .list-grid .directory-item {
     width: 31%;
@@ -849,7 +844,7 @@
     padding: 6px 4px;
 }
 .field-list-files .list-table .file .file-exs .av-folderlist-label:after {
-    margin-top: 2px;
+    margin-top: 4px;
 }
 .field-list-files .list-table .directory-item {
     display: flex;

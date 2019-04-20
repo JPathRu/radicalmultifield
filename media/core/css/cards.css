@@ -47,6 +47,7 @@
     background-size: contain !important;
     background-position: 50% 50% !important;
     background-repeat: no-repeat;
+    border: 1px solid rgba(50, 50, 50, 0.11);
     transition: all 0.2s;
 }
 
@@ -80,6 +81,7 @@
 }
 
 .subform-repeatable-cards .subform-card .subform-card-tile .subform-card-tile-title:after {
+    display: none;
     position: absolute;
     bottom: 20px;
     left: 0;
@@ -88,7 +90,6 @@
     color: #fff;
     text-indent: 0;
     text-align: center;
-    display: block;
     content: "Нажмите для изменения";
     transition: all 0.2s;
     border-radius: 3px 3px 0 0;

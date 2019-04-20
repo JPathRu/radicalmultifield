@@ -98,18 +98,20 @@ jQuery(function(){
 
 
     jQuery('.modal-import-file').on('click', '.av-folderlist-label', function() {
-        let modal = jQuery(this).closest('.modal-import-file');
+        let self = jQuery(this);
+        let modal = self.closest('.modal-import-file');
         let listfiles = modal.find('.field-list-files .list');
-        let list = jQuery(this).closest('.av-folderlist');
-        path = jQuery(this).attr('path');
-        active = jQuery(this).closest('.av-folderlist-dir');
+        let list = self.closest('.av-folderlist');
+        active = self.closest('.av-folderlist-dir');
         list.find('.av-folderlist-label').removeClass('selected');
-        jQuery(this).closest('.field-wrapper').find('.import-directory').val(path);
         jQuery(this).addClass('selected');
-        jQuery.get("/administrator/index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=json&type=get_files&directory=" + encodeURIComponent(path) +
+        listfiles.html('');
+        jQuery.get("/administrator/index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=json&type=get_files&directory=" + encodeURIComponent(self.attr('path')) +
             "&importfieldpath=" + encodeURIComponent(importfieldpath) +
             "&importfield=" + encodeURIComponent(importfield)
         ).done(function (response) {
+            path = self.attr('path');
+            self.closest('.field-wrapper').find('.import-directory').val(path);
 
             if(inputPath.value !== '') {
                 if(historyDirectories.length>0) {
@@ -123,8 +125,7 @@ jQuery(function(){
             inputPath.value = path;
 
 
-            let htmlfilesAndDirectories = '<div class="files-header"><div><label><input type="checkbox" class="import-files-check-all"> Выбрать все файлы</label></div><div><button class="button-grid"><span>Сеткой</span></button><button class="button-table"><span>Списком</span></button></div></div>';
-            htmlfilesAndDirectories += "<div class='files-toolbar'><button class=\"button-prev\"><span>Назад</span></button><button class=\"button-up\"><span>Вверх</span></button><div class=\"button-dropdown\"><button class=\"button-directory-trash\"><span>Удалить директорию</span></button><div class=\"dropdown-content\">Удалить: <b>" + path+ "</b>?<div><button><span>Удалить</span></button></div></div></div></div>";
+            let htmlfilesAndDirectories = '<div class="files-header"><div><label><input type="checkbox" class="import-files-check-all"> Выбрать все файлы</label></div><div><button class="button-prev"><span>Назад</span></button><button class="button-up"><span>Вверх</span></button><div class="button-dropdown"><button class="button-directory-trash"><span>Удалить директорию</span></button><div class="dropdown-content">Удалить: <b>" + path+ "</b>?<div><button><span>Удалить</span></button></div></div></div><button class="button-grid"><span>Сеткой</span></button><button class="button-table"><span>Списком</span></button></div></div>';
             let files = response.data[0].files;
             let directories = response.data[0].directories;
 
@@ -464,7 +465,7 @@ jQuery(function(){
                 let exs = fileName.split('.')[1];
                 let exsImage = ['jpg', 'png', 'svg', 'jpeg', 'bmp', 'xcf', 'gif'];
                 if(exsImage.indexOf(exs) !== -1) {
-                    let file = "/" + importfieldpath + path.replace('root', '') + '/' + fileName;
+                    let file = "/" + path.replace('root', importfieldpath) + '/' + fileName;
                     fileExs.style.backgroundImage = "url(" + file + ")";
                 } else {
                     let exsAvailable = ['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'mp3', 'ogg', 'flac', 'pdf', 'zip', 'txt'];

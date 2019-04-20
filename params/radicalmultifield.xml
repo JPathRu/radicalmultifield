@@ -107,22 +107,6 @@
                 <option value="0">JNO</option>
             </field>
 
-            <field name="filesimportreoriginalmaxwidth"
-                   type="text"
-                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTORIGINALMAXWIDTH_LABEL"
-                   default="20000"
-                   class="input-xlarge"
-                   showon="filesimportreoriginal:1[AND]filesimport:1"
-            />
-
-            <field name="filesimportreoriginalmaxheight"
-                   type="text"
-                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTORIGINALMAXHEIGHT_LABEL"
-                   default="20000"
-                   class="input-xlarge"
-                   showon="filesimportreoriginal:1[AND]filesimport:1"
-            />
-
             <field name="filesimportresize"
                    type="radio"
                    label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTRESIZE_LABEL"
@@ -160,7 +144,7 @@
                    required="true"
                    class="btn-group"
                    default="0"
-                   showon="filesimport:1[AND]filesimportreoriginal:1">
+                   showon="filesimport:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
@@ -171,7 +155,7 @@
                    required="true"
                    default="360"
                    class="input-xlarge"
-                   showon="filesimportpreview:1[AND]filesimport:1[AND]filesimportreoriginal:1"
+                   showon="filesimportpreview:1[AND]filesimport:1"
             />
 
             <field name="filesimportpreviewmaxheight"
@@ -180,7 +164,7 @@
                    required="true"
                    default="360"
                    class="input-xlarge"
-                   showon="filesimportpreview:1[AND]filesimport:1[AND]filesimportreoriginal:1"
+                   showon="filesimportpreview:1[AND]filesimport:1"
             />
 
             <field name="filesimportrezizeoverlay"

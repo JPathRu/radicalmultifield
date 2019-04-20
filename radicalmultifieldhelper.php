@@ -588,7 +588,6 @@ class RadicalmultifieldHelper
 				}
 			}
 
-
 			$image->save($fullPathThumb);
 			unset($image);
 		}
