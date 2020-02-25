@@ -3,6 +3,24 @@
     <fields name="fieldparams" addfieldpath="/plugins/fields/radicalmultifield/fields">
         <fieldset name="fieldparams">
 
+             <field
+                name="multiplemin"
+                type="number"
+                label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_MULTIPLEMIN_LABEL"
+                description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_MULTIPLEMIN_DESC"
+                default="0"
+                required="true"
+            />
+
+            <field
+                name="multiplemax"
+                type="number"
+                label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_MULTIPLEMAX_LABEL"
+                description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_MULTIPLEMAX_DESC"
+                default="5"
+                required="true"
+            />
+
             <field
                 name="template"
                 description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TEMPLATE_DESC"
