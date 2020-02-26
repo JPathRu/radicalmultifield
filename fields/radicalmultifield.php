@@ -74,6 +74,10 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
         $params = json_decode($extension->params, JSON_OBJECT_AS_ARRAY);
 
         $this->layout = $fieldparams['aview'];
+
+		$this->min = isset($fieldparams['multiplemin']) ? $fieldparams['multiplemin'] : 0;
+		$this->max = isset($fieldparams['multiplemax']) ? $fieldparams['multiplemax'] : 5;
+
         $this->formsource = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><form>";
 
         //подзагружаем кастомные поля
