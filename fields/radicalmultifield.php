@@ -9,8 +9,10 @@
  */
 
 use Joomla\CMS\Filter\OutputFilter;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Layout\LayoutHelper;
 
 defined('_JEXEC') or die;
 
@@ -22,6 +24,7 @@ JFormHelper::loadFieldClass('folderlist');
  */
 class JFormFieldRadicalmultifield extends JFormFieldSubform
 {
+
 
     /**
      * @var string
@@ -43,6 +46,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 			JPATH_ROOT . '/layouts'
 		];
 	}
+
 
     /**
      * @return string
@@ -83,6 +87,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
         //подзагружаем кастомные поля
 	    JLoader::import('radicalmultifieldhelper', JPATH_ROOT . '/plugins/fields/radicalmultifield');
 
+
 	    if(isset($params['extendfield']))
 	    {
 
@@ -93,6 +98,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 		    }
 
 	    }
+
 
         foreach ($fieldparams['listtype'] as $fieldparam)
         {
@@ -107,7 +113,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
                     $this->formsource .= "<field name=\"{$fieldparam['name']}\" type=\"{$fieldparam['listview']}\" label=\"{$fieldparam['title']}\"{$required}{$multiple}{$class} {$attrs}>";
                     $options = explode( "\n", $fieldparam['options'] );
 
-                    foreach ( $options as $option )
+                    foreach ($options as $option)
                     {
                         $value = OutputFilter::stringURLSafe( $option );
                         $this->formsource .= "<option value=\"{$value}\">{$option}</option>";
@@ -121,6 +127,13 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
                     $this->formsource .= "<field name=\"{$fieldparam['name']}\" type=\"{$fieldparam['type']}\" label=\"{$fieldparam['title']}\" filter=\"raw\" {$attrs}/>";
                     break;
 
+                case 'custom':
+                    if(!empty($fieldparam['customxml']))
+                    {
+                        $this->formsource .= $fieldparam['customxml'];
+                    }
+                    break;
+
                 default:
                     $attrs = trim( $fieldparam['attrs'] );
                     $this->formsource .= "<field name=\"{$fieldparam['name']}\" type=\"{$fieldparam['type']}\" label=\"{$fieldparam['title']}\" {$attrs}/>";
@@ -128,21 +141,33 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
         }
 
         $this->formsource .= "</form>";
-
         $html = parent::getInput();
-
 
         if(isset($fieldparams['filesimport']))
         {
-
 	        if((int)$fieldparams['filesimport'])
 	        {
+                HTMLHelper::stylesheet('plg_fields_radicalmultifield/core/import.css', [
+                    'version' => filemtime ( __FILE__ ),
+                    'relative' => true,
+                ]);
 
+                HTMLHelper::script('plg_fields_radicalmultifield/core/fast.js', [
+                    'version' => filemtime ( __FILE__ ),
+                    'relative' => true,
+                ]);
+
+                HTMLHelper::script('plg_fields_radicalmultifield/core/import.js', [
+                    'version' => filemtime ( __FILE__ ),
+                    'relative' => true,
+                ]);
+
+                $html = '<div class="radicalmultifield-import">' . LayoutHelper::render('import', null, JPATH_ROOT . '/plugins/fields/radicalmultifield/layouts') . $html . "</div>";
 	        }
-
         }
 
         return $html;
     }
+
 
 }
