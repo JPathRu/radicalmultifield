@@ -137,50 +137,6 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 
 	        if((int)$fieldparams['filesimport'])
 	        {
-		        $allow = true;
-
-		        $app = Factory::getApplication();
-		        $admin = $app->isAdmin();
-
-		        if((int)$fieldparams['filesimportadmin'] && !$admin)
-		        {
-			        $allow = false;
-		        }
-
-		        if($allow)
-		        {
-			        $folder = $fieldparams['filesimportpath'];
-			        JLoader::register(
-				        'FormFieldRadicalmultifieldtreecatalog',
-				        JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'elements', 'radicalmultifieldtreecatalog']) . '.php'
-			        );
-
-			        $treeCatalog = new FormFieldRadicalmultifieldtreecatalog;
-
-			        $paramsForField = [
-				        'name' => 'select-directory',
-				        'label' => Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_TREECATALOG_TITLE'),
-				        'class' => '',
-				        'type' => 'radicalmultifieldtreecatalog',
-				        'folder' => $folder,
-				        'folderonly' => 'true',
-				        'showroot' => 'true',
-				        'exs' => $fieldparams['filesimportexc'],
-				        'maxsize' => $fieldparams['filesimportmaxsize'],
-				        'namefield' => $fieldparams['filesimportname'],
-				        'namefile' => $fieldparams['filesimportnamefile'],
-				        'importfield' => $this->fieldname,
-			        ];
-
-			        $dataAttributes = array_map(function($value, $key)
-			        {
-				        return $key.'="'.$value.'"';
-			        }, array_values($paramsForField), array_keys($paramsForField));
-
-			        $treeCatalog->setup(new SimpleXMLElement("<field " . implode(' ', $dataAttributes) . " />"), '');
-			        $html = "<div style='margin-bottom: 15px'>" . $treeCatalog->getInput() . "</div>" . $html;
-
-		        }
 
 	        }
 

@@ -110,7 +110,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 
 	    PluginHelper::importPlugin('radicalmultifield');
-	    $radicalmultifieldPlugins     = PluginHelper::getPlugin('radicalmultifield');
+	    $radicalmultifieldPlugins = PluginHelper::getPlugin('radicalmultifield');
 	    $language = Factory::getLanguage();
 
         foreach ($radicalmultifieldPlugins as $radicalmultifieldPlugin)
@@ -135,10 +135,10 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
     /**
      * @since   3.7.0
      */
-    public function onCustomFieldsPrepareDom( $field, DOMElement $parent, JForm $form )
+    public function onCustomFieldsPrepareDom($field, DOMElement $parent, Form $form )
     {
 
-    	$fieldNode = parent::onCustomFieldsPrepareDom( $field, $parent, $form );
+    	$fieldNode = parent::onCustomFieldsPrepareDom($field, $parent, $form);
         if ( !$fieldNode )
         {
             return $fieldNode;
@@ -147,9 +147,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
         $path = URI::base( true ) . '/templates/' . Factory::getApplication()->getTemplate() . '/';
 
         $fieldNode->setAttribute('template', $path);
-
-
-
+        
         return $fieldNode;
     }
 
@@ -204,14 +202,14 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 	 * The form event. Load additional parameters when available into the field form.
 	 * Only when the type of the form is of interest.
 	 *
-	 * @param   JForm     $form  The form
+	 * @param   Form     $form  The form
 	 * @param   stdClass  $data  The data
 	 *
 	 * @return  void
 	 *
 	 * @since   3.7.0
 	 */
-	public function onContentPrepareForm(JForm $form, $data)
+	public function onContentPrepareForm(Form $form, $data)
 	{
 
 
@@ -278,18 +276,18 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 		if(count($extendfield))
 		{
 			//TODO переписать, это упарывание какое-то
-			for ($i = 0; $i < count($paramsfieldXml->fields->fieldset->field); $i++)
+			for ($i=0;$i<count($paramsfieldXml->fields->fieldset->field);$i++)
 			{
 				$attr = $paramsfieldXml->fields->fieldset->field[$i]->attributes();
 				foreach ($paramsfieldXml->fields->fieldset->field[$i]->attributes() as $a => $b)
 				{
-					if ((string) $a === 'name' && (string) $b === 'listtype')
+					if ((string)$a === 'name' && (string)$b === 'listtype')
 					{
-						for ($j = 0; $j < count($paramsfieldXml->fields->fieldset->field[$i]->form->field); $j++)
+						for ($j=0;$j< count($paramsfieldXml->fields->fieldset->field[$i]->form->field);$j++)
 						{
 							foreach ($paramsfieldXml->fields->fieldset->field[$i]->form->field[$j]->attributes() as $c => $d)
 							{
-								if ((string) $c === 'type' && (string) $d === 'list')
+								if ((string)$c === 'type' && (string)$d === 'list')
 								{
 									foreach ($extendfield as $extend)
 									{
@@ -379,390 +377,6 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
         }
 
         return $data;
-    }
-
-	/**
-	 * @return array|string
-	 */
-    public function onAjaxRadicalmultifield()
-    {
-    	$app = Factory::getApplication();
-    	$data = $app->input->getArray();
-	    $admin = $app->isAdmin();
-	    $allow = true;
-
-	    JLoader::register('RadicalmultifieldHelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'radicalmultifieldhelper']) . '.php');
-
-	    $params = RadicalmultifieldHelper::getParams($data['importfield']);
-
-	    if(isset($params['filesimportadmin']))
-	    {
-
-		    if((int)$params['filesimportadmin'] && !$admin)
-		    {
-			    $allow = false;
-		    }
-
-	    }
-	    else
-	    {
-	    	$allow = false;
-	    }
-
-
-	    if(!$allow)
-	    {
-		    $output = [];
-		    $output["error"] = Text::_('PLG_RADICAL_MULTI_FIELD_IMPORT_ERROR_UPLOAD');
-			return $output;
-	    }
-
-
-	    if(!isset($data['importfieldpath']))
-    	{
-		    $data['importfieldpath'] = '';
-	    }
-
-	    if(!isset($data['importfield']))
-	    {
-		    $data['importfield'] = '';
-	    }
-
-	    //получение файлов
-    	if($data['type'] === 'get_files')
-    	{
-    		$exs = explode(',', $params['filesimportexc']);
-    		$directory = ($data['importfieldpath'] ? $data['importfieldpath'] . DIRECTORY_SEPARATOR : '') . preg_replace('/^root/isu', '', $data['directory']);
-		    $directory = str_replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $directory);
-		    $directory = str_replace('..' .DIRECTORY_SEPARATOR , '', $directory);
-		    $filesOutput = [];
-		    $files = Folder::files(JPATH_ROOT . DIRECTORY_SEPARATOR . (string) $directory);
-		    $directories = Folder::folders(JPATH_ROOT . DIRECTORY_SEPARATOR . (string) $directory);
-		    foreach ($files as $file)
-		    {
-		    	$tmpExs = explode('.', $file);
-
-		    	if(!isset($tmpExs[1]))
-		    	{
-		    		continue;
-			    }
-
-			    if(in_array(array_pop($tmpExs), $exs))
-			    {
-				    $filesOutput[] = $file;
-			    }
-		    }
-
-    		return [
-    			'files' => $filesOutput,
-		        'directories' => $directories
-		    ];
-	    }
-
-	    //получение директорий
-	    if($data['type'] === 'get_directories')
-	    {
-	    	$data = Factory::getApplication()->input->getArray();
-		    $directory = $params['filesimportpath'];
-
-		    if($directory === '') {
-		        return "";
-		    }
-
-		    JLoader::register(
-			    'FormFieldRadicalmultifieldtreecatalog',
-			    JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'elements', 'radicalmultifieldtreecatalog']) . '.php'
-		    );
-
-		    $treeCatalog = new FormFieldRadicalmultifieldtreecatalog;
-
-		    $paramsForField = [
-			    'name' => 'select-directory',
-			    'label' => Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_TREECATALOG_TITLE'),
-			    'class' => '',
-			    'type' => 'radicalmultifieldtreecatalog',
-			    'folder' => $directory,
-			    'folderonly' => 'true',
-			    'showroot' => 'true',
-		    ];
-
-		    $dataAttributes = array_map(function($value, $key)
-		    {
-			    return $key.'="'.$value.'"';
-		    }, array_values($paramsForField), array_keys($paramsForField));
-
-		    $treeCatalog->setup(new SimpleXMLElement("<field " . implode(' ', $dataAttributes) . " />"), '');
-		    return $treeCatalog->getInput(true);
-	    }
-
-	    //загрузка файлов
-	    if($data['type'] === 'upload_file')
-	    {
-		    $output = [];
-    		$files = $app->input->files->getArray();
-		    foreach ($files as $file)
-		    {
-
-			    if ($file['error'] == 4)
-			    {
-				    continue;
-			    }
-
-			    if ($file['error'])
-			    {
-
-				    switch ($file['error'])
-				    {
-					    case 1:
-						    $output["error"] = Text::_('PLG_RADICAL_MULTI_FIELD_IMPORT_FILE_TO_LARGE_THAN_PHP_INI_ALLOWS');
-						    break;
-
-					    case 2:
-						    $output["error"] = Text::_('PLG_RADICAL_MULTI_FIELD_IMPORT_FILE_TO_LARGE_THAN_HTML_FORM_ALLOWS');
-						    break;
-
-					    case 3:
-						    $output["error"] = Text::_('PLG_RADICAL_MULTI_FIELD_IMPORT_ERROR_PARTIAL_UPLOAD');
-				    }
-
-			    }
-			    else
-		        {
-				    $lang = Factory::getLanguage();
-				    $nameSplit = explode('.', $file['name']);
-				    $nameExs = mb_strtolower(array_pop($nameSplit));
-				    $nameSafe = File::makeSafe($lang->transliterate(implode('-', $nameSplit)), ['#^\.#', '#\040#']);
-				    //$uploadedFileName =  $nameSafe . '_' . rand(11111, 99999) . '.' . $nameExs;
-				    $uploadedFileName =  $nameSafe . '.' . $nameExs;
-
-				    $exs = explode(',', $params['filesimportexc']);
-				    $type = preg_replace("/^.*?\//isu", '', $file['type']);
-
-				    if(!in_array($type, $exs))
-				    {
-					    $output["error"] = Text::_('PLG_RADICAL_MULTI_FIELD_IMPORT_ERROR_MIME_TYPE_UPLOAD') . ' (' . Text::_('PLG_RADICAL_MULTI_FIELD_IMPORT_ERROR_MIME_TYPE_LABEL'). ': ' . $type.')';
-					    return $output;
-				    }
-
-			        $data['name'] = isset($data['name']) ? $data['name'] : '';
-
-				    $path = JPATH_ROOT . DIRECTORY_SEPARATOR . ($data['importfieldpath'] ? $data['importfieldpath'] . DIRECTORY_SEPARATOR : '') . preg_replace('/^root/isu', '', $data['path']) . DIRECTORY_SEPARATOR . $data['name'];
-				    $path = str_replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $path);
-			        $path = str_replace('..' . DIRECTORY_SEPARATOR , '', $path);
-
-			        if (!file_exists($path))
-				    {
-					    Folder::create($path);
-				    }
-
-				    if (File::upload($file['tmp_name'], $path . DIRECTORY_SEPARATOR . $uploadedFileName))
-				    {
-
-				    	if(in_array($type, ['jpg', 'gif', 'png', 'jpeg', 'jpg', 'webp']))
-				    	{
-						    if((int)$params['filesimportreoriginal'])
-						    {
-						    	if(!file_exists($path . DIRECTORY_SEPARATOR . '_original'))
-						    	{
-									Folder::create($path . DIRECTORY_SEPARATOR . '_original');
-							    }
-
-								File::copy($path . DIRECTORY_SEPARATOR . $uploadedFileName, $path . DIRECTORY_SEPARATOR . '_original' . DIRECTORY_SEPARATOR . $uploadedFileName);
-						    }
-
-						    JLoader::registerNamespace('Gumlet', JPATH_SITE . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR , ['plugins', 'fields', 'radicalmultifield', 'libs', 'gumlet', 'lib']));
-						    $image = new ImageResize($path . DIRECTORY_SEPARATOR . $uploadedFileName);
-
-						    if((int)$params['filesimportresize'])
-						    {
-
-							    $maxWidth = (int)$params['filesimportrezizemaxwidth'];
-							    $maxHeight = (int)$params['filesimportrezizemaxheight'];
-
-							    //resize
-							    $image->resizeToBestFit($maxWidth, $maxHeight);
-
-						    }
-
-						    //overlay
-						    if((int)$params['filesimportrezizeoverlay'])
-						    {
-
-							    $file = JPATH_SITE . DIRECTORY_SEPARATOR . $params['filesimportrezizeoverlayfile'];
-							    $position = $params['filesimportrezizeoverlaypos'];
-							    $padding = $params['filesimportrezizeoverlaypadding'];
-
-							    if(file_exists($file))
-							    {
-								    $image->addFilter(function ($imageDesc) use ($file, $position, $padding, $params)
-								    {
-
-									    if(!file_exists($file))
-									    {
-										    return false;
-									    }
-
-									    $logo = imagecreatefromstring(file_get_contents($file));
-									    $logoWidth = imagesx($logo);
-									    $logoHeight = imagesy($logo);
-									    $imageWidth = imagesx($imageDesc);
-									    $imageHeight = imagesy($imageDesc);
-									    $imageX = $padding;
-									    $imageY = $padding;
-
-									    if(isset($params['filesimportrezizeoverlaypercent']) && (int)$params['filesimportrezizeoverlaypercent'])
-									    {
-										    //сжимаем водяной знак по процентному соотношению от изображения на который накладывается
-										    $precent = (int)$params['filesimportrezizeoverlaypercentvalue'];
-										    $logoWidthMax = $imageWidth / 100 * $precent;
-										    $logoHeightMax = $imageHeight / 100 * $precent;
-
-										    $ratio  = $logoHeight / $logoWidth;
-										    $tmpWidth = $logoWidthMax;
-										    $tmpHeight = $tmpWidth * $ratio;
-
-										    if ($tmpHeight > $logoHeightMax)
-										    {
-											    $tmpHeight = $logoHeightMax;
-											    $tmpWidth = $tmpHeight / $ratio;
-										    }
-
-										    $logoNew = imagecreatetruecolor($tmpWidth, $tmpHeight);
-										    imagesavealpha($logoNew, true);
-										    imagefill($logoNew,0,0,0x7fff0000);
-										    imagecopyresampled($logoNew, $logo, 0, 0, 0, 0, $tmpWidth, $tmpHeight, $logoWidth, $logoHeight);
-										    $logo = $logoNew;
-										    $logoWidth = $tmpWidth;
-										    $logoHeight = $tmpHeight;
-										    unset($logoNew);
-									    }
-
-									    if($logoWidth > $imageWidth && $logoHeight > $imageHeight)
-									    {
-										    return false;
-									    }
-
-									    switch ($position)
-									    {
-
-										    case "topleft":
-											    $imageX = $padding;
-											    $imageY = $padding;
-											    break;
-
-										    case "topcenter":
-											    $imageX = ($imageWidth/2) - ($logoWidth/2);
-											    $imageY = $padding;
-											    break;
-
-										    case "topright":
-											    $imageX = $imageWidth - $padding - $logoWidth;
-											    $imageY = $padding;
-											    break;
-
-										    case "centerleft":
-											    $imageX = $padding;
-											    $imageY = ($imageHeight/2) - ($logoHeight/2);
-											    break;
-
-										    case "centercenter":
-											    $imageX = ($imageWidth/2) - ($logoWidth/2);
-											    $imageY = ($imageHeight/2) - ($logoHeight/2);
-											    break;
-
-										    case "centerright":
-											    $imageX = $imageWidth - $padding - $logoWidth;
-											    $imageY = ($imageHeight/2) - ($logoHeight/2);
-											    break;
-
-										    case "bottomleft":
-											    $imageX = $padding;
-											    $imageY = $imageHeight - $padding - $logoHeight;
-											    break;
-
-										    case "bottomcenter":
-											    $imageX = ($imageWidth/2) - ($logoWidth/2);
-											    $imageY = $imageHeight - $padding - $logoHeight;
-											    break;
-
-										    case "bottomright":
-											    $imageX = $imageWidth - $padding - $logoWidth;
-											    $imageY = $imageHeight - $padding - $logoHeight;
-											    break;
-
-									    }
-
-									    imagecopy($imageDesc, $logo, $imageX, $imageY, 0, 0, $logoWidth, $logoHeight);
-								    });
-							    }
-
-						    }
-
-						    $image->save($path . DIRECTORY_SEPARATOR . $uploadedFileName);
-
-						    if((int)$params['filesimportpreview'])
-						    {
-							    RadicalmultifieldHelper::generateThumb($params, $path . DIRECTORY_SEPARATOR . $uploadedFileName);
-						    }
-
-					    }
-
-					    $output["name"] = $uploadedFileName;
-				    }
-				    else
-			        {
-					    $output["error"] = Text::_('PLG_RADICAL_MULTI_FIELD_IMPORT_ERROR_UPLOAD');
-				    }
-			    }
-		    }
-
-		    return $output;
-
-	    }
-
-	    if($app->isAdmin()) {
-		    //уаделение директории, только для административной части
-		    if($data['type'] === 'delete_directory')
-		    {
-			    $path = JPATH_ROOT . DIRECTORY_SEPARATOR . ($data['importfieldpath'] ? $data['importfieldpath'] . DIRECTORY_SEPARATOR : '') . preg_replace('/^root/isu', '', $data['path']) . DIRECTORY_SEPARATOR . $data['name'];
-			    $path = str_replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $path);
-			    $path = str_replace('..' . DIRECTORY_SEPARATOR , '', $path);
-			    //Folder::delete(JPATH_ROOT . DIRECTORY_SEPARATOR . $path);
-		    }
-	    }
-
-	    //создание директории
-	    if($data['type'] === 'create_directory')
-	    {
-		    $lang = Factory::getLanguage();
-	    	$data['name'] = JFILE::makeSafe($lang->transliterate($data['name']));
-    		$path = JPATH_ROOT . DIRECTORY_SEPARATOR . ($data['importfieldpath'] ? $data['importfieldpath'] . DIRECTORY_SEPARATOR : '') . preg_replace('/^root/isu', '', $data['path']) . DIRECTORY_SEPARATOR . $data['name'];
-		    $path = str_replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $path);
-		    $path = str_replace('..' . DIRECTORY_SEPARATOR , '', $path);
-
-		    Folder::create($path);
-
-		    JLoader::register('FormFieldRadicalmultifieldtreecatalog', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'elements', 'radicalmultifieldtreecatalog']) . '.php');
-		    $treeCatalog = new FormFieldRadicalmultifieldtreecatalog;
-		    $paramsForField = [
-		    	'name' => 'select-directory',
-		    	'label' => Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_TREECATALOG_TITLE'),
-		    	'class' => '',
-		    	'type' => 'radicalmultifieldtreecatalog',
-		    	'folder' => $data['importfieldpath'],
-		    	'folderonly' => 'true',
-		    	'showroot' => 'true',
-		    ];
-
-		    $dataAttributes = array_map(function($value, $key) {
-			    return $key . '="' . $value . '"';
-		    }, array_values($paramsForField), array_keys($paramsForField));
-
-		    $treeCatalog->setup(new SimpleXMLElement("<field " . implode(' ', $dataAttributes) . " />"), '');
-		    return $treeCatalog->getInput(true);
-	    }
-
-	    return [];
     }
 
 }
