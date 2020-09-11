@@ -1,7 +1,11 @@
 window.RadicalMiltifieldImport = {
 
-    insert: function (container, namefield, namefile, path, files) {
+    insert: function (path, files) {
 
+        let container = window.RadicalMiltifieldContainerActive;
+        let options = JSON.parse(container.querySelector('.radicalmultifield-import').getAttribute('data-options'));
+        let namefield = options.namefield;
+        let namefile = options.namefile;
         let subform = jQuery(container).find('.subform-repeatable');
 
         for(let i=0;i<files.length;i++) {

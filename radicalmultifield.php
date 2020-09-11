@@ -15,6 +15,7 @@ use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
@@ -344,7 +345,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 		HTMLHelper::_( 'jquery.framework' );
 
-		HTMLHelper::script('plg_fields_radicalmultifield/core/radicalmultifield.js', [
+		HTMLHelper::script('plg_fields_radicalmultifield/fix.js', [
 			'version' => filemtime ( __FILE__ ),
 			'relative' => true,
 		]);
@@ -379,5 +380,21 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
         return $data;
     }
+
+
+    public function onAjaxRadicalmultifield()
+    {
+        $app = Factory::getApplication();
+        if($app->isClient('administrator'))
+        {
+            JLoader::register('QuantummanagerHelper', JPATH_ROOT . '/administrator/components/com_quantummanager/helpers/quantummanager.php');
+            QuantummanagerHelper::loadlang();
+            $layout = new FileLayout('quantummanager', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, [
+                    'plugins', 'fields', 'radicalmultifield', 'layouts',
+                ]));
+            echo $layout->render(['field_path' => 'images']);
+        }
+    }
+
 
 }

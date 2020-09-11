@@ -147,22 +147,27 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
         {
 	        if((int)$fieldparams['filesimport'])
 	        {
-                HTMLHelper::stylesheet('plg_fields_radicalmultifield/core/import.css', [
+                HTMLHelper::stylesheet('plg_fields_radicalmultifield/import.css', [
                     'version' => filemtime ( __FILE__ ),
                     'relative' => true,
                 ]);
 
-                HTMLHelper::script('plg_fields_radicalmultifield/core/fast.js', [
+                HTMLHelper::script('plg_fields_radicalmultifield/buttons.js', [
                     'version' => filemtime ( __FILE__ ),
                     'relative' => true,
                 ]);
 
-                HTMLHelper::script('plg_fields_radicalmultifield/core/import.js', [
+                HTMLHelper::script('plg_fields_radicalmultifield/import.js', [
                     'version' => filemtime ( __FILE__ ),
                     'relative' => true,
                 ]);
 
-                $html = '<div class="radicalmultifield-import">' . LayoutHelper::render('import', null, JPATH_ROOT . '/plugins/fields/radicalmultifield/layouts') . $html . "</div>";
+                $params_for_field = [
+                    'namefield' => $fieldparams['filesimportname'],
+                    'namefile' => $fieldparams['filesimportnamefile'],
+                ];
+                $html = "<div class='radicalmultifield-import' data-options='" . json_encode($params_for_field) . "'>" . LayoutHelper::render('import', null, JPATH_ROOT . '/plugins/fields/radicalmultifield/layouts') . $html . "</div>";
+
 	        }
         }
 

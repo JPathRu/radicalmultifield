@@ -68,18 +68,6 @@
                 <option value="0">JNO</option>
             </field>
 
-            <field name="filesimportadmin"
-                   type="radio"
-                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTADMIN_LABEL"
-                   description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTADMIN_DESC"
-                   required="true"
-                   class="btn-group"
-                   default="1"
-                   showon="filesimport:1">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
             <field name="filesimportname"
                    type="text"
                    label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTNAME_LABEL"

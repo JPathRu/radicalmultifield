@@ -1,0 +1,21 @@
+.radicalmultifield-import {
+    position: relative;
+    padding-top: 110px;
+}
+
+.radicalmultifield-import .import-wrap .quantummanager {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.radicalmultifield-import .import-wrap .quantummanager .quantumupload-module {
+    padding: 10px;
+}
+
+.radicalmultifield-import .import-wrap .button-wrap {
+    position: relative;
+    margin-bottom: 15px;
+}
