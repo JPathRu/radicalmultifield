@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded' ,function () {
 
     window.RadicalMiltifieldContainerActive = '';
-
-    let buttons_fast = document.querySelectorAll('.btn-fast-upload');
+    let buttons_fast = document.querySelectorAll('.btn-radicalmiltifield-fast-upload');
     let buttons_select = document.querySelectorAll('.btn-radicalmiltifield-select');
 
     for(let i=0;i<buttons_fast.length;i++) {
