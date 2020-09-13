@@ -19,3 +19,8 @@
     position: relative;
     margin-bottom: 15px;
 }
+
+.radicalmultifield-import .row-fluid {
+    position: relative;
+    z-index: 1;
+}

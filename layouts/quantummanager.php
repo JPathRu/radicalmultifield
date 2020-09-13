@@ -18,6 +18,7 @@ extract($displayData);
 $app = Factory::getApplication();
 $app->getSession()->clear('quantummanageraddscripts');
 $app->getSession()->set('quantummanagerroot', $field_path);
+$app->getSession()->set('quantummanagerrootcheck', 0);
 
 HTMLHelper::_('stylesheet', 'plg_system_quantummanagermedia/modal.css', [
 	'version' => filemtime(__FILE__),

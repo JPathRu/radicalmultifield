@@ -85,11 +85,21 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     QuantumEventsDispatcher.add('reloadPaths', function (fm) {
-        fm.Quantumtoolbar.buttonsList['insertFileEditor'].classList.add('btn-hide');
+        if(
+            fm.Quantumtoolbar.buttonsList['insertFileEditor'] !== null ||
+            fm.Quantumtoolbar.buttonsList['insertFileEditor'] !== undefined
+        ) {
+            fm.Quantumtoolbar.buttonsList['insertFileEditor'].classList.add('btn-hide');
+        }
     });
 
     QuantumEventsDispatcher.add('updatePath', function (fm) {
-        fm.Quantumtoolbar.buttonsList['insertFileEditor'].classList.add('btn-hide');
+        if(
+            fm.Quantumtoolbar.buttonsList['insertFileEditor'] !== null ||
+            fm.Quantumtoolbar.buttonsList['insertFileEditor'] !== undefined
+        ) {
+            fm.Quantumtoolbar.buttonsList['insertFileEditor'].classList.add('btn-hide');
+        }
     });
 
     QuantumEventsDispatcher.add('uploadComplete', function (fm) {
