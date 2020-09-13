@@ -63,13 +63,13 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 
         $db = Factory::getDBO();
         $query = $db->getQuery(true)
-            ->select($db->quoteName(array('params', 'fieldparams')))
+            ->select($db->quoteName(['name', 'params', 'fieldparams']))
             ->from('#__fields')
             ->where( 'name=' . $db->quote($this->fieldname));
         $field = $db->setQuery( $query )->loadObject();
 
 	    $query = $db->getQuery(true)
-		    ->select($db->quoteName(array('params')))
+		    ->select($db->quoteName(['params']))
 		    ->from('#__extensions')
 		    ->where( 'element=' . $db->quote('radicalmultifield'));
 	    $extension = $db->setQuery( $query )->loadObject();
@@ -162,11 +162,19 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
                     'relative' => true,
                 ]);
 
+                $field_path = !empty($fieldparams['filesimportpath']) ? $fieldparams['filesimportpath'] : 'images';
                 $params_for_field = [
                     'namefield' => $fieldparams['filesimportname'],
                     'namefile' => $fieldparams['filesimportnamefile'],
                 ];
-                $html = "<div class='radicalmultifield-import' data-options='" . json_encode($params_for_field) . "'>" . LayoutHelper::render('import', null, JPATH_ROOT . '/plugins/fields/radicalmultifield/layouts') . $html . "</div>";
+                $html =
+                    "<div class='radicalmultifield-import' data-options='" . json_encode($params_for_field) . "'>" .
+                        LayoutHelper::render('import', [
+                            'field_name' => $field->name,
+                            'field_path' => $field_path
+                        ], JPATH_ROOT . '/plugins/fields/radicalmultifield/layouts')
+                        . $html .
+                    "</div>";
 
 	        }
         }

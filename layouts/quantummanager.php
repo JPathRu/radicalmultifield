@@ -16,7 +16,6 @@ use Joomla\CMS\Language\Text;
 extract($displayData);
 
 $app = Factory::getApplication();
-$folder = $app->input->get('folder', '', 'string');
 $app->getSession()->clear('quantummanageraddscripts');
 $app->getSession()->set('quantummanagerroot', $field_path);
 
@@ -69,9 +68,6 @@ HTMLHelper::_('script', 'plg_fields_radicalmultifield/modal.js', [
 			'quantumcropperjs' => [
 				'position' => 'bottom'
 			]
-			/*'quantumcodemirror' => [
-				'position' => 'center'
-			],*/
 		];
 
 		if((int)QuantummanagerHelper::getParamsComponentValue('unsplash', '1'))
@@ -126,7 +122,8 @@ HTMLHelper::_('script', 'plg_fields_radicalmultifield/modal.js', [
 		}
 		echo $field->getInput();
 	}
-	catch (Exception $e) {
+	catch (Exception $e)
+    {
 		echo $e->getMessage();
 	}
 ?>

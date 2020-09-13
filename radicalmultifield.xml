@@ -29,17 +29,15 @@
 		<filename plugin="radicalmultifield">radicalmultifield.php</filename>
 		<filename plugin="radicalmultifield">radicalmultifieldhelper.php</filename>
 		<filename>LICENSE.txt</filename>
-		<folder>elements</folder>
 		<folder>fields</folder>
 		<folder>layouts</folder>
-		<folder>libs</folder>
 		<folder>params</folder>
 		<folder>tmpl</folder>
 	</files>
 
 	<media folder="media" destination="plg_fields_radicalmultifield">
-		<folder>core</folder>
-		<folder>libs</folder>
+		<folder>css</folder>
+		<folder>js</folder>
 		<folder>img</folder>
 	</media>
 

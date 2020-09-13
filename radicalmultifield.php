@@ -389,10 +389,25 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
         {
             JLoader::register('QuantummanagerHelper', JPATH_ROOT . '/administrator/components/com_quantummanager/helpers/quantummanager.php');
             QuantummanagerHelper::loadlang();
+            $name = $app->input->get('name', '');
+
+            if(empty($name))
+            {
+                return;
+            }
+
+            $db = Factory::getDBO();
+            $query = $db->getQuery(true)
+                ->select($db->quoteName(array('params', 'fieldparams')))
+                ->from('#__fields')
+                ->where( 'name=' . $db->quote($name));
+            $field = $db->setQuery( $query )->loadObject();
+            $fieldparams = json_decode($field->fieldparams, JSON_OBJECT_AS_ARRAY);
+            $field_path = !empty($fieldparams['filesimportpath']) ? $fieldparams['filesimportpath'] : 'images';
             $layout = new FileLayout('quantummanager', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, [
                     'plugins', 'fields', 'radicalmultifield', 'layouts',
                 ]));
-            echo $layout->render(['field_path' => 'images']);
+            echo $layout->render(['field_path' => $field_path]);
         }
     }
 
