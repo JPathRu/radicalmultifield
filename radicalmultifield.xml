@@ -21,7 +21,7 @@
 
 	<updateservers>
 		<server type="extension" priority="1" name="Radical MultiField">
-			https://hika.su/update/free/plg_radicalmultifield_2x.xml
+			https://hika.su/update/free/plg_radicalmultifield_3x.xml
 		</server>
 	</updateservers>
 
