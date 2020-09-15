@@ -1,6 +1,7 @@
 <?php
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\Path;
 use Joomla\Filesystem\Folder;
 use Gumlet\ImageResize;
 
@@ -385,28 +386,37 @@ class RadicalmultifieldHelper
 	}
 
 
-	/**
-	 * @param $fieldOrParams
-	 * @param $source
-	 *
-	 * @return mixed|string
-	 */
-	public static function generateThumb(&$fieldOrParams, $source)
+    /**
+     * @param $fieldOrParams
+     * @param $source
+     * @param null $thumb_path - example: cache/my_cache
+     * @return mixed|string|string[]
+     */
+	public static function generateThumb(&$fieldOrParams, $source, $thumb_path = null)
 	{
 		$source = str_replace(JPATH_ROOT . DIRECTORY_SEPARATOR, '', $source);
 		$paths = explode(DIRECTORY_SEPARATOR, $source);
 		$file = array_pop($paths);
 		$fileSplit = explode('.', $file);
 		$fileExt = mb_strtolower(array_pop($fileSplit));
-		$extAccept = ['jpg', 'jpeg', 'png', 'gif'];
+		$extAccept = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
 		if(!in_array($fileExt, $extAccept))
 		{
 			return $file;
 		}
 
-		$pathThumb = implode(DIRECTORY_SEPARATOR, array_merge($paths, ['_thumb']));
-		$pathFileThumb = implode(DIRECTORY_SEPARATOR, array_merge($paths, ['_thumb'])) . DIRECTORY_SEPARATOR . $file;
+		if($thumb_path === null)
+        {
+            $pathThumb = implode(DIRECTORY_SEPARATOR, array_merge($paths, ['_thumb']));
+            $pathFileThumb = implode(DIRECTORY_SEPARATOR, array_merge($paths, ['_thumb'])) . DIRECTORY_SEPARATOR . $file;
+        }
+		else
+        {
+            $pathThumb = Path::clean($thumb_path . DIRECTORY_SEPARATOR . '_thumb');
+            $pathFileThumb = Path::clean($thumb_path . DIRECTORY_SEPARATOR . '_thumb' . DIRECTORY_SEPARATOR . $file);
+        }
+
 		$fullPathThumb =  JPATH_ROOT . DIRECTORY_SEPARATOR . $pathThumb . DIRECTORY_SEPARATOR . $file;
 
 		//если есть проевью, то отдаем ссылку на файл
@@ -425,7 +435,7 @@ class RadicalmultifieldHelper
 		}
 
 		//подгружаем библиотеку для фото
-		JLoader::registerNamespace('Gumlet', JPATH_SITE . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR , ['plugins', 'fields', 'radicalmultifield', 'libs', 'gumlet', 'lib']));
+        JLoader::register('JInterventionimage', JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'jinterventionimage' . DIRECTORY_SEPARATOR . 'jinterventionimage.php');
 
 		$params = [];
 
@@ -471,131 +481,41 @@ class RadicalmultifieldHelper
 		}
 
 		if(copy(JPATH_ROOT . DIRECTORY_SEPARATOR . $source, $fullPathThumb)) {
-			$image = new ImageResize($fullPathThumb);
 
 			$maxWidth = (int)$params['filesimportpreviewmaxwidth'];
 			$maxHeight = (int)$params['filesimportpreviewmaxheight'];
 
-			$image->resizeToBestFit($maxWidth, $maxHeight);
+            $manager = JInterventionimage::getInstance(['driver' => self::getNameDriver()]);
+            $manager
+                ->make($fullPathThumb)
+                ->fit($maxWidth, $maxHeight, function ($constraint) {
+                    $constraint->aspectRatio();
+                })
+                ->save($fullPathThumb);
 
-			if((int)$params['filesimportrezizeoverlay'] && (int)$params['filesimportreoriginal'] && $overlayAccept) {
-				$file = JPATH_SITE . DIRECTORY_SEPARATOR . $params['filesimportrezizeoverlayfile'];
-				$position = $params['filesimportrezizeoverlaypos'];
-				$padding = $params['filesimportrezizeoverlaypadding'];
-
-				if(file_exists($file))
-				{
-					$image->addFilter(function ($imageDesc) use ($file, $position, $padding, $params)
-					{
-
-						if(!file_exists($file))
-						{
-							return false;
-						}
-
-						$logo = imagecreatefromstring(file_get_contents($file));
-						$logoWidth = imagesx($logo);
-						$logoHeight = imagesy($logo);
-						$imageWidth = imagesx($imageDesc);
-						$imageHeight = imagesy($imageDesc);
-						$imageX = $padding;
-						$imageY = $padding;
-
-						if(isset($params['filesimportrezizeoverlaypercent']) && (int)$params['filesimportrezizeoverlaypercent'])
-						{
-							//сжимаем водяной знак по процентному соотношению от изображения на который накладывается
-							$precent = (int)$params['filesimportrezizeoverlaypercentvalue'];
-							$logoWidthMax = $imageWidth / 100 * $precent;
-							$logoHeightMax = $imageHeight / 100 * $precent;
-
-							$ratio  = $logoHeight / $logoWidth;
-							$tmpWidth = $logoWidthMax;
-							$tmpHeight = $tmpWidth * $ratio;
-
-							if ($tmpHeight > $logoHeightMax)
-							{
-								$tmpHeight = $logoHeightMax;
-								$tmpWidth = $tmpHeight / $ratio;
-							}
-
-							$logoNew = imagecreatetruecolor($tmpWidth, $tmpHeight);
-							imagesavealpha($logoNew, true);
-							imagefill($logoNew,0,0,0x7fff0000);
-							imagecopyresampled($logoNew, $logo, 0, 0, 0, 0, $tmpWidth, $tmpHeight, $logoWidth, $logoHeight);
-							$logo = $logoNew;
-							$logoWidth = $tmpWidth;
-							$logoHeight = $tmpHeight;
-							unset($logoNew);
-						}
-
-						if($logoWidth > $imageWidth && $logoHeight > $imageHeight)
-						{
-							return false;
-						}
-
-						switch ($position)
-						{
-
-							case "topleft":
-								$imageX = $padding;
-								$imageY = $padding;
-								break;
-
-							case "topcenter":
-								$imageX = ($imageWidth/2) - ($logoWidth/2);
-								$imageY = $padding;
-								break;
-
-							case "topright":
-								$imageX = $imageWidth - $padding - $logoWidth;
-								$imageY = $padding;
-								break;
-
-							case "centerleft":
-								$imageX = $padding;
-								$imageY = ($imageHeight/2) - ($logoHeight/2);
-								break;
-
-							case "centercenter":
-								$imageX = ($imageWidth/2) - ($logoWidth/2);
-								$imageY = ($imageHeight/2) - ($logoHeight/2);
-								break;
-
-							case "centerright":
-								$imageX = $imageWidth - $padding - $logoWidth;
-								$imageY = ($imageHeight/2) - ($logoHeight/2);
-								break;
-
-							case "bottomleft":
-								$imageX = $padding;
-								$imageY = $imageHeight - $padding - $logoHeight;
-								break;
-
-							case "bottomcenter":
-								$imageX = ($imageWidth/2) - ($logoWidth/2);
-								$imageY = $imageHeight - $padding - $logoHeight;
-								break;
-
-							case "bottomright":
-								$imageX = $imageWidth - $padding - $logoWidth;
-								$imageY = $imageHeight - $padding - $logoHeight;
-								break;
-
-						}
-
-						imagecopy($imageDesc, $logo, $imageX, $imageY, 0, 0, $logoWidth, $logoHeight);
-					});
-				}
-			}
-
-			$image->save($fullPathThumb);
-			unset($image);
+			unset($manager);
 		}
 
 		return $pathFileThumb;
 
 	}
 
+
+    /**
+     *
+     * @return string
+     *
+     * @since version
+     */
+    public static function getNameDriver()
+    {
+        if (extension_loaded('imagick'))
+        {
+            return 'imagick';
+        }
+
+        return 'gd';
+    }
 
 
 }
