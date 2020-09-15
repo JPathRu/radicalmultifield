@@ -165,13 +165,16 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
      *
      * @since   3.7.0
      */
-    public function onCustomFieldsPrepareField( $context, $item, $field )
+    public function onCustomFieldsPrepareField($context, $item, $field)
     {
         // Check if the field should be processed by us
         if (!$this->isTypeSupported($field->type))
         {
             return;
         }
+
+        $input = Factory::getApplication()->input;
+        $content_page = $input->get('option') . '.' . $input->get('view');
 
         // Merge the params from the plugin and field which has precedence
         $fieldParams = clone $this->params;
@@ -180,12 +183,12 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
         if(empty($template))
         {
-            if($context === 'com_content.category')
+            if($content_page === 'com_content.category')
             {
                 $template = $fieldParams->get('templatecategory', $template);
             }
 
-            if($context === 'com_content.article')
+            if($content_page === 'com_content.article')
             {
                 $template = $fieldParams->get('templatearticle', $template);
             }
