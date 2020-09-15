@@ -22,7 +22,7 @@
             />
 
             <field
-                name="template"
+                name="templatedefault"
                 type="hidden"
             />
 

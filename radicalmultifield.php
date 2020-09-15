@@ -168,25 +168,38 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
     public function onCustomFieldsPrepareField( $context, $item, $field )
     {
         // Check if the field should be processed by us
-        if ( !$this->isTypeSupported( $field->type ) )
+        if (!$this->isTypeSupported($field->type))
         {
             return;
         }
 
         // Merge the params from the plugin and field which has precedence
         $fieldParams = clone $this->params;
-        $fieldParams->merge( $field->fieldparams );
+        $fieldParams->merge($field->fieldparams);
+        $template = $fieldParams->get('templatedefault');
 
+        if(empty($template))
+        {
+            if($context === 'com_content.category')
+            {
+                $template = $fieldParams->get('templatecategory', $template);
+            }
+
+            if($context === 'com_content.article')
+            {
+                $template = $fieldParams->get('templatearticle', $template);
+            }
+        }
 
 	    // Get the path for the layout file
 	    if(substr_count($field->type, '_') > 0)
 	    {
 	    	$tmp = explode('_', $field->type);
-		    $path = PluginHelper::getLayoutPath( 'radicalmultifield', $tmp[1], $fieldParams->get( 'template' ) );
+		    $path = PluginHelper::getLayoutPath('radicalmultifield', $tmp[1], $template);
 	    }
 	    else
-	    {
-		    $path = PluginHelper::getLayoutPath( 'fields', $field->type, $fieldParams->get( 'template' ) );
+        {
+		    $path = PluginHelper::getLayoutPath('fields', $field->type, $template);
 	    }
 
 
