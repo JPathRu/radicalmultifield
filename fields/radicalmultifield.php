@@ -88,7 +88,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 	    JLoader::import('radicalmultifieldhelper', JPATH_ROOT . '/plugins/fields/radicalmultifield');
 
 
-	    if(isset($params['extendfield']))
+        if(isset($params['extendfield']) && !empty($params['extendfield']))
 	    {
 
 		    $extendField = explode("\n", $params['extendfield']);
