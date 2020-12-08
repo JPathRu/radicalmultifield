@@ -174,21 +174,30 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
         }
 
         $input = Factory::getApplication()->input;
-        $content_page = $input->get('option') . '.' . $input->get('view');
 
         // Merge the params from the plugin and field which has precedence
         $fieldParams = clone $this->params;
         $fieldParams->merge($field->fieldparams);
         $template = $fieldParams->get('templatedefault');
 
+        $template_category = [
+            'com_content.category',
+            'com_users.users',
+        ];
+
+        $template_item = [
+            'com_content.article',
+            'com_users.user',
+        ];
+
         if(empty($template))
         {
-            if($content_page === 'com_content.category')
+            if(in_array($context, $template_category))
             {
                 $template = $fieldParams->get('templatecategory', $template);
             }
 
-            if($content_page === 'com_content.article')
+            if(in_array($context, $template_item))
             {
                 $template = $fieldParams->get('templatearticle', $template);
             }
