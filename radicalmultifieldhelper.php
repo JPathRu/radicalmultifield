@@ -474,8 +474,9 @@ class RadicalmultifieldHelper
 				$overlayAccept = false;
 			}
 
-		} else
-			{
+		}
+		else
+        {
 			$originalFile = JPATH_ROOT . DIRECTORY_SEPARATOR . $source;
 			$overlayAccept = false;
 		}

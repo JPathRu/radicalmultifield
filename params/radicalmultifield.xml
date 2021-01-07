@@ -126,6 +126,26 @@
                    showon="filesimportpreview:1[AND]filesimport:1"
             />
 
+            <field name="filesimportpreviewalgorithm"
+                   type="list"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWALGORITHM_LABEL"
+                   default="bestfit"
+                   showon="filesimportpreview:1[AND]filesimport:1">
+                <option value="bestfit">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWALGORITHM_BEST_FIT</option>
+                <option value="fit">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWALGORITHM_FIT</option>
+                <option value="resize">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWALGORITHM_RESIZE</option>
+            </field>
+
+            <field name="filesimportpreviewfolder"
+                   type="radio"
+                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWFOLDER_LABEL"
+                   required="true"
+                   class="btn-group"
+                   default="cache"
+                   showon="filesimportpreview:1[AND]filesimport:1">
+                <option value="cache">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWFOLDER_CACHE</option>
+                <option value="relatively">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWFOLDER_RELATIVELY</option>
+            </field>
 
             <field name="listtype"
                 type="radicalsubform"
