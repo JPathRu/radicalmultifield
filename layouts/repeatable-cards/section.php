@@ -59,7 +59,7 @@ extract($displayData);
 
         <div class="subform-card-content-toolbar">
             <a class="btn button btn-primary button-subform-card-title-show" >
-                <span class="icon-arrow-left"></span> <span>Назад</span>
+                <span class="icon-arrow-left"></span> <span><?= JText::_('PLG_RADICAL_MULTI_FIELD_BUTTON_BACK') ?></span>
             </a>
         </div>
 
@@ -71,7 +71,7 @@ extract($displayData);
 
         <div class="subform-card-content-foot">
             <a class="btn button btn-primary button-subform-card-title-show" >
-                <span class="icon-arrow-left"></span> <span>Назад</span>
+                <span class="icon-arrow-left"></span> <span><?= JText::_('PLG_RADICAL_MULTI_FIELD_BUTTON_BACK') ?></span>
             </a>
         </div>
 

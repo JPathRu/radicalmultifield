@@ -145,8 +145,17 @@ class FormFieldRadicalmultifieldtreecatalog extends JFormField
 			'relative' => false
 		]);
 
+        // Add some JS language strings to translate
+        Text::script('PLG_RADICAL_MULTI_FIELD_BUTTON_BACK');
+        Text::script('PLG_RADICAL_MULTI_FIELD_BUTTON_UP');
+        Text::script('PLG_RADICAL_MULTI_FIELD_BUTTON_GRID');
+        Text::script('PLG_RADICAL_MULTI_FIELD_BUTTON_LIST');
+        Text::script('PLG_RADICAL_MULTI_FIELD_BUTTON_SELECTALL');
 
-		$app = Factory::getApplication();
+        // Add the root url as JS var
+        Factory::getDocument()->addScriptDeclaration("let siteUrl = '".JUri::root()."';");
+
+        $app = Factory::getApplication();
 
 		// get attributes
 		$importfield = $this->getAttribute('importfield');

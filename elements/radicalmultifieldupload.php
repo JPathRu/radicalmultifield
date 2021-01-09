@@ -19,7 +19,7 @@ class FormFieldRadicalmultifieldupload extends JFormField
 	/**
 	 * @return string
 	 */
-	protected function getInput()
+	public function getInput()
 	{
 		HTMLHelper::_('jquery.framework', false, null, false);
 
