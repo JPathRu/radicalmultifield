@@ -152,7 +152,10 @@ class FormFieldRadicalmultifieldtreecatalog extends JFormField
         Text::script('PLG_RADICAL_MULTI_FIELD_BUTTON_LIST');
         Text::script('PLG_RADICAL_MULTI_FIELD_BUTTON_SELECTALL');
 
-		$app = Factory::getApplication();
+        // Add the root url as JS var
+        Factory::getDocument()->addScriptDeclaration("let siteUrl = '".JUri::root()."';");
+
+        $app = Factory::getApplication();
 
 		// get attributes
 		$importfield = $this->getAttribute('importfield');
