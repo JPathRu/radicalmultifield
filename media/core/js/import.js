@@ -36,6 +36,11 @@ jQuery(function(){
     vex.dialog.buttons.YES.text = 'Ок';
     vex.dialog.buttons.NO.text = 'Нет';
     vex.dialog.buttons.NO.text = 'Отмена';
+    let btnback = Joomla.JText._('PLG_RADICAL_MULTI_FIELD_BUTTON_BACK');
+    let btnup = Joomla.JText._('PLG_RADICAL_MULTI_FIELD_BUTTON_UP');
+    let btngrid = Joomla.JText._('PLG_RADICAL_MULTI_FIELD_BUTTON_GRID');
+    let btnlist = Joomla.JText._('PLG_RADICAL_MULTI_FIELD_BUTTON_LIST');
+    let btnselectall = Joomla.JText._('PLG_RADICAL_MULTI_FIELD_BUTTON_SELECTALL');
 
     jQuery('.button-open-modal').on('click', function() {
         modalName = jQuery(this).attr('href');
@@ -125,7 +130,7 @@ jQuery(function(){
             inputPath.value = path;
 
 
-            let htmlfilesAndDirectories = '<div class="files-header"><div><label><input type="checkbox" class="import-files-check-all"> Выбрать все файлы</label></div><div><button class="button-prev"><span>Назад</span></button><button class="button-up"><span>Вверх</span></button><div class="button-dropdown"><button class="button-directory-trash"><span>Удалить директорию</span></button><div class="dropdown-content">Удалить: <b>" + path+ "</b>?<div><button><span>Удалить</span></button></div></div></div><button class="button-grid"><span>Сеткой</span></button><button class="button-table"><span>Списком</span></button></div></div>';
+            let htmlfilesAndDirectories = '<div class="files-header"><div><label><input type="checkbox" class="import-files-check-all"> ' + btnselectall + '</label></div><div><button class="button-prev"><span>' + btnback + '</span></button><button class="button-up"><span>' + btnup + '</span></button><div class="button-dropdown"><button class="button-directory-trash"><span>Удалить директорию</span></button><div class="dropdown-content">Удалить: <b>" + path+ "</b>?<div><button><span>Удалить</span></button></div></div></div><button class="button-grid"><span>' + btngrid + '</span></button><button class="button-table"><span>' + btnlist + '</span></button></div></div>';
             let files = response.data[0].files;
             let directories = response.data[0].directories;
 
