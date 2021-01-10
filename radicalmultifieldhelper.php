@@ -16,6 +16,9 @@ class RadicalmultifieldHelper
 {
 
 
+    protected static $_cache_params = [];
+
+
     /**
      * @param $field_id
      * @param $item_id
@@ -322,7 +325,6 @@ class RadicalmultifieldHelper
 
     public static function checkQuantumManager()
     {
-
         $db = Factory::getDBO();
         $query = $db->getQuery( true )
             ->select( 'extension_id' )
@@ -347,6 +349,12 @@ class RadicalmultifieldHelper
 	 */
     public static function getParams($fieldname = '')
     {
+
+        if(self::$_cache_params[$fieldname])
+        {
+            return self::$_cache_params[$fieldname];
+        }
+
 	    $db = Factory::getDBO();
 	    $query = $db->getQuery( true )
 		    ->select( 'fieldparams' )
@@ -355,8 +363,8 @@ class RadicalmultifieldHelper
 	    $field = $db->setQuery( $query )->loadResult();
 
 	    $params = json_decode( $field, JSON_OBJECT_AS_ARRAY );
-
-	    return $params;
+        self::$_cache_params[$fieldname] = $params;
+	    return self::$_cache_params[$fieldname];
     }
 
 
@@ -438,9 +446,34 @@ class RadicalmultifieldHelper
             $pathFileThumb = Path::clean($thumb_path . DIRECTORY_SEPARATOR . '_thumb' . DIRECTORY_SEPARATOR . $file);
         }
 
+        $params = [];
+
+        if(is_object($fieldOrParams))
+        {
+            if(!isset($fieldOrParams->name))
+            {
+                return $source;
+            }
+
+            //подгружаем параметры поля
+            $params = self::getParams($fieldOrParams->name);
+
+        }
+
+        if(is_array($fieldOrParams))
+        {
+            $params = $fieldOrParams;
+        }
+
+		if(isset($params['filesimportpreviewfolder']) && ($params['filesimportpreviewfolder'] === 'cache'))
+        {
+            $pathThumb = Path::clean(DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'plg_fields_multifields' . DIRECTORY_SEPARATOR. $pathThumb);
+            $pathFileThumb = Path::clean(DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'plg_fields_multifields' . DIRECTORY_SEPARATOR . $pathFileThumb);
+        }
+
 		$fullPathThumb =  JPATH_ROOT . DIRECTORY_SEPARATOR . $pathThumb . DIRECTORY_SEPARATOR . $file;
 
-		//если есть проевью, то отдаем ссылку на файл
+		//если есть превью, то отдаем ссылку на файл
 		if(file_exists($fullPathThumb))
 		{
 			return $pathFileThumb;
@@ -448,35 +481,23 @@ class RadicalmultifieldHelper
 
 		//если нет, генерируем превью
 
-		//проверяем создан ли каталог для превью
-		if(!file_exists(JPATH_ROOT . DIRECTORY_SEPARATOR . $pathThumb))
-		{
-			//создаем каталог
-			Folder::create(JPATH_ROOT . DIRECTORY_SEPARATOR . $pathThumb);
-		}
+        //проверяем создан ли каталог для превью
+        $pathThumbSplit = explode(DIRECTORY_SEPARATOR, $pathThumb);
+		$pathThumbCurrent = '';
+		foreach ($pathThumbSplit as $pathCurrentCheck)
+        {
+            $pathThumbCurrent .= DIRECTORY_SEPARATOR . $pathCurrentCheck;
+            $pathThumbCheck = Path::clean(JPATH_ROOT . DIRECTORY_SEPARATOR . $pathThumbCurrent);
+            if(!file_exists($pathThumbCheck))
+            {
+                //создаем каталог
+                Folder::create($pathThumbCheck);
+            }
+        }
+
 
 		//подгружаем библиотеку для фото
         JLoader::register('JInterventionimage', JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'jinterventionimage' . DIRECTORY_SEPARATOR . 'jinterventionimage.php');
-
-		$params = [];
-
-		if(is_object($fieldOrParams))
-		{
-			if(!isset($fieldOrParams->name))
-			{
-				return $source;
-			}
-
-			//подгружаем параметры поля
-			$params = self::getParams($fieldOrParams->name);
-
-		}
-
-		if(is_array($fieldOrParams))
-		{
-			$params = $fieldOrParams;
-		}
-
 
 		if(!isset($params['filesimportpreviewmaxwidth']) || !isset($params['filesimportpreviewmaxheight']))
 		{
