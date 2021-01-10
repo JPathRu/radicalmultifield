@@ -26,20 +26,30 @@ window.RadicalMiltifieldImport = {
                 subformRepeatableGroup = '.subform-card:last input';
             }
 
-            subform.find(subformRepeatableGroup).each(function (k, elt) {
-                let name = jQuery(elt).attr('name');
+            let inputAll = document.querySelectorAll(subformRepeatableGroup);
+
+            for (let j=0;j<inputAll.length;j++) {
+                let name = jQuery(inputAll[j]).attr('name');
+
+                if(name === undefined || name === null) {
+                    continue;
+                }
+
                 let fileName = files[i];
                 let file = path + '/' + fileName;
 
                 if (name.indexOf('[' + namefield + ']') > -1) {
-                    jQuery(elt).val(file);
+                    jQuery(inputAll[j]).val(file);
+                    QuantumUtils.triggerElementEvent('change', inputAll[j]);
                 }
 
                 if (name.indexOf('[' + namefile + ']') > -1) {
                     //jQuery(elt).val(fileName.split('.')[0].replace(/_[0-9]{0,}$/g, ''));
-                    jQuery(elt).val(fileName.split('.')[0]);
+                    jQuery(inputAll[j]).val(fileName.split('.')[0]);
                 }
-            });
+
+
+            }
         }
     }
 

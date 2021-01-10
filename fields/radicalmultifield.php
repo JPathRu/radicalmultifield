@@ -143,7 +143,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
         $this->formsource .= "</form>";
         $html = parent::getInput();
 
-        if(isset($fieldparams['filesimport']))
+        if(isset($fieldparams['filesimport']) && RadicalmultifieldHelper::checkQuantumManager())
         {
 	        if((int)$fieldparams['filesimport'])
 	        {

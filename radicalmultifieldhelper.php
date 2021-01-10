@@ -28,19 +28,19 @@ class RadicalmultifieldHelper
         //get field
         $db = Factory::getDbo();
         $query = $db->getQuery(true)
-            ->select($db->quoteName(array('context', 'title', 'name')))
-            ->from($db->quoteName('#__fields'))
-            ->where("id = " . $db->escape($field_id));
+            ->select($db->qn(array('context', 'title', 'name')))
+            ->from($db->qn('#__fields'))
+            ->where("id = " . $db->q($field_id));
         $db->setQuery($query);
         $fieldAndValue->field = $db->loadObject();
 
         //get value
         $db = Factory::getDbo();
         $query = $db->getQuery(true)
-            ->select($db->quoteName(array('field_id', 'item_id', 'value')))
-            ->from($db->quoteName('#__fields_values'))
-            ->where("field_id = " . $db->escape($field_id))
-            ->where("item_id = " . $db->escape($item_id));
+            ->select($db->qn(array('field_id', 'item_id', 'value')))
+            ->from($db->qn('#__fields_values'))
+            ->where("field_id = " . $db->q($field_id))
+            ->where("item_id = " . $db->q($item_id));
         $db->setQuery($query);
         $fieldAndValue->value = $db->loadObject();
 
@@ -65,10 +65,10 @@ class RadicalmultifieldHelper
         //get value
         $db = Factory::getDbo();
         $query = $db->getQuery(true)
-            ->select($db->quoteName(array('field_id', 'item_id', 'value')))
-            ->from($db->quoteName('#__fields_values'))
-            ->where("field_id = " . $db->escape($field_id))
-            ->where("item_id = " . $db->escape($item_id));
+            ->select($db->qn(array('field_id', 'item_id', 'value')))
+            ->from($db->qn('#__fields_values'))
+            ->where("field_id = " . $db->q($field_id))
+            ->where("item_id = " . $db->q($item_id));
         $db->setQuery($query);
         $fieldValue = $db->loadObject();
 
@@ -85,12 +85,12 @@ class RadicalmultifieldHelper
             $query = $db->getQuery(true);
 
             $fields = array(
-                $db->quoteName('value') . ' = "' . $db->escape($value) . '"',
+                $db->qn('value') . ' = "' . $db->q($value) . '"',
             );
 
             $conditions = array(
-                $db->quoteName('field_id') . ' = ' . $db->escape($field_id),
-                $db->quoteName('item_id') . ' = ' . $db->escape($item_id)
+                $db->qn('field_id') . ' = ' . $db->q($field_id),
+                $db->qn('item_id') . ' = ' . $db->q($item_id)
             );
 
             $query->update($db->quoteName('#__fields_values'))->set($fields)->where($conditions);
@@ -320,6 +320,26 @@ class RadicalmultifieldHelper
     }
 
 
+    public static function checkQuantumManager()
+    {
+
+        $db = Factory::getDBO();
+        $query = $db->getQuery( true )
+            ->select( 'extension_id' )
+            ->from( '#__extensions' )
+            ->where( $db->qn('type') . ' = ' . $db->q('component'))
+            ->where( $db->qn('element') . ' = ' . $db->q('com_quantummanager'));
+        $extension = $db->setQuery( $query )->loadObject();
+
+        if(!empty($extension->extension_id))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+
 	/**
 	 * @param string $fieldname
 	 *
@@ -331,7 +351,7 @@ class RadicalmultifieldHelper
 	    $query = $db->getQuery( true )
 		    ->select( 'fieldparams' )
 		    ->from( '#__fields' )
-		    ->where( 'name=' . $db->quote( $fieldname ) );
+		    ->where( 'name=' . $db->q( $fieldname ) );
 	    $field = $db->setQuery( $query )->loadResult();
 
 	    $params = json_decode( $field, JSON_OBJECT_AS_ARRAY );
@@ -347,18 +367,19 @@ class RadicalmultifieldHelper
 	 */
 	public static function loadClassExtendField($path)
 	{
-		$path = JPATH_ROOT . DIRECTORY_SEPARATOR . $path;
+		$path = Path::clean(JPATH_ROOT . DIRECTORY_SEPARATOR . $path);
 		$files = Folder::files($path);
 		$className = false;
 		$fileListsName = [];
 
-		foreach ($files as $file)
+        foreach ($files as $file)
 		{
-			$name = str_replace('.php', '', $file);
+
+            $name = str_replace('.php', '', $file);
 			$className = 'FormField' . ucfirst($name);
 			JLoader::register($className, $path . DIRECTORY_SEPARATOR . $file);
 
-			if (!class_exists($className))
+            if (!class_exists($className))
 			{
 
 				$className = 'JFormField' . ucfirst($name);
@@ -366,7 +387,7 @@ class RadicalmultifieldHelper
 
 				if (!class_exists($className))
 				{
-					return [];
+					continue;
 				}
 				else
 				{
