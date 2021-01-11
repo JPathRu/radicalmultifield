@@ -375,6 +375,12 @@ class RadicalmultifieldHelper
 	 */
 	public static function loadClassExtendField($path)
 	{
+
+	    if(empty($path))
+        {
+            return [];
+        }
+
 		$path = Path::clean(JPATH_ROOT . DIRECTORY_SEPARATOR . $path);
 		$files = Folder::files($path);
 		$className = false;

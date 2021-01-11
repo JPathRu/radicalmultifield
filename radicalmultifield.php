@@ -8,20 +8,14 @@
  * @link       https://delo-design.ru
  */
 
-use Gumlet\ImageResize;
-use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\FileLayout;
-use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Database\DatabaseDriver;
-use Joomla\Filesystem\File;
-use Joomla\Filesystem\Folder;
 
 defined('_JEXEC') or die;
 
