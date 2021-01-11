@@ -350,7 +350,7 @@ class RadicalmultifieldHelper
     public static function getParams($fieldname = '')
     {
 
-        if(self::$_cache_params[$fieldname])
+        if(isset(self::$_cache_params[$fieldname]))
         {
             return self::$_cache_params[$fieldname];
         }
@@ -496,52 +496,110 @@ class RadicalmultifieldHelper
         }
 
 
-		//подгружаем библиотеку для фото
-        JLoader::register('JInterventionimage', JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'jinterventionimage' . DIRECTORY_SEPARATOR . 'jinterventionimage.php');
+		$maxWidth = (int)$params['filesimportpreviewmaxwidth'];
+        $maxHeight = (int)$params['filesimportpreviewmaxheight'];
 
-		if(!isset($params['filesimportpreviewmaxwidth']) || !isset($params['filesimportpreviewmaxheight']))
-		{
-			return $source;
-		}
-
-		$overlayAccept = true;
-
-		if((int)$params['filesimportreoriginal'])
-		{
-			$originalFile = implode(DIRECTORY_SEPARATOR, array_merge($paths, ['_original'])) . DIRECTORY_SEPARATOR . $source;
-
-			if(!file_exists($originalFile))
-			{
-				$originalFile = JPATH_ROOT . DIRECTORY_SEPARATOR . $source;
-				$overlayAccept = false;
-			}
-
-		}
-		else
+        if(copy(JPATH_ROOT . DIRECTORY_SEPARATOR . $source, $fullPathThumb))
         {
-			$originalFile = JPATH_ROOT . DIRECTORY_SEPARATOR . $source;
-			$overlayAccept = false;
-		}
 
-		if(copy(JPATH_ROOT . DIRECTORY_SEPARATOR . $source, $fullPathThumb)) {
+            if ($params['filesimportpreviewalgorithm'] === 'fit')
+            {
+                self::fit($fullPathThumb, $maxWidth, $maxHeight);
+            }
 
-			$maxWidth = (int)$params['filesimportpreviewmaxwidth'];
-			$maxHeight = (int)$params['filesimportpreviewmaxheight'];
+            if ($params['filesimportpreviewalgorithm'] === 'bestfit')
+            {
+                self::bestFit($fullPathThumb, $maxWidth, $maxHeight);
+            }
 
-            $manager = JInterventionimage::getInstance(['driver' => self::getNameDriver()]);
-            $manager
-                ->make($fullPathThumb)
-                ->fit($maxWidth, $maxHeight, function ($constraint) {
-                    $constraint->aspectRatio();
-                })
-                ->save($fullPathThumb);
+            if ($params['filesimportpreviewalgorithm'] === 'resize')
+            {
+                self::resize($fullPathThumb, $maxWidth, $maxHeight);
+            }
 
-			unset($manager);
-		}
+        }
+
 
 		return $pathFileThumb;
 
 	}
+
+
+    public static function resize($file, $widthFit = null, $heightFit = null)
+    {
+        JLoader::register('JInterventionimage', JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'jinterventionimage' . DIRECTORY_SEPARATOR . 'jinterventionimage.php');
+        list($width, $height, $type, $attr) = getimagesize($file);
+        $newWidth = $width;
+        $newHeight = $height;
+        $maxWidth = (int)$widthFit;
+        $maxHeight = (int)$heightFit;
+
+        $manager = JInterventionimage::getInstance(['driver' => self::getNameDriver()]);
+        $manager
+            ->make($file)
+            ->resize($maxWidth, $maxHeight, function ($constraint) {
+                $constraint->aspectRatio();
+            })
+            ->resizeCanvas($maxWidth, $maxHeight)
+            ->save($file);
+
+    }
+
+
+    public static function bestFit($file, $widthFit, $heightFit)
+    {
+        JLoader::register('JInterventionimage', JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'jinterventionimage' . DIRECTORY_SEPARATOR . 'jinterventionimage.php');
+        list($width, $height, $type, $attr) = getimagesize($file);
+        $newWidth = $width;
+        $newHeight = $height;
+        $maxWidth = (int)$widthFit;
+        $maxHeight = (int)$heightFit;
+
+        $ratio = $width / $height;
+
+        if($width > $maxWidth)
+        {
+            $newWidth = $maxWidth;
+            $newHeight = round($newWidth / $ratio);
+        }
+
+        if($newHeight > $maxHeight)
+        {
+            $newHeight = $maxHeight;
+            $newWidth = round($newHeight * $ratio);
+        }
+
+
+        $manager = JInterventionimage::getInstance(['driver' => self::getNameDriver()]);
+        $manager
+            ->make($file)
+            ->resize($newWidth, $newHeight, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })
+            ->save($file);
+
+    }
+
+
+    public static function fit($file, $widthFit, $heightFit )
+    {
+        JLoader::register('JInterventionimage', JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'jinterventionimage' . DIRECTORY_SEPARATOR . 'jinterventionimage.php');
+        list($width, $height, $type, $attr) = getimagesize($file);
+        $newWidth = $width;
+        $newHeight = $height;
+        $maxWidth = (int)$widthFit;
+        $maxHeight = (int)$heightFit;
+
+        $manager = JInterventionimage::getInstance(['driver' => self::getNameDriver()]);
+        $manager
+            ->make($file)
+            ->fit($maxWidth, $maxHeight, function ($constraint) {
+                $constraint->aspectRatio();
+            })
+            ->save($file);
+
+    }
 
 
     /**
