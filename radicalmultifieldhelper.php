@@ -443,13 +443,7 @@ class RadicalmultifieldHelper
 
 		if($thumb_path === null)
         {
-            $pathThumb = implode(DIRECTORY_SEPARATOR, array_merge($paths, ['_thumb']));
-            $pathFileThumb = implode(DIRECTORY_SEPARATOR, array_merge($paths, ['_thumb'])) . DIRECTORY_SEPARATOR . $file;
-        }
-		else
-        {
-            $pathThumb = Path::clean($thumb_path . DIRECTORY_SEPARATOR . '_thumb');
-            $pathFileThumb = Path::clean($thumb_path . DIRECTORY_SEPARATOR . '_thumb' . DIRECTORY_SEPARATOR . $file);
+            $thumb_path = implode(DIRECTORY_SEPARATOR, array_merge($paths));
         }
 
         $params = [];
@@ -473,156 +467,17 @@ class RadicalmultifieldHelper
 
 		if(isset($params['filesimportpreviewfolder']) && ($params['filesimportpreviewfolder'] === 'cache'))
         {
-            $pathThumb = Path::clean(DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'plg_fields_multifields' . DIRECTORY_SEPARATOR. $pathThumb);
-            $pathFileThumb = Path::clean(DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'plg_fields_multifields' . DIRECTORY_SEPARATOR . $pathFileThumb);
+            $thumb_path = Path::clean(DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'plg_fields_multifields' . DIRECTORY_SEPARATOR. $thumb_path);
         }
-
-		$fullPathThumb =  JPATH_ROOT . DIRECTORY_SEPARATOR . $pathThumb . DIRECTORY_SEPARATOR . $file;
-
-		//если есть превью, то отдаем ссылку на файл
-		if(file_exists($fullPathThumb))
-		{
-			return $pathFileThumb;
-		}
-
-		//если нет, генерируем превью
-
-        //проверяем создан ли каталог для превью
-        $pathThumbSplit = explode(DIRECTORY_SEPARATOR, $pathThumb);
-		$pathThumbCurrent = '';
-		foreach ($pathThumbSplit as $pathCurrentCheck)
-        {
-            $pathThumbCurrent .= DIRECTORY_SEPARATOR . $pathCurrentCheck;
-            $pathThumbCheck = Path::clean(JPATH_ROOT . DIRECTORY_SEPARATOR . $pathThumbCurrent);
-            if(!file_exists($pathThumbCheck))
-            {
-                //создаем каталог
-                Folder::create($pathThumbCheck);
-            }
-        }
-
 
 		$maxWidth = (int)$params['filesimportpreviewmaxwidth'];
         $maxHeight = (int)$params['filesimportpreviewmaxheight'];
+        $algorithm = $params['filesimportpreviewalgorithm'];
 
-        if(copy(JPATH_ROOT . DIRECTORY_SEPARATOR . $source, $fullPathThumb))
-        {
-
-            if ($params['filesimportpreviewalgorithm'] === 'fit')
-            {
-                self::fit($fullPathThumb, $maxWidth, $maxHeight);
-            }
-
-            if ($params['filesimportpreviewalgorithm'] === 'bestfit')
-            {
-                self::bestFit($fullPathThumb, $maxWidth, $maxHeight);
-            }
-
-            if ($params['filesimportpreviewalgorithm'] === 'resize')
-            {
-                self::resize($fullPathThumb, $maxWidth, $maxHeight);
-            }
-
-        }
-
-
-		return $pathFileThumb;
-
+		//если нет, генерируем превью
+        JLoader::register('JInterventionimage', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['libraries', 'jinterventionimage', 'jinterventionimage.php']));
+        return JInterventionimage::generateThumb($source, $maxWidth, $maxHeight, $algorithm, $thumb_path);
 	}
-
-
-    public static function resize($file, $widthFit = null, $heightFit = null)
-    {
-        JLoader::register('JInterventionimage', JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'jinterventionimage' . DIRECTORY_SEPARATOR . 'jinterventionimage.php');
-        list($width, $height, $type, $attr) = getimagesize($file);
-        $newWidth = $width;
-        $newHeight = $height;
-        $maxWidth = (int)$widthFit;
-        $maxHeight = (int)$heightFit;
-
-        $manager = JInterventionimage::getInstance(['driver' => self::getNameDriver()]);
-        $manager
-            ->make($file)
-            ->resize($maxWidth, $maxHeight, function ($constraint) {
-                $constraint->aspectRatio();
-            })
-            ->resizeCanvas($maxWidth, $maxHeight)
-            ->save($file);
-
-    }
-
-
-    public static function bestFit($file, $widthFit, $heightFit)
-    {
-        JLoader::register('JInterventionimage', JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'jinterventionimage' . DIRECTORY_SEPARATOR . 'jinterventionimage.php');
-        list($width, $height, $type, $attr) = getimagesize($file);
-        $newWidth = $width;
-        $newHeight = $height;
-        $maxWidth = (int)$widthFit;
-        $maxHeight = (int)$heightFit;
-
-        $ratio = $width / $height;
-
-        if($width > $maxWidth)
-        {
-            $newWidth = $maxWidth;
-            $newHeight = round($newWidth / $ratio);
-        }
-
-        if($newHeight > $maxHeight)
-        {
-            $newHeight = $maxHeight;
-            $newWidth = round($newHeight * $ratio);
-        }
-
-
-        $manager = JInterventionimage::getInstance(['driver' => self::getNameDriver()]);
-        $manager
-            ->make($file)
-            ->resize($newWidth, $newHeight, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            })
-            ->save($file);
-
-    }
-
-
-    public static function fit($file, $widthFit, $heightFit )
-    {
-        JLoader::register('JInterventionimage', JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'jinterventionimage' . DIRECTORY_SEPARATOR . 'jinterventionimage.php');
-        list($width, $height, $type, $attr) = getimagesize($file);
-        $newWidth = $width;
-        $newHeight = $height;
-        $maxWidth = (int)$widthFit;
-        $maxHeight = (int)$heightFit;
-
-        $manager = JInterventionimage::getInstance(['driver' => self::getNameDriver()]);
-        $manager
-            ->make($file)
-            ->fit($maxWidth, $maxHeight, function ($constraint) {
-                $constraint->aspectRatio();
-            })
-            ->save($file);
-
-    }
-
-
-    /**
-     *
-     * @return string
-     *
-     * @since version
-     */
-    public static function getNameDriver()
-    {
-        if (extension_loaded('imagick'))
-        {
-            return 'imagick';
-        }
-
-        return 'gd';
-    }
 
 
 }
