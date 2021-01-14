@@ -465,9 +465,17 @@ class RadicalmultifieldHelper
             $params = $fieldOrParams;
         }
 
-		if(isset($params['filesimportpreviewfolder']) && ($params['filesimportpreviewfolder'] === 'cache'))
+		if(isset($params['filesimportpreviewfolder']))
         {
-            $thumb_path = Path::clean(DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'plg_fields_multifields' . DIRECTORY_SEPARATOR. $thumb_path);
+            if($params['filesimportpreviewfolder'] === 'cache')
+            {
+                $thumb_path = Path::clean(DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'plg_fields_multifields' . DIRECTORY_SEPARATOR. $thumb_path);
+            }
+
+            if($params['filesimportpreviewfolder'] === 'generatedimages')
+            {
+                $thumb_path = Path::clean(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'generatedimages' . DIRECTORY_SEPARATOR . 'plg_fields_multifields' . DIRECTORY_SEPARATOR. $thumb_path);
+            }
         }
 
 		$maxWidth = (int)$params['filesimportpreviewmaxwidth'];
