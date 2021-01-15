@@ -16,12 +16,16 @@ class RadicalmultifieldHelper
 {
 
 
+    /**
+     * @var array
+     */
     protected static $_cache_params = [];
 
 
     /**
-     * @param $field_id
-     * @param $item_id
+     * @param int $field_id
+     * @param int $item_id
+     *
      * @return stdClass
      */
     private static function getFieldAndValue($field_id, $item_id)
@@ -58,9 +62,11 @@ class RadicalmultifieldHelper
 
 
     /**
-     * @param $field_id
-     * @param $item_id
-     * @param boolean
+     * @param int $field_id
+     * @param int $item_id
+     * @param mixed $value
+     *
+     * @return bool
      */
     private static function saveFieldValue($field_id, $item_id, $value)
     {
@@ -106,8 +112,8 @@ class RadicalmultifieldHelper
 
 
     /**
-     * @param $field_id
-     * @param $item_id
+     * @param int $field_id
+     * @param int $item_id
      * @param array $data
      * @return bool
      */
@@ -133,11 +139,11 @@ class RadicalmultifieldHelper
 
 
 	/**
-	 * @param       $field_id
-	 * @param       $item_id
+	 * @param int $field_id
+	 * @param int $item_id
 	 * @param array $data
 	 *
-	 * @return bool|mixed
+	 * @return bool
 	 */
 	public static function edit($field_id, $item_id, $data = [])
 	{
@@ -196,9 +202,10 @@ class RadicalmultifieldHelper
 
 
     /**
-     * @param $field_id
-     * @param $item_id
+     * @param int $field_id
+     * @param int $item_id
      * @param array $data
+     *
      * @return bool
      */
     public static function delete($field_id, $item_id, $data = [])
@@ -253,10 +260,11 @@ class RadicalmultifieldHelper
 
 
     /**
-     * @param $field_id
-     * @param $item_id
+     * @param int $field_id
+     * @param int $item_id
      * @param array $data
      * @param bool $column_find_all
+     *
      * @return array
      */
     public static function check($field_id, $item_id, $data = [], $column_find_all = true)
@@ -323,6 +331,9 @@ class RadicalmultifieldHelper
     }
 
 
+    /**
+     * @return bool
+     */
     public static function checkQuantumManager()
     {
         $db = Factory::getDBO();
@@ -369,9 +380,9 @@ class RadicalmultifieldHelper
 
 
 	/**
-	 * @param $path
+	 * @param string $path
 	 *
-	 * @return array|bool|string
+	 * @return array
 	 */
 	public static function loadClassExtendField($path)
 	{
@@ -422,10 +433,11 @@ class RadicalmultifieldHelper
 
 
     /**
-     * @param $fieldOrParams
-     * @param $source
-     * @param null $thumb_path - example: cache/my_cache
-     * @return mixed|string|string[]
+     * @param \Joomla\CMS\Form\FormField|array $fieldOrParams
+     * @param string $source
+     * @param string $thumb_path example: cache/my_cache
+     *
+     * @return string
      */
 	public static function generateThumb(&$fieldOrParams, $source, $thumb_path = null)
 	{

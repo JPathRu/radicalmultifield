@@ -57,98 +57,118 @@
                 <option value="joomla.form.field.subform.repeatable-table">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_AVIEW_OPLION_TABLE</option>
             </field>
 
-            <field name="filesimport"
-                   type="radio"
-                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORT_LABEL"
-                   default="0"
-                   class="btn-group"
-                   showon="aview:joomla.form.field.subform.repeatable-table[OR]aview:repeatable-cards[OR]aview:repeatable-uikittable"
+            <field
+                name="filesimportnote"
+                type="note"
+                label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORT_NOTE_LABEL"
+                class="alert alert-info"
+            />
+
+            <field
+                name="filesimport"
+                type="radio"
+                label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORT_LABEL"
+                default="0"
+                class="btn-group"
+                showon="aview:joomla.form.field.subform.repeatable-table[OR]aview:repeatable-cards[OR]aview:repeatable-uikittable"
             >
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
 
-            <field name="filesimportname"
-                   type="text"
-                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTNAME_LABEL"
-                   description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTNAME_DESC"
-                   required="true"
-                   class="input-xlarge"
-                   default="image"
-                   showon="filesimport:1"
+            <field
+                name="filesimportname"
+                type="text"
+                label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTNAME_LABEL"
+                description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTNAME_DESC"
+                required="true"
+                class="input-xlarge"
+                default="image"
+                showon="filesimport:1"
             />
 
-            <field name="filesimportnamefile"
-                   type="text"
-                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTNAMEFILE_LABEL"
-                   class="input-xlarge"
-                   default=""
-                   showon="filesimport:1"
+            <field
+                name="filesimportnamefile"
+                type="text"
+                label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTNAMEFILE_LABEL"
+                class="input-xlarge"
+                default=""
+                showon="filesimport:1"
             />
 
-            <field name="filesimportpath"
-                   type="text"
-                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPATH_LABEL"
-                   description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPATH_DESC"
-                   required="true"
-                   default="images"
-                   class="input-xlarge"
-                   showon="filesimport:1"
+            <field
+                name="filesimportpath"
+                type="text"
+                label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPATH_LABEL"
+                description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPATH_DESC"
+                required="true"
+                default="images"
+                class="input-xlarge"
+                showon="filesimport:1"
             />
 
-            <field name="filesimportpreview"
-                   type="radio"
-                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEW_LABEL"
-                   description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEW_DESC"
-                   required="true"
-                   class="btn-group"
-                   default="0"
-                   showon="filesimport:1">
+            <field
+                name="filesimportpreview"
+                type="radio"
+                label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEW_LABEL"
+                description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEW_DESC"
+                required="true"
+                class="btn-group"
+                default="0"
+                showon="filesimport:1"
+            >
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
 
-            <field name="filesimportpreviewmaxwidth"
-                   type="text"
-                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWMAXWIDTH_LABEL"
-                   required="true"
-                   default="360"
-                   class="input-xlarge"
-                   showon="filesimportpreview:1[AND]filesimport:1"
+            <field
+                name="filesimportpreviewmaxwidth"
+                type="text"
+                label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWMAXWIDTH_LABEL"
+                required="true"
+                default="360"
+                class="input-xlarge"
+                showon="filesimportpreview:1[AND]filesimport:1"
             />
 
-            <field name="filesimportpreviewmaxheight"
-                   type="text"
-                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWMAXHEIGHT_LABEL"
-                   required="true"
-                   default="360"
-                   class="input-xlarge"
-                   showon="filesimportpreview:1[AND]filesimport:1"
+            <field
+                name="filesimportpreviewmaxheight"
+                type="text"
+                label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWMAXHEIGHT_LABEL"
+                required="true"
+                default="360"
+                class="input-xlarge"
+                showon="filesimportpreview:1[AND]filesimport:1"
             />
 
-            <field name="filesimportpreviewalgorithm"
-                   type="list"
-                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWALGORITHM_LABEL"
-                   default="bestfit"
-                   showon="filesimportpreview:1[AND]filesimport:1">
+            <field
+                name="filesimportpreviewalgorithm"
+                type="list"
+                label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWALGORITHM_LABEL"
+                default="bestfit"
+                showon="filesimportpreview:1[AND]filesimport:1"
+            >
                 <option value="bestfit">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWALGORITHM_BEST_FIT</option>
                 <option value="fit">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWALGORITHM_FIT</option>
                 <option value="resize">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWALGORITHM_RESIZE</option>
             </field>
 
-            <field name="filesimportpreviewfolder"
-                   type="list"
-                   label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWFOLDER_LABEL"
-                   required="true"
-                   class="btn-group"
-                   default="cacheimages"
-                   showon="filesimportpreview:1[AND]filesimport:1">
+            <field
+                name="filesimportpreviewfolder"
+                type="list"
+                label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWFOLDER_LABEL"
+                required="true"
+                class="btn-group"
+                default="cacheimages"
+                showon="filesimportpreview:1[AND]filesimport:1"
+            >
                 <option value="cache">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWFOLDER_CACHE</option>
                 <option value="generatedimages">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWFOLDER_GENERATED_IMAGES</option>
                 <option value="relatively">PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_FILESIMPORTPREVIEWFOLDER_RELATIVELY</option>
             </field>
 
-            <field name="listtype"
+            <field
+                name="listtype"
                 type="radicalsubform"
                 multiple="true"
                 required="true"
@@ -157,24 +177,27 @@
             >
                 <form>
 
-                    <field name="name"
+                    <field
+                        name="name"
                         type="text"
                         label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_NAME"
                         required="true"
                         class="input-xlarge"
                     />
 
-                    <field name="title"
+                    <field
+                        name="title"
                         type="text"
                         label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_TITLE"
                         required="true"
                         class="input-xlarge"
                     />
 
-                    <field name="type" 
-                        type="list" 
-                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_SELECT" 
-                        default="text" 
+                    <field
+                        name="type"
+                        type="list"
+                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_SELECT"
+                        default="text"
                     >
                         <option value="text">Text</option>
                         <option value="textarea">Textarea</option>
@@ -190,7 +213,8 @@
                         <option value="custom">Custom</option>
                     </field>
 
-                    <field name="required"
+                    <field
+                        name="required"
                         type="radio"
                         label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_REQUIRED"
                         default="0"
@@ -200,7 +224,8 @@
                         <option value="0">JNO</option>
                     </field>
 
-                    <field name="listview"
+                    <field
+                        name="listview"
                         type="list"
                         label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_LISTVIEW"
                         showon="type:list"
@@ -209,7 +234,8 @@
                         <option value="radio">Radio</option>
                     </field>
 
-                    <field name="multiple"
+                    <field
+                        name="multiple"
                         type="radio"
                         label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_MULTIPLE"
                         default="0"
@@ -220,7 +246,8 @@
                         <option value="0">JNO</option>
                     </field>
 
-                    <field name="options"
+                    <field
+                        name="options"
                         type="textarea"
                         label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_OPTIONS"
                         description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_OPTIONS_DESC"
@@ -228,15 +255,17 @@
                         showon="type:list"
                     />
 
-                    <field name="customxml"
-                           type="editor"
-                           label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_CUSTOMXML"
-                           showon="type:custom"
-                           editor="codemirror"
-                           filter="raw"
+                    <field
+                        name="customxml"
+                        type="editor"
+                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_CUSTOMXML"
+                        showon="type:custom"
+                        editor="codemirror"
+                        filter="raw"
                     />
 
-                    <field name="attrs"
+                    <field
+                        name="attrs"
                         type="text"
                         label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_ATTRS"
                         description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_ATTRS_DESC"
