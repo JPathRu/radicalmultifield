@@ -2,6 +2,7 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
 
 extract($displayData);
 $i = mt_rand(11111111, 99999999);
@@ -21,14 +22,14 @@ $class_select_button = 'btn-radicalmiltifield-select-' . $i;
     <?php HTMLHelper::_('behavior.modal', 'button.' . $class_select_button); ?>
     <div class="button-wrap">
         <button class="btn btn-radicalmiltifield-fast-upload" type="button">
-            <span class="icon-upload large-icon"></span> Загрузить
+            <span class="icon-upload large-icon"></span> <?php echo Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_UPLOAD') ?>
         </button>
         <button
                 class="btn btn-radicalmiltifield-select <?php echo $class_select_button ?>"
                 type="button"
                 href="/administrator/index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=html&tmpl=component&name=<?php echo $field_name ?>"
                 rel="{handler: 'iframe', size: {x: 1450, y: 700}, classWindow: 'quantummanager-modal-sbox-window'}">
-            <span class="icon-folder large-icon"></span> Выбрать на сервере
+            <span class="icon-folder large-icon"></span> <?php echo Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_SELECT') ?>
         </button>
     </div>
 
