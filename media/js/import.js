@@ -23,7 +23,7 @@ window.RadicalMiltifieldImport = {
 
             if (/^div.subform-repeatable-group.*?$/.test(subform.attr('data-repeatable-element'))) {
                 subform.find('.btn-toolbar:first .btn').click();
-                subformRepeatableGroup = '.subform-card:last input';
+                subformRepeatableGroup = '.subform-card:last-child input';
             }
 
             let inputAll = document.querySelectorAll(subformRepeatableGroup);

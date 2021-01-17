@@ -178,26 +178,10 @@
                 <form>
 
                     <field
-                        name="name"
-                        type="text"
-                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_NAME"
-                        required="true"
-                        class="input-xlarge"
-                    />
-
-                    <field
-                        name="title"
-                        type="text"
-                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_TITLE"
-                        required="true"
-                        class="input-xlarge"
-                    />
-
-                    <field
-                        name="type"
-                        type="list"
-                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_SELECT"
-                        default="text"
+                            name="type"
+                            type="list"
+                            label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_SELECT"
+                            default="text"
                     >
                         <option value="text">Text</option>
                         <option value="textarea">Textarea</option>
@@ -214,11 +198,30 @@
                     </field>
 
                     <field
+                        name="name"
+                        type="text"
+                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_NAME"
+                        required="true"
+                        class="input-xlarge"
+                        showon="type!:custom"
+                    />
+
+                    <field
+                        name="title"
+                        type="text"
+                        label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_TITLE"
+                        required="true"
+                        class="input-xlarge"
+                        showon="type!:custom"
+                    />
+
+                    <field
                         name="required"
                         type="radio"
                         label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_REQUIRED"
                         default="0"
                         class="btn-group"
+                        showon="type!:custom"
                     >
                         <option value="1">JYES</option>
                         <option value="0">JNO</option>
@@ -270,6 +273,7 @@
                         label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_ATTRS"
                         description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_FORM_ATTRS_DESC"
                         class="input-xxlarge"
+                        showon="type!:custom"
                     />
                 </form>
             </field>
