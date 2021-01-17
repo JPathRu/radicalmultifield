@@ -496,8 +496,14 @@ class RadicalmultifieldHelper
 
 		//если нет, генерируем превью
         JLoader::register('JInterventionimage', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['libraries', 'jinterventionimage', 'jinterventionimage.php']));
-        return JInterventionimage::generateThumb($source, $maxWidth, $maxHeight, $algorithm, $thumb_path);
-	}
+
+        if(class_exists('JInterventionimage'))
+        {
+            return JInterventionimage::generateThumb($source, $maxWidth, $maxHeight, $algorithm, $thumb_path);
+        }
+
+        return $file;
+    }
 
 
 }
