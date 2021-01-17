@@ -59,7 +59,7 @@ jQuery(document).ready(function(){
 
                 //проверка на ютуб
                 if(val.test('youtu')) {
-                    let id = youtube_parser(val);
+                    let id = youtubeParser(val);
                     let image = 'https://img.youtube.com/vi/' + id + '/hqdefault.jpg';
 
                     tile.find('.subform-card-tile-background').css('background-image', 'url(' + image + ')');
@@ -185,7 +185,7 @@ jQuery(document).ready(function(){
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
-    function youtube_parser(url){
+    function youtubeParser(url){
         var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
         var match = url.match(regExp);
         return (match&&match[7].length==11)? match[7] : false;

@@ -1,6 +1,7 @@
 <?php
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\Path;
 use Joomla\Filesystem\Folder;
 use Gumlet\ImageResize;
 
@@ -16,8 +17,15 @@ class RadicalmultifieldHelper
 
 
     /**
-     * @param $field_id
-     * @param $item_id
+     * @var array
+     */
+    protected static $_cache_params = [];
+
+
+    /**
+     * @param int $field_id
+     * @param int $item_id
+     *
      * @return stdClass
      */
     private static function getFieldAndValue($field_id, $item_id)
@@ -27,19 +35,19 @@ class RadicalmultifieldHelper
         //get field
         $db = Factory::getDbo();
         $query = $db->getQuery(true)
-            ->select($db->quoteName(array('context', 'title', 'name')))
-            ->from($db->quoteName('#__fields'))
-            ->where("id = " . $db->escape($field_id));
+            ->select($db->qn(array('context', 'title', 'name')))
+            ->from($db->qn('#__fields'))
+            ->where("id = " . $db->q($field_id));
         $db->setQuery($query);
         $fieldAndValue->field = $db->loadObject();
 
         //get value
         $db = Factory::getDbo();
         $query = $db->getQuery(true)
-            ->select($db->quoteName(array('field_id', 'item_id', 'value')))
-            ->from($db->quoteName('#__fields_values'))
-            ->where("field_id = " . $db->escape($field_id))
-            ->where("item_id = " . $db->escape($item_id));
+            ->select($db->qn(array('field_id', 'item_id', 'value')))
+            ->from($db->qn('#__fields_values'))
+            ->where("field_id = " . $db->q($field_id))
+            ->where("item_id = " . $db->q($item_id));
         $db->setQuery($query);
         $fieldAndValue->value = $db->loadObject();
 
@@ -54,9 +62,11 @@ class RadicalmultifieldHelper
 
 
     /**
-     * @param $field_id
-     * @param $item_id
-     * @param boolean
+     * @param int $field_id
+     * @param int $item_id
+     * @param mixed $value
+     *
+     * @return bool
      */
     private static function saveFieldValue($field_id, $item_id, $value)
     {
@@ -64,10 +74,10 @@ class RadicalmultifieldHelper
         //get value
         $db = Factory::getDbo();
         $query = $db->getQuery(true)
-            ->select($db->quoteName(array('field_id', 'item_id', 'value')))
-            ->from($db->quoteName('#__fields_values'))
-            ->where("field_id = " . $db->escape($field_id))
-            ->where("item_id = " . $db->escape($item_id));
+            ->select($db->qn(array('field_id', 'item_id', 'value')))
+            ->from($db->qn('#__fields_values'))
+            ->where("field_id = " . $db->q($field_id))
+            ->where("item_id = " . $db->q($item_id));
         $db->setQuery($query);
         $fieldValue = $db->loadObject();
 
@@ -84,12 +94,12 @@ class RadicalmultifieldHelper
             $query = $db->getQuery(true);
 
             $fields = array(
-                $db->quoteName('value') . ' = "' . $db->escape($value) . '"',
+                $db->qn('value') . ' = "' . $db->q($value) . '"',
             );
 
             $conditions = array(
-                $db->quoteName('field_id') . ' = ' . $db->escape($field_id),
-                $db->quoteName('item_id') . ' = ' . $db->escape($item_id)
+                $db->qn('field_id') . ' = ' . $db->q($field_id),
+                $db->qn('item_id') . ' = ' . $db->q($item_id)
             );
 
             $query->update($db->quoteName('#__fields_values'))->set($fields)->where($conditions);
@@ -102,8 +112,8 @@ class RadicalmultifieldHelper
 
 
     /**
-     * @param $field_id
-     * @param $item_id
+     * @param int $field_id
+     * @param int $item_id
      * @param array $data
      * @return bool
      */
@@ -129,11 +139,11 @@ class RadicalmultifieldHelper
 
 
 	/**
-	 * @param       $field_id
-	 * @param       $item_id
+	 * @param int $field_id
+	 * @param int $item_id
 	 * @param array $data
 	 *
-	 * @return bool|mixed
+	 * @return bool
 	 */
 	public static function edit($field_id, $item_id, $data = [])
 	{
@@ -192,9 +202,10 @@ class RadicalmultifieldHelper
 
 
     /**
-     * @param $field_id
-     * @param $item_id
+     * @param int $field_id
+     * @param int $item_id
      * @param array $data
+     *
      * @return bool
      */
     public static function delete($field_id, $item_id, $data = [])
@@ -249,10 +260,11 @@ class RadicalmultifieldHelper
 
 
     /**
-     * @param $field_id
-     * @param $item_id
+     * @param int $field_id
+     * @param int $item_id
      * @param array $data
      * @param bool $column_find_all
+     *
      * @return array
      */
     public static function check($field_id, $item_id, $data = [], $column_find_all = true)
@@ -319,6 +331,28 @@ class RadicalmultifieldHelper
     }
 
 
+    /**
+     * @return bool
+     */
+    public static function checkQuantumManager()
+    {
+        $db = Factory::getDBO();
+        $query = $db->getQuery( true )
+            ->select( 'extension_id' )
+            ->from( '#__extensions' )
+            ->where( $db->qn('type') . ' = ' . $db->q('component'))
+            ->where( $db->qn('element') . ' = ' . $db->q('com_quantummanager'));
+        $extension = $db->setQuery( $query )->loadObject();
+
+        if(!empty($extension->extension_id))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+
 	/**
 	 * @param string $fieldname
 	 *
@@ -326,38 +360,51 @@ class RadicalmultifieldHelper
 	 */
     public static function getParams($fieldname = '')
     {
+
+        if(isset(self::$_cache_params[$fieldname]))
+        {
+            return self::$_cache_params[$fieldname];
+        }
+
 	    $db = Factory::getDBO();
 	    $query = $db->getQuery( true )
 		    ->select( 'fieldparams' )
 		    ->from( '#__fields' )
-		    ->where( 'name=' . $db->quote( $fieldname ) );
+		    ->where( 'name=' . $db->q( $fieldname ) );
 	    $field = $db->setQuery( $query )->loadResult();
 
 	    $params = json_decode( $field, JSON_OBJECT_AS_ARRAY );
-
-	    return $params;
+        self::$_cache_params[$fieldname] = $params;
+	    return self::$_cache_params[$fieldname];
     }
 
 
 	/**
-	 * @param $path
+	 * @param string $path
 	 *
-	 * @return array|bool|string
+	 * @return array
 	 */
 	public static function loadClassExtendField($path)
 	{
-		$path = JPATH_ROOT . DIRECTORY_SEPARATOR . $path;
+
+	    if(empty($path))
+        {
+            return [];
+        }
+
+		$path = Path::clean(JPATH_ROOT . DIRECTORY_SEPARATOR . $path);
 		$files = Folder::files($path);
 		$className = false;
 		$fileListsName = [];
 
-		foreach ($files as $file)
+        foreach ($files as $file)
 		{
-			$name = str_replace('.php', '', $file);
+
+            $name = str_replace('.php', '', $file);
 			$className = 'FormField' . ucfirst($name);
 			JLoader::register($className, $path . DIRECTORY_SEPARATOR . $file);
 
-			if (!class_exists($className))
+            if (!class_exists($className))
 			{
 
 				$className = 'JFormField' . ucfirst($name);
@@ -365,7 +412,7 @@ class RadicalmultifieldHelper
 
 				if (!class_exists($className))
 				{
-					return [];
+					continue;
 				}
 				else
 				{
@@ -385,217 +432,72 @@ class RadicalmultifieldHelper
 	}
 
 
-	/**
-	 * @param $fieldOrParams
-	 * @param $source
-	 *
-	 * @return mixed|string
-	 */
-	public static function generateThumb(&$fieldOrParams, $source)
+    /**
+     * @param \Joomla\CMS\Form\FormField|array $fieldOrParams
+     * @param string $source
+     * @param string $thumb_path example: cache/my_cache
+     *
+     * @return string
+     */
+	public static function generateThumb(&$fieldOrParams, $source, $thumb_path = null)
 	{
 		$source = str_replace(JPATH_ROOT . DIRECTORY_SEPARATOR, '', $source);
 		$paths = explode(DIRECTORY_SEPARATOR, $source);
 		$file = array_pop($paths);
 		$fileSplit = explode('.', $file);
 		$fileExt = mb_strtolower(array_pop($fileSplit));
-		$extAccept = ['jpg', 'jpeg', 'png', 'gif'];
+		$extAccept = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
 		if(!in_array($fileExt, $extAccept))
 		{
 			return $file;
 		}
 
-		$pathThumb = implode(DIRECTORY_SEPARATOR, array_merge($paths, ['_thumb']));
-		$pathFileThumb = implode(DIRECTORY_SEPARATOR, array_merge($paths, ['_thumb'])) . DIRECTORY_SEPARATOR . $file;
-		$fullPathThumb =  JPATH_ROOT . DIRECTORY_SEPARATOR . $pathThumb . DIRECTORY_SEPARATOR . $file;
+		if($thumb_path === null)
+        {
+            $thumb_path = implode(DIRECTORY_SEPARATOR, array_merge($paths));
+        }
 
-		//если есть проевью, то отдаем ссылку на файл
-		if(file_exists($fullPathThumb))
-		{
-			return $pathFileThumb;
-		}
+        $params = [];
+
+        if(is_object($fieldOrParams))
+        {
+            if(!isset($fieldOrParams->name))
+            {
+                return $source;
+            }
+
+            //подгружаем параметры поля
+            $params = self::getParams($fieldOrParams->name);
+
+        }
+
+        if(is_array($fieldOrParams))
+        {
+            $params = $fieldOrParams;
+        }
+
+		if(isset($params['filesimportpreviewfolder']))
+        {
+            if($params['filesimportpreviewfolder'] === 'cache')
+            {
+                $thumb_path = Path::clean(DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'plg_fields_multifields' . DIRECTORY_SEPARATOR. $thumb_path);
+            }
+
+            if($params['filesimportpreviewfolder'] === 'generatedimages')
+            {
+                $thumb_path = Path::clean(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'generatedimages' . DIRECTORY_SEPARATOR . 'plg_fields_multifields' . DIRECTORY_SEPARATOR. $thumb_path);
+            }
+        }
+
+		$maxWidth = (int)$params['filesimportpreviewmaxwidth'];
+        $maxHeight = (int)$params['filesimportpreviewmaxheight'];
+        $algorithm = $params['filesimportpreviewalgorithm'];
 
 		//если нет, генерируем превью
-
-		//проверяем создан ли каталог для превью
-		if(!file_exists(JPATH_ROOT . DIRECTORY_SEPARATOR . $pathThumb))
-		{
-			//создаем каталог
-			Folder::create(JPATH_ROOT . DIRECTORY_SEPARATOR . $pathThumb);
-		}
-
-		//подгружаем библиотеку для фото
-		JLoader::registerNamespace('Gumlet', JPATH_SITE . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR , ['plugins', 'fields', 'radicalmultifield', 'libs', 'gumlet', 'lib']));
-
-		$params = [];
-
-		if(is_object($fieldOrParams))
-		{
-			if(!isset($fieldOrParams->name))
-			{
-				return $source;
-			}
-
-			//подгружаем параметры поля
-			$params = self::getParams($fieldOrParams->name);
-
-		}
-
-		if(is_array($fieldOrParams))
-		{
-			$params = $fieldOrParams;
-		}
-
-
-		if(!isset($params['filesimportpreviewmaxwidth']) || !isset($params['filesimportpreviewmaxheight']))
-		{
-			return $source;
-		}
-
-		$overlayAccept = true;
-
-		if((int)$params['filesimportreoriginal'])
-		{
-			$originalFile = implode(DIRECTORY_SEPARATOR, array_merge($paths, ['_original'])) . DIRECTORY_SEPARATOR . $source;
-
-			if(!file_exists($originalFile))
-			{
-				$originalFile = JPATH_ROOT . DIRECTORY_SEPARATOR . $source;
-				$overlayAccept = false;
-			}
-
-		} else
-			{
-			$originalFile = JPATH_ROOT . DIRECTORY_SEPARATOR . $source;
-			$overlayAccept = false;
-		}
-
-		if(copy(JPATH_ROOT . DIRECTORY_SEPARATOR . $source, $fullPathThumb)) {
-			$image = new ImageResize($fullPathThumb);
-
-			$maxWidth = (int)$params['filesimportpreviewmaxwidth'];
-			$maxHeight = (int)$params['filesimportpreviewmaxheight'];
-
-			$image->resizeToBestFit($maxWidth, $maxHeight);
-
-			if((int)$params['filesimportrezizeoverlay'] && (int)$params['filesimportreoriginal'] && $overlayAccept) {
-				$file = JPATH_SITE . DIRECTORY_SEPARATOR . $params['filesimportrezizeoverlayfile'];
-				$position = $params['filesimportrezizeoverlaypos'];
-				$padding = $params['filesimportrezizeoverlaypadding'];
-
-				if(file_exists($file))
-				{
-					$image->addFilter(function ($imageDesc) use ($file, $position, $padding, $params)
-					{
-
-						if(!file_exists($file))
-						{
-							return false;
-						}
-
-						$logo = imagecreatefromstring(file_get_contents($file));
-						$logoWidth = imagesx($logo);
-						$logoHeight = imagesy($logo);
-						$imageWidth = imagesx($imageDesc);
-						$imageHeight = imagesy($imageDesc);
-						$imageX = $padding;
-						$imageY = $padding;
-
-						if(isset($params['filesimportrezizeoverlaypercent']) && (int)$params['filesimportrezizeoverlaypercent'])
-						{
-							//сжимаем водяной знак по процентному соотношению от изображения на который накладывается
-							$precent = (int)$params['filesimportrezizeoverlaypercentvalue'];
-							$logoWidthMax = $imageWidth / 100 * $precent;
-							$logoHeightMax = $imageHeight / 100 * $precent;
-
-							$ratio  = $logoHeight / $logoWidth;
-							$tmpWidth = $logoWidthMax;
-							$tmpHeight = $tmpWidth * $ratio;
-
-							if ($tmpHeight > $logoHeightMax)
-							{
-								$tmpHeight = $logoHeightMax;
-								$tmpWidth = $tmpHeight / $ratio;
-							}
-
-							$logoNew = imagecreatetruecolor($tmpWidth, $tmpHeight);
-							imagesavealpha($logoNew, true);
-							imagefill($logoNew,0,0,0x7fff0000);
-							imagecopyresampled($logoNew, $logo, 0, 0, 0, 0, $tmpWidth, $tmpHeight, $logoWidth, $logoHeight);
-							$logo = $logoNew;
-							$logoWidth = $tmpWidth;
-							$logoHeight = $tmpHeight;
-							unset($logoNew);
-						}
-
-						if($logoWidth > $imageWidth && $logoHeight > $imageHeight)
-						{
-							return false;
-						}
-
-						switch ($position)
-						{
-
-							case "topleft":
-								$imageX = $padding;
-								$imageY = $padding;
-								break;
-
-							case "topcenter":
-								$imageX = ($imageWidth/2) - ($logoWidth/2);
-								$imageY = $padding;
-								break;
-
-							case "topright":
-								$imageX = $imageWidth - $padding - $logoWidth;
-								$imageY = $padding;
-								break;
-
-							case "centerleft":
-								$imageX = $padding;
-								$imageY = ($imageHeight/2) - ($logoHeight/2);
-								break;
-
-							case "centercenter":
-								$imageX = ($imageWidth/2) - ($logoWidth/2);
-								$imageY = ($imageHeight/2) - ($logoHeight/2);
-								break;
-
-							case "centerright":
-								$imageX = $imageWidth - $padding - $logoWidth;
-								$imageY = ($imageHeight/2) - ($logoHeight/2);
-								break;
-
-							case "bottomleft":
-								$imageX = $padding;
-								$imageY = $imageHeight - $padding - $logoHeight;
-								break;
-
-							case "bottomcenter":
-								$imageX = ($imageWidth/2) - ($logoWidth/2);
-								$imageY = $imageHeight - $padding - $logoHeight;
-								break;
-
-							case "bottomright":
-								$imageX = $imageWidth - $padding - $logoWidth;
-								$imageY = $imageHeight - $padding - $logoHeight;
-								break;
-
-						}
-
-						imagecopy($imageDesc, $logo, $imageX, $imageY, 0, 0, $logoWidth, $logoHeight);
-					});
-				}
-			}
-
-			$image->save($fullPathThumb);
-			unset($image);
-		}
-
-		return $pathFileThumb;
-
+        JLoader::register('JInterventionimage', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['libraries', 'jinterventionimage', 'jinterventionimage.php']));
+        return JInterventionimage::generateThumb($source, $maxWidth, $maxHeight, $algorithm, $thumb_path);
 	}
-
 
 
 }

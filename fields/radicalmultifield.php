@@ -9,8 +9,10 @@
  */
 
 use Joomla\CMS\Filter\OutputFilter;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Layout\LayoutHelper;
 
 defined('_JEXEC') or die;
 
@@ -22,6 +24,7 @@ JFormHelper::loadFieldClass('folderlist');
  */
 class JFormFieldRadicalmultifield extends JFormFieldSubform
 {
+
 
     /**
      * @var string
@@ -44,6 +47,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 		];
 	}
 
+
     /**
      * @return string
      */
@@ -59,13 +63,13 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 
         $db = Factory::getDBO();
         $query = $db->getQuery(true)
-            ->select($db->quoteName(array('params', 'fieldparams')))
+            ->select($db->quoteName(['name', 'params', 'fieldparams']))
             ->from('#__fields')
             ->where( 'name=' . $db->quote($this->fieldname));
         $field = $db->setQuery( $query )->loadObject();
 
 	    $query = $db->getQuery(true)
-		    ->select($db->quoteName(array('params')))
+		    ->select($db->quoteName(['params']))
 		    ->from('#__extensions')
 		    ->where( 'element=' . $db->quote('radicalmultifield'));
 	    $extension = $db->setQuery( $query )->loadObject();
@@ -83,7 +87,8 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
         //подзагружаем кастомные поля
 	    JLoader::import('radicalmultifieldhelper', JPATH_ROOT . '/plugins/fields/radicalmultifield');
 
-	    if(isset($params['extendfield']))
+
+        if(isset($params['extendfield']) && !empty($params['extendfield']))
 	    {
 
 		    $extendField = explode("\n", $params['extendfield']);
@@ -93,6 +98,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 		    }
 
 	    }
+
 
         foreach ($fieldparams['listtype'] as $fieldparam)
         {
@@ -107,7 +113,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
                     $this->formsource .= "<field name=\"{$fieldparam['name']}\" type=\"{$fieldparam['listview']}\" label=\"{$fieldparam['title']}\"{$required}{$multiple}{$class} {$attrs}>";
                     $options = explode( "\n", $fieldparam['options'] );
 
-                    foreach ( $options as $option )
+                    foreach ($options as $option)
                     {
                         $value = OutputFilter::stringURLSafe( $option );
                         $this->formsource .= "<option value=\"{$value}\">{$option}</option>";
@@ -121,6 +127,13 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
                     $this->formsource .= "<field name=\"{$fieldparam['name']}\" type=\"{$fieldparam['type']}\" label=\"{$fieldparam['title']}\" filter=\"raw\" {$attrs}/>";
                     break;
 
+                case 'custom':
+                    if(!empty($fieldparam['customxml']))
+                    {
+                        $this->formsource .= $fieldparam['customxml'];
+                    }
+                    break;
+
                 default:
                     $attrs = trim( $fieldparam['attrs'] );
                     $this->formsource .= "<field name=\"{$fieldparam['name']}\" type=\"{$fieldparam['type']}\" label=\"{$fieldparam['title']}\" {$attrs}/>";
@@ -128,65 +141,46 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
         }
 
         $this->formsource .= "</form>";
-
         $html = parent::getInput();
 
-
-        if(isset($fieldparams['filesimport']))
+        if(isset($fieldparams['filesimport']) && RadicalmultifieldHelper::checkQuantumManager())
         {
-
 	        if((int)$fieldparams['filesimport'])
 	        {
-		        $allow = true;
+                HTMLHelper::stylesheet('plg_fields_radicalmultifield/import.css', [
+                    'version' => filemtime ( __FILE__ ),
+                    'relative' => true,
+                ]);
 
-		        $app = Factory::getApplication();
-		        $admin = $app->isAdmin();
+                HTMLHelper::script('plg_fields_radicalmultifield/buttons.js', [
+                    'version' => filemtime ( __FILE__ ),
+                    'relative' => true,
+                ]);
 
-		        if((int)$fieldparams['filesimportadmin'] && !$admin)
-		        {
-			        $allow = false;
-		        }
+                HTMLHelper::script('plg_fields_radicalmultifield/import.js', [
+                    'version' => filemtime ( __FILE__ ),
+                    'relative' => true,
+                ]);
 
-		        if($allow)
-		        {
-			        $folder = $fieldparams['filesimportpath'];
-			        JLoader::register(
-				        'FormFieldRadicalmultifieldtreecatalog',
-				        JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'elements', 'radicalmultifieldtreecatalog']) . '.php'
-			        );
-
-			        $treeCatalog = new FormFieldRadicalmultifieldtreecatalog;
-
-			        $paramsForField = [
-				        'name' => 'select-directory',
-				        'label' => Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_TREECATALOG_TITLE'),
-				        'class' => '',
-				        'type' => 'radicalmultifieldtreecatalog',
-				        'folder' => $folder,
-				        'folderonly' => 'true',
-				        'showroot' => 'true',
-				        'exs' => $fieldparams['filesimportexc'],
-				        'maxsize' => $fieldparams['filesimportmaxsize'],
-				        'namefield' => $fieldparams['filesimportname'],
-				        'namefile' => $fieldparams['filesimportnamefile'],
-				        'importfield' => $this->fieldname,
-			        ];
-
-			        $dataAttributes = array_map(function($value, $key)
-			        {
-				        return $key.'="'.$value.'"';
-			        }, array_values($paramsForField), array_keys($paramsForField));
-
-			        $treeCatalog->setup(new SimpleXMLElement("<field " . implode(' ', $dataAttributes) . " />"), '');
-			        $html = "<div style='margin-bottom: 15px'>" . $treeCatalog->getInput() . "</div>" . $html;
-
-		        }
+                $field_path = !empty($fieldparams['filesimportpath']) ? $fieldparams['filesimportpath'] : 'images';
+                $params_for_field = [
+                    'namefield' => $fieldparams['filesimportname'],
+                    'namefile' => $fieldparams['filesimportnamefile'],
+                ];
+                $html =
+                    "<div class='radicalmultifield-import' data-options='" . json_encode($params_for_field) . "'>" .
+                        LayoutHelper::render('import', [
+                            'field_name' => $field->name,
+                            'field_path' => $field_path
+                        ], JPATH_ROOT . '/plugins/fields/radicalmultifield/layouts')
+                        . $html .
+                    "</div>";
 
 	        }
-
         }
 
         return $html;
     }
+
 
 }

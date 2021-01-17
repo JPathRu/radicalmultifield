@@ -86,7 +86,7 @@ else
                     <th style="width: 18%">
 	                    <?php if (!empty($buttons)) : ?>
                             <?php if (!empty($buttons['add'])) : ?>
-                                <a class="group-add-<?php echo $unique_subform_id; ?> btn button uk-button uk-button-text uk-button-small" aria-label="<?php echo JText::_('JGLOBAL_FIELD_ADD'); ?>"><span uk-icon="icon: plus"></span> <?php echo JText::_('JGLOBAL_FIELD_ADD'); ?></a>
+                                <a class="group-add-<?php echo $unique_subform_id; ?> btn button uk-button-text uk-button-small" aria-label="<?php echo JText::_('JGLOBAL_FIELD_ADD'); ?>"><span uk-icon="icon: plus"></span> <?php echo JText::_('JGLOBAL_FIELD_ADD'); ?></a>
 		                    <?php endif;?>
                         <?php endif;?>
                     </th>

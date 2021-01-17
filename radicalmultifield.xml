@@ -2,12 +2,12 @@
 <extension type="plugin" version="3.7" group="fields" method="upgrade">
 	<name>PLG_RADICAL_MULTI_FIELD</name>
 	<creationDate>18.08.2018</creationDate>
-	<author>delo-design.ru</author>
-	<authorEmail>info@delo-design.ru</authorEmail>
+	<author>Cymbal</author>
+	<authorEmail>cymbal@delo-design.ru</authorEmail>
 	<authorUrl>https://delo-design.ru</authorUrl>
 	<copyright>Copyright (C) 2018 "Delo Design". All rights reserved.</copyright>
-	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<version>2.2</version>
+	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
+	<version>3.0</version>
 	<description>PLG_RADICAL_MULTI_FIELD_XML_DESCRIPTION</description>
 
 	<scriptfile>script.php</scriptfile>
@@ -21,7 +21,7 @@
 
 	<updateservers>
 		<server type="extension" priority="1" name="Radical MultiField">
-			https://hika.su/update/free/plg_radicalmultifield.xml
+			https://hika.su/update/free/plg_radicalmultifield_3x.xml
 		</server>
 	</updateservers>
 
@@ -29,18 +29,15 @@
 		<filename plugin="radicalmultifield">radicalmultifield.php</filename>
 		<filename plugin="radicalmultifield">radicalmultifieldhelper.php</filename>
 		<filename>LICENSE.txt</filename>
-		<folder>elements</folder>
 		<folder>fields</folder>
 		<folder>layouts</folder>
-		<folder>libs</folder>
 		<folder>params</folder>
 		<folder>tmpl</folder>
 	</files>
 
 	<media folder="media" destination="plg_fields_radicalmultifield">
-		<folder>core</folder>
-		<folder>libs</folder>
-		<folder>img</folder>
+		<folder>css</folder>
+		<folder>js</folder>
 	</media>
 
 	<config>

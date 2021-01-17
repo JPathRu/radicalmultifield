@@ -36,13 +36,13 @@ if ($multiple)
     JHtml::_('stylesheet', 'subform-repetable-cards/cards.css', array('version' => 'auto', 'relative' => true));
 }
 
-JHtml::_('stylesheet', 'plg_fields_radicalmultifield/core/cards.css', [
+JHtml::_('stylesheet', 'plg_fields_radicalmultifield/cards.css', [
 	'version' => filemtime ( __FILE__ ),
 	'relative' => true
 ]);
 
 
-JHtml::_('script', 'plg_fields_radicalmultifield/core/subform-repetable-cards.js', [
+JHtml::_('script', 'plg_fields_radicalmultifield/subform-repetable-cards.js', [
 	'version' => filemtime ( __FILE__ ),
 	'relative' => true
 ]);
