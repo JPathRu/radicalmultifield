@@ -48,7 +48,7 @@ jQuery(document).ready(function(){
                         let image = val;
 
                         if(image.charAt(0) !== '/') {
-                            image = '/' + image;
+                            image = siteUrl + image;
                         }
 
                         tile.find('.subform-card-tile-background').css('background-image', 'url(' + image + ')');
@@ -83,7 +83,7 @@ jQuery(document).ready(function(){
                 let image = inputImage.val();
 
                 if(image.charAt(0) !== '/') {
-                    image = '/' + image;
+                    image = siteUrl + image;
                 }
 
                 tile.find('.subform-card-tile-background').css('background-image', 'url(' + image + ')');
