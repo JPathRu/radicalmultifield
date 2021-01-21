@@ -86,7 +86,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 
         //подзагружаем кастомные поля
 	    JLoader::import('radicalmultifieldhelper', JPATH_ROOT . '/plugins/fields/radicalmultifield');
-
+        JLoader::register('RadicalmultifieldHelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'radicalmultifieldhelper']) . '.php');
 
         if(isset($params['extendfield']) && !empty($params['extendfield']))
 	    {

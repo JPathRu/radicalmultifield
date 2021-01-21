@@ -18,7 +18,7 @@ $height = (int)$field->fieldparams->get('filesimportpreviewmaxheight');
 if($height === 0) {
     $height = 250;
 }
-jimport('radicalmultifieldhelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield'])); //подключаем хелпер
+
 ?>
 
 <div class="uk-child-width-1-4@m" uk-grid  uk-lightbox="animation: slide">

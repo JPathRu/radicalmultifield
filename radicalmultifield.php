@@ -131,7 +131,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
     /**
      * @since   3.7.0
      */
-    public function onCustomFieldsPrepareDom($field, DOMElement $parent, Form $form )
+    public function onCustomFieldsPrepareDom($field, DOMElement $parent, JForm $form )
     {
 
     	$fieldNode = parent::onCustomFieldsPrepareDom($field, $parent, $form);
@@ -167,7 +167,17 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
             return;
         }
 
+        JLoader::register('RadicalmultifieldHelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'radicalmultifieldhelper']) . '.php');
+
         $input = Factory::getApplication()->input;
+        $option = $input->get('option', 'com_content');
+        $view = $input->get('view', 'article');
+        $context_input = $option . '.' . $view;
+
+        if(isset($item->content_radicalmultifield) && !empty($item->content_radicalmultifield))
+        {
+            $context_input =  $item->content_radicalmultifield;
+        }
 
         // Merge the params from the plugin and field which has precedence
         $fieldParams = clone $this->params;
@@ -177,6 +187,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
         $template_category = [
             'com_content.category',
             'com_users.users',
+            'com_content.categories',
         ];
 
         $template_item = [
@@ -186,12 +197,12 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
         if(empty($template))
         {
-            if(in_array($context, $template_category))
+            if(in_array($context_input, $template_category))
             {
                 $template = $fieldParams->get('templatecategory', $template);
             }
 
-            if(in_array($context, $template_item))
+            if(in_array($context_input, $template_item))
             {
                 $template = $fieldParams->get('templatearticle', $template);
             }
@@ -230,7 +241,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 	 *
 	 * @since   3.7.0
 	 */
-	public function onContentPrepareForm(Form $form, $data)
+	public function onContentPrepareForm(JForm $form, $data)
 	{
 
 
