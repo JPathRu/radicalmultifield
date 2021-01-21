@@ -85,7 +85,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
         $this->formsource = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><form>";
 
         //подзагружаем кастомные поля
-	    JLoader::import('radicalmultifieldhelper', JPATH_ROOT . '/plugins/fields/radicalmultifield');
+        Factory::getDocument()->addScriptDeclaration("let siteUrl = '".JUri::root()."'");
         JLoader::register('RadicalmultifieldHelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'radicalmultifieldhelper']) . '.php');
 
         if(isset($params['extendfield']) && !empty($params['extendfield']))
