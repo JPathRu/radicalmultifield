@@ -10,9 +10,9 @@
 
 use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\Uri\Uri;
 
 defined('_JEXEC') or die;
 
@@ -85,7 +85,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
         $this->formsource = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><form>";
 
         //подзагружаем кастомные поля
-        Factory::getDocument()->addScriptDeclaration("let siteUrl = '".JUri::root()."'");
+        Factory::getDocument()->addScriptDeclaration("let siteUrl = '". Uri::root(). "'");
         JLoader::register('RadicalmultifieldHelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'radicalmultifieldhelper']) . '.php');
 
         if(isset($params['extendfield']) && !empty($params['extendfield']))
