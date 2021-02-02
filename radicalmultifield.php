@@ -186,13 +186,16 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
         $template_category = [
             'com_content.category',
-            'com_users.users',
             'com_content.categories',
+            'com_users.users',
+            'com_contact.categories',
+            'com_tags.tag',
         ];
 
         $template_item = [
             'com_content.article',
             'com_users.user',
+            'com_contact.contact',
         ];
 
         if(empty($template))
