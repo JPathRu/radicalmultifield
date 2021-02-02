@@ -174,9 +174,9 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
         $view = $input->get('view', 'article');
         $context_input = $option . '.' . $view;
 
-        if(isset($item->content_radicalmultifield) && !empty($item->content_radicalmultifield))
+        if(!empty($item->context_radicalmultifield))
         {
-            $context_input =  $item->content_radicalmultifield;
+            $context_input =  $item->context_radicalmultifield;
         }
 
         // Merge the params from the plugin and field which has precedence
