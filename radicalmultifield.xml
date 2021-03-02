@@ -7,7 +7,7 @@
 	<authorUrl>https://delo-design.ru</authorUrl>
 	<copyright>Copyright (C) 2018 "Delo Design". All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
-	<version>3.0.1</version>
+	<version>3.0.2</version>
 	<description>PLG_RADICAL_MULTI_FIELD_XML_DESCRIPTION</description>
 
 	<scriptfile>script.php</scriptfile>
