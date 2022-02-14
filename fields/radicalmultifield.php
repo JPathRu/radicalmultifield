@@ -115,8 +115,15 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 
                     foreach ($options as $option)
                     {
-                        $value = OutputFilter::stringURLSafe( $option );
-                        $this->formsource .= "<option value=\"{$value}\">{$option}</option>";
+						$label = $option;
+	                    $value = OutputFilter::stringURLSafe( $option );
+
+						if(strpos($option, ';') !== false)
+						{
+							[$label, $value] = explode(';', $option);
+						}
+
+                        $this->formsource .= "<option value=\"{$value}\">{$label}</option>";
                     }
 
                     $this->formsource .= "</field>";
