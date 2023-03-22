@@ -20,12 +20,12 @@ $app->getSession()->clear('quantummanageraddscripts');
 $app->getSession()->set('quantummanagerroot', $field_path);
 $app->getSession()->set('quantummanagerrootcheck', 0);
 
-HTMLHelper::_('stylesheet', 'plg_system_quantummanagermedia/modal.css', [
+echo HTMLHelper::_('stylesheet', 'plg_system_quantummanagermedia/modal.css', [
 	'version' => filemtime(__FILE__),
 	'relative' => true
 ]);
 
-HTMLHelper::_('script', 'plg_fields_radicalmultifield/modal.js', [
+echo HTMLHelper::_('script', 'plg_fields_radicalmultifield/modal.js', [
     'version' => filemtime(__FILE__),
     'relative' => true
 ]);

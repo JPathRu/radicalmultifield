@@ -1,8 +1,10 @@
 <?php
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Uri\Uri;
 
 extract($displayData);
 $i = mt_rand(11111111, 99999999);
@@ -19,15 +21,35 @@ $class_select_button = 'btn-radicalmiltifield-select-' . $i;
         echo $upload->getInput();
     ?>
 
-    <?php HTMLHelper::_('behavior.modal', 'button.' . $class_select_button); ?>
+    <?php
+		Factory::getApplication()->getDocument()->getWebAssetManager()->useScript('bootstrap.modal');
+		echo HTMLHelper::_(
+			'bootstrap.renderModal',
+			$class_select_button,
+			[
+				'title'       => 'Заголовок окна',
+				'backdrop'    => 'static',
+				'keyboard'    => false,
+				'closeButton' => true,
+				'url'         => Uri::root().'administrator/index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=html&tmpl=component&name='.$field_name,
+				'height'      => '400px',
+				'width'       => '800px',
+				'bodyHeight'  => 70,
+				'modalWidth'  => 80,
+			]
+		);
+
+	?>
     <div class="button-wrap">
         <button class="btn btn-radicalmiltifield-fast-upload" type="button">
             <span class="icon-upload large-icon"></span> <?php echo Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_UPLOAD') ?>
         </button>
         <button
                 class="btn btn-radicalmiltifield-select <?php echo $class_select_button ?>"
+				data-bs-toggle="modal"
+				data-bs-target="#<?php echo $class_select_button ?>"
                 type="button"
-                href="<?= JUri::root() ?>administrator/index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=html&tmpl=component&name=<?php echo $field_name ?>"
+                href="<?php echo Uri::root(); ?>index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=html&tmpl=component&name=<?php echo $field_name ?>"
                 rel="{handler: 'iframe', size: {x: 1450, y: 700}, classWindow: 'quantummanager-modal-sbox-window'}">
             <span class="icon-folder large-icon"></span> <?php echo Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_SELECT') ?>
         </button>

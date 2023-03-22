@@ -7,6 +7,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+use Joomla\CMS\HTML\HTMLHelper;
+
 defined('_JEXEC') or die;
 
 /**
@@ -29,20 +31,21 @@ extract($displayData);
 // Add script
 if ($multiple)
 {
-    JHtml::_('jquery.ui', array('core', 'sortable'));
-    JHtml::_('script', 'system/subform-repeatable.js', array('version' => 'auto', 'relative' => true));
-    JHtml::_('script', 'system/subform-repeatable.js', array('version' => 'auto', 'relative' => true));
-    JHtml::_('script', 'subform-repetable-cards/main.js', array('version' => 'auto', 'relative' => true));
-    JHtml::_('stylesheet', 'subform-repetable-cards/cards.css', array('version' => 'auto', 'relative' => true));
+//    HTMLHelper::_('jquery.ui', array('core', 'sortable'));
+	HTMLHelper::_('script', 'plg_fields_radicalmultifield/jquery.ui.min.js', array('version' => 'auto', 'relative' => true));
+//	HTMLHelper::_('script', 'plg_fields_radicalmultifield/jquery.ui.sortable.min.js', array('version' => 'auto', 'relative' => true));
+    HTMLHelper::_('script', 'system/subform-repeatable.js', array('version' => 'auto', 'relative' => true));
+    HTMLHelper::_('script', 'subform-repetable-cards/main.js', array('version' => 'auto', 'relative' => true));
+    HTMLHelper::_('stylesheet', 'subform-repetable-cards/cards.css', array('version' => 'auto', 'relative' => true));
 }
 
-JHtml::_('stylesheet', 'plg_fields_radicalmultifield/cards.css', [
+HTMLHelper::_('stylesheet', 'plg_fields_radicalmultifield/cards.css', [
 	'version' => filemtime ( __FILE__ ),
 	'relative' => true
 ]);
 
 
-JHtml::_('script', 'plg_fields_radicalmultifield/subform-repetable-cards.js', [
+HTMLHelper::_('script', 'plg_fields_radicalmultifield/subform-repetable-cards.js', [
 	'version' => filemtime ( __FILE__ ),
 	'relative' => true
 ]);

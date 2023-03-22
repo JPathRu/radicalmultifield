@@ -16,6 +16,7 @@ use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\DatabaseInterface;
 
 defined('_JEXEC') or die;
 
@@ -71,12 +72,12 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
         // Needed attributes
         $data['type'] = $layout;
 
-        if ( Factory::getLanguage()->hasKey( 'PLG_FIELDS_' . $key . '_LABEL' ) )
+        if ( Factory::getApplication()->getLanguage()->hasKey( 'PLG_FIELDS_' . $key . '_LABEL' ) )
         {
             $data[ 'label' ] = Text::sprintf( 'PLG_FIELDS_' . $key . '_LABEL', strtolower( $key ) );
 
             // Fix wrongly set parentheses in RTL languages
-            if ( Factory::getLanguage()->isRTL() )
+            if ( Factory::getApplication()->getLanguage()->isRTL() )
             {
                 $data[ 'label' ] = $data[ 'label' ] . '&#x200E;';
             }
@@ -107,7 +108,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 	    PluginHelper::importPlugin('radicalmultifield');
 	    $radicalmultifieldPlugins = PluginHelper::getPlugin('radicalmultifield');
-	    $language = Factory::getLanguage();
+	    $language = Factory::getApplication()->getLanguage();
 
         foreach ($radicalmultifieldPlugins as $radicalmultifieldPlugin)
         {
@@ -169,7 +170,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
         JLoader::register('RadicalmultifieldHelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'radicalmultifieldhelper']) . '.php');
 
-        $input = Factory::getApplication()->input;
+        $input = Factory::getApplication()->getInput();
         $option = $input->get('option', 'com_content');
         $view = $input->get('view', 'article');
         $context_input = $option . '.' . $view;
@@ -376,7 +377,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 		}
 
-		HTMLHelper::_( 'jquery.framework' );
+		Factory::getApplication()->getDocument()->getWebAssetManager()->useScript('jquery');
 
 		HTMLHelper::script('plg_fields_radicalmultifield/fix.js', [
 			'version' => filemtime ( __FILE__ ),
@@ -429,7 +430,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
                 return;
             }
 
-            $db = Factory::getDBO();
+            $db = Factory::getContainer()->get(DatabaseInterface::class);
             $query = $db->getQuery(true)
                 ->select($db->quoteName(array('params', 'fieldparams')))
                 ->from('#__fields')

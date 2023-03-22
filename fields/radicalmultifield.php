@@ -14,6 +14,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Database\DatabaseInterface;
 use Joomla\Registry\Registry;
 
 defined('_JEXEC') or die;
@@ -72,7 +73,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 			return $this->_cache_field;
 		}
 
-		$db                 = Factory::getDBO();
+		$db                 = Factory::getContainer()->get(DatabaseInterface::class);
 		$query              = $db->getQuery(true)
 			->select($db->quoteName(['name', 'params', 'fieldparams']))
 			->from('#__fields')
@@ -90,7 +91,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 			return $this->_cache_field_params;
 		}
 
-		$db                        = Factory::getDBO();
+		$db                 = Factory::getContainer()->get(DatabaseInterface::class);
 		$query                     = $db->getQuery(true)
 			->select($db->quoteName(['params']))
 			->from('#__extensions')
@@ -123,7 +124,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 		$formsource = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><form>";
 
 		//подзагружаем кастомные поля
-		Factory::getDocument()->addScriptDeclaration("window.siteUrl = '" . Uri::root() . "'");
+		Factory::getApplication()->getDocument()->getWebAssetManager()->addInlineScript("window.siteUrl = '" . Uri::root() . "'");
 		JLoader::register('RadicalmultifieldHelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'radicalmultifieldhelper']) . '.php');
 
 		if (isset($params['extendfield']) && !empty($params['extendfield']))
@@ -257,6 +258,9 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 		$field         = $this->getField();
 		$html          = parent::getInput();
 
+		$fieldparams = json_decode($field->fieldparams, JSON_OBJECT_AS_ARRAY);
+
+
 		if (isset($fieldparams['filesimport']) && RadicalmultifieldHelper::checkQuantumManager())
 		{
 			if ((int) $fieldparams['filesimport'])
@@ -281,10 +285,11 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 					'namefield' => $fieldparams['filesimportname'],
 					'namefile'  => $fieldparams['filesimportnamefile'],
 				];
+
 				$html             =
 					"<div class='radicalmultifield-import' data-options='" . json_encode($params_for_field) . "'>" .
 					LayoutHelper::render('import', [
-						'field_name' => $field->name,
+						'field_name' => $this->fieldname,
 						'field_path' => $field_path
 					], JPATH_ROOT . '/plugins/fields/radicalmultifield/layouts')
 					. $html .
