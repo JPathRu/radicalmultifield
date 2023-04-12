@@ -8,6 +8,7 @@
  */
 
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
 
 defined('_JEXEC') or die;
 
@@ -53,9 +54,10 @@ HTMLHelper::_('script', 'plg_fields_radicalmultifield/subform-repetable-cards.js
 $sublayout = empty($groupByFieldset) ? 'section' : 'section-byfieldsets';
 ?>
 
+
 <div class="row-fluid">
     <div class="subform-repeatable-wrapper subform-layout">
-        <div class="subform-repeatable subform-repeatable-cards"
+        <joomla-field-subform class="subform-repeatable subform-repeatable-cards"
              data-bt-add="a.group-add-<?php echo $unique_subform_id; ?>"
              data-bt-remove="a.group-remove-<?php echo $unique_subform_id; ?>"
              data-bt-move="a.group-move-<?php echo $unique_subform_id; ?>"
@@ -66,13 +68,26 @@ $sublayout = empty($groupByFieldset) ? 'section' : 'section-byfieldsets';
             <?php if (!empty($buttons['add'])) : ?>
                 <div class="btn-toolbar">
                     <div class="btn-group">
-                        <a class="btn button btn-success group-add-<?php echo $unique_subform_id; ?>" aria-label="<?php echo JText::_('JGLOBAL_FIELD_ADD'); ?>">
-                            <span class="icon-plus" aria-hidden="true"></span> <span><?php echo JText::_('JGLOBAL_FIELD_ADD'); ?></span>
-                        </a>
+                        <button type="button" class="btn button btn-success group-add-<?php echo $unique_subform_id; ?>" aria-label="<?php echo JText::_('JGLOBAL_FIELD_ADD'); ?>">
+                            <span class="icon-plus" aria-hidden="true"></span> <span><?php echo Text::_('JGLOBAL_FIELD_ADD'); ?></span>
+                        </button>
                     </div>
                 </div>
             <?php endif; ?>
-
+	        <?php if ($multiple) : ?>
+				<template class="subform-repeatable-template-section hidden"><?php echo trim(
+				        $this->sublayout(
+					        $sublayout,
+					        array(
+						        'form' => $tmpl,
+						        'basegroup' => $fieldname,
+						        'group' => $fieldname . 'X',
+						        'buttons' => $buttons,
+						        'unique_subform_id' => $unique_subform_id,
+					        )
+				        )
+			        ); ?></template>
+	        <?php endif; ?>
             <?php
             foreach ($forms as $k => $form) :
                 echo $this->sublayout(
@@ -88,20 +103,7 @@ $sublayout = empty($groupByFieldset) ? 'section' : 'section-byfieldsets';
             endforeach;
             ?>
 
-            <?php if ($multiple) : ?>
-                <template class="subform-repeatable-template-section"><?php echo trim(
-                        $this->sublayout(
-                            $sublayout,
-                            array(
-                                'form' => $tmpl,
-                                'basegroup' => $fieldname,
-                                'group' => $fieldname . 'X',
-                                'buttons' => $buttons,
-                                'unique_subform_id' => $unique_subform_id,
-                            )
-                        )
-                    ); ?></template>
-            <?php endif; ?>
-        </div>
+
+        </joomla-field-subform>
     </div>
 </div>
