@@ -79,6 +79,8 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 			->where('name=' . $db->quote($this->fieldname));
 		$this->_cache_field = $db->setQuery($query)->loadObject();
 
+		$this->_cache_field->fieldparams = json_decode($this->_cache_field->fieldparams, JSON_OBJECT_AS_ARRAY);
+
 		return $this->_cache_field;
 	}
 
@@ -112,7 +114,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 		$field      = $this->getField();
 		$extension  = $this->getFieldParams();
 
-		$fieldparams = json_decode($field->fieldparams, JSON_OBJECT_AS_ARRAY);
+		$fieldparams = $field->fieldparams;
 		$params      = json_decode($extension->params, JSON_OBJECT_AS_ARRAY);
 
 		$this->layout = $fieldparams['aview'];
@@ -257,9 +259,9 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 		$field         = $this->getField();
 		$html          = parent::getInput();
 
-		if (isset($fieldparams['filesimport']) && RadicalmultifieldHelper::checkQuantumManager())
+		if (isset($field->fieldparams['filesimport']) && RadicalmultifieldHelper::checkQuantumManager())
 		{
-			if ((int) $fieldparams['filesimport'])
+			if ((int) $field->fieldparams['filesimport'])
 			{
 				HTMLHelper::stylesheet('plg_fields_radicalmultifield/import.css', [
 					'version'  => filemtime(__FILE__),
@@ -276,10 +278,10 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 					'relative' => true,
 				]);
 
-				$field_path       = !empty($fieldparams['filesimportpath']) ? $fieldparams['filesimportpath'] : 'images';
+				$field_path       = !empty($field->fieldparams['filesimportpath']) ? $field->fieldparams['filesimportpath'] : 'images';
 				$params_for_field = [
-					'namefield' => $fieldparams['filesimportname'],
-					'namefile'  => $fieldparams['filesimportnamefile'],
+					'namefield' => $field->fieldparams['filesimportname'],
+					'namefile'  => $field->fieldparams['filesimportnamefile'],
 				];
 				$html             =
 					"<div class='radicalmultifield-import' data-options='" . json_encode($params_for_field) . "'>" .
