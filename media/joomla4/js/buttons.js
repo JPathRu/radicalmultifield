@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.RadicalMiltifieldContainerActive = '';
     window.RadicalMiltifieldModalActive = '';
+
     let buttons_fast = document.querySelectorAll('.btn-radicalmiltifield-fast-upload');
     let buttons_select = document.querySelectorAll('.btn-radicalmiltifield-select');
 
@@ -27,6 +28,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
+            window.RadicalMiltifieldModalActive = modal;
+
             Joomla.initialiseModal(modal, {isJoomla: true});
 
             modal.addEventListener('shown.bs.modal', (event) => {
@@ -37,8 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (currentModal) {
                 currentModal.close();
             }
-
-            RadicalMiltifieldModalActive = modal;
 
             document.getElementById(modal_id).open();
 

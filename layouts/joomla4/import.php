@@ -20,8 +20,7 @@ $class_select_button = 'btn-radicalmiltifield-select-' . $i;
 	echo $upload->getInput();
 
 	$buttons = '';
-	$buttons .= '<button type="button" class="btn btn-success" type="button" onclick="'
-		. $class_select_button . '">'
+	$buttons .= '<button type="button" class="btn btn-secondary button-insert" type="button">'
 		. Text::_('JSELECT') . '</button>';
 	$buttons .= '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">'
 		. Text::_('JLIB_HTML_BEHAVIOR_CLOSE') . '</button>';
@@ -29,7 +28,7 @@ $class_select_button = 'btn-radicalmiltifield-select-' . $i;
 	echo LayoutHelper::render('libraries.html.bootstrap.modal.main', [
 		'selector' => $class_select_button,
 		'params'   => [
-			'title'      => Text::_('Выбор файла'),
+			'title'      => Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_SELECT'),
 			'url'        => JUri::root() . 'administrator/index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=html&tmpl=component&name=' . $field_name,
 			'height'     => '250px',
 			'width'      => '400px',
@@ -42,11 +41,11 @@ $class_select_button = 'btn-radicalmiltifield-select-' . $i;
 	?>
 
     <div class="button-wrap">
-        <button class="btn btn-radicalmiltifield-fast-upload" type="button">
+        <button class="btn btn-secondary btn-radicalmiltifield-fast-upload" type="button">
             <span class="icon-upload large-icon"></span> <?php echo Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_UPLOAD') ?>
         </button>
         <button
-                class="btn btn-radicalmiltifield-select <?php echo $class_select_button ?>"
+                class="btn btn-secondary btn-radicalmiltifield-select <?php echo $class_select_button ?>"
                 type="button"
             <span class="icon-folder large-icon"></span> <?php echo Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_SELECT') ?>
         </button>

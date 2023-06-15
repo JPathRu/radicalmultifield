@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
         for(let i=0;i<QuantummanagerLists.length;i++) {
             QuantummanagerLists[i].Quantumtoolbar.buttonAdd('insertFileEditor', 'center', 'file-actions', 'btn-insert btn-primary btn-hide', QuantumwindowLang.buttonInsert, 'quantummanager-icon-insert-inverse', {}, function (ev) {
 
-                QuantumUtils.ajaxGet(QuantumUtils.getFullUrl("index.php?option=com_quantummanager&task=quantumviewfiles.getParsePath&path=" + encodeURIComponent(pathFile) + '&scope=' + QuantummanagerLists[i].data.scope + '&v=' + QuantumUtils.randomInteger(111111, 999999))).done(function (response) {
+                jQuery.get(QuantumUtils.getFullUrl("index.php?option=com_quantummanager&task=quantumviewfiles.getParsePath&path=" + encodeURIComponent(pathFile) + '&scope=' + QuantummanagerLists[i].data.scope + '&v=' + QuantumUtils.randomInteger(111111, 999999))).done(function (response) {
                     response = JSON.parse(response);
                     if(response.path !== undefined) {
                         let path = response.path.split('/');
@@ -40,8 +40,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
 
                         window.parent.RadicalMiltifieldImport.insert(path, filesLists);
-                        window.parent.RadicalMiltifieldModalActive.close();
+                        if(window.parent.jModalClose !== undefined) {
+                            window.parent.jModalClose();
+                        }
 
+                        window.parent.jQuery('.modal.in').modal('hide');
                     }
                 });
 
