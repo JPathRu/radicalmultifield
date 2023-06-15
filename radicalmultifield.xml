@@ -34,8 +34,8 @@
 	</files>
 
 	<media folder="media" destination="plg_fields_radicalmultifield">
-		<folder>css</folder>
-		<folder>js</folder>
+		<folder>joomla3</folder>
+		<folder>joomla4</folder>
 	</media>
 
 	<config>
