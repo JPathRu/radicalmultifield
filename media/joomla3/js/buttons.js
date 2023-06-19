@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded' ,function () {
         }
         let name = fm.Qantumupload.filesLists[0];
 
-        jQuery.get(QuantumUtils.getFullUrl("/administrator/index.php?option=com_quantummanager&task=quantumviewfiles.getParsePath&path=" + encodeURIComponent(fm.data.path) + '&scope=' + fm.data.scope + '&v=' + QuantumUtils.randomInteger(111111, 999999))).done(function (response) {
+        jQuery.get(QuantumUtils.getFullUrl("index.php?option=com_quantummanager&task=quantumviewfiles.getParsePath&path=" + encodeURIComponent(fm.data.path) + '&scope=' + fm.data.scope + '&v=' + QuantumUtils.randomInteger(111111, 999999))).done(function (response) {
             response = JSON.parse(response);
             if(response.path !== undefined) {
                 let pathFile = response.path;
