@@ -17,7 +17,7 @@
                 type="number"
                 label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_MULTIPLEMAX_LABEL"
                 description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_MULTIPLEMAX_DESC"
-                default="5"
+                default="50"
                 required="true"
             />
 
@@ -32,6 +32,7 @@
                 label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TEMPLATECATEGORY_LABEL"
                 description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TEMPLATECATEGORY_DESC"
                 default="_:default"
+                class="form-select"
                 required="true"
             />
 
@@ -41,6 +42,7 @@
                 label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TEMPLATEARTICLE_LABEL"
                 description="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TEMPLATEARTICLE_DESC"
                 default="_:default"
+                class="form-select"
                 required="true"
             />
 

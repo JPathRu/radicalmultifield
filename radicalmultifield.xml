@@ -7,7 +7,7 @@
 	<authorUrl>https://delo-design.ru</authorUrl>
 	<copyright>Copyright (C) 2018 "Delo Design". All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
-	<version>3.0.5</version>
+	<version>3.1.0</version>
 	<description>PLG_RADICAL_MULTI_FIELD_XML_DESCRIPTION</description>
 
 	<scriptfile>script.php</scriptfile>
@@ -34,8 +34,8 @@
 	</files>
 
 	<media folder="media" destination="plg_fields_radicalmultifield">
-		<folder>css</folder>
-		<folder>js</folder>
+		<folder>joomla3</folder>
+		<folder>joomla4</folder>
 	</media>
 
 	<config>

@@ -1,0 +1,164 @@
+.subform-repeatable-cards {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.subform-repeatable-cards > .btn-toolbar {
+    width: 100%;
+    margin-bottom: 15px !important;
+}
+
+.subform-repeatable-cards .subform-card {
+    position: initial;
+    width: 165px;
+    height: 165px;
+    padding: 0;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    border-radius: 3px;
+    color: #666;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.subform-repeatable-cards .subform-card:hover {
+    cursor: pointer;
+    box-shadow: 0 14px 25px rgba(0,0,0,0.16);
+}
+
+.subform-repeatable-cards .subform-card .subform-card-tile {
+    position: relative;
+    border-radius: 3px;
+    height: 100%;
+    overflow: hidden;
+}
+
+.subform-repeatable-cards .subform-card .subform-card-tile .subform-card-tile-background {
+    position: relative;
+    height: calc(100% - 42px);
+    display: flex;
+    background-color: #fff;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    transition: all 0.2s;
+    -webkit-background-size: contain !important;
+    -moz-background-size: contain !important;
+    -o-background-size: contain !important;
+    background-size: contain !important;
+    background-position: 50% 50% !important;
+    background-repeat: no-repeat;
+    border: 1px solid rgba(50, 50, 50, 0.11);
+    transition: all 0.2s;
+}
+
+.subform-repeatable-group[draggable=true] .subform-card-tile .subform-card-tile-background {
+    background-color: #20c997;
+}
+
+.subform-repeatable-cards .subform-card .subform-card-tile-title {
+    /*position: absolute;
+    background: rgba(0,0,0,0.6);
+    font-size: 13px;
+    width: 100%;
+    left: 0;
+    margin: 0;
+    bottom: 20px;
+    padding: 5px;
+    text-align: center;*/
+}
+
+.subform-repeatable-cards .subform-card .subform-card-tile:hover {
+    overflow: visible;
+    z-index: 1;
+}
+
+.subform-repeatable-cards .subform-card .subform-card-tile:hover .subform-card-tile-background {
+    border-radius: 3px;
+    transition: all 0.2s;
+}
+
+.subform-repeatable-cards .subform-card .subform-card-tile .subform-card-tile-title {
+    max-width: 100%;
+    text-indent: -99999px;
+    padding: 0;
+    top: 0;
+}
+
+.subform-repeatable-cards .subform-card .subform-card-tile .subform-card-tile-title:after {
+    display: none;
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    background: rgba(68, 68, 68, 0.8);
+    color: #fff;
+    text-indent: 0;
+    text-align: center;
+    content: "Нажмите для изменения";
+    transition: all 0.2s;
+    border-radius: 3px 3px 0 0;
+}
+
+.subform-repeatable-cards .subform-card.ui-sortable-helper .subform-card-tile-background {
+    transform: none !important;
+    transition: all 0.2s;
+}
+
+.subform-repeatable-cards .subform-card .btn-toolbar {
+    position: absolute;
+    margin: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.subform-repeatable-cards .subform-card .btn-toolbar .btn-group {
+    width: 100%;
+    display: flex;
+}
+
+.subform-repeatable-cards .subform-card .btn-toolbar .btn-group > * {
+    width: 33.3%;
+}
+
+.subform-repeatable-cards .subform-card .btn-toolbar .btn-group > a:first-child {
+    border-top-left-radius: 0;
+}
+
+.subform-repeatable-cards .subform-card .btn-toolbar .btn-group > a:last-child {
+    border-top-right-radius: 0;
+}
+
+.subform-repeatable-cards .subform-card .btn-toolbar .btn-group .btn {
+    margin: 0;
+}
+
+.subform-repeatable-cards .subform-card .subform-card-content {
+    position: absolute;
+    background: #fff;
+    width: 100%;
+    min-height: 100%;
+    top: 0;
+    left: -1px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    z-index: 9;
+}
+
+.subform-repeatable-cards .subform-card .subform-card-content .subform-card-content-toolbar {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.subform-repeatable-cards .subform-card .subform-card-content .subform-card-content-body {
+    padding: 10px;
+}
+
+.subform-repeatable-cards .subform-card .subform-card-content .subform-card-content-foot {
+    padding: 10px;
+    border-top: 1px solid #eee;
+    margin-bottom: 40px;
+}
+
+
+

@@ -19,7 +19,8 @@ use Joomla\Database\DatabaseDriver;
 
 defined('_JEXEC') or die;
 
-JLoader::import( 'components.com_fields.libraries.fieldsplugin', JPATH_ADMINISTRATOR );
+JLoader::import('components.com_fields.libraries.fieldsplugin', JPATH_ADMINISTRATOR);
+JLoader::register('RadicalmultifieldHelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'radicalmultifieldhelper']) . '.php');
 
 /**
  * Radical MultiField plugin.
@@ -30,214 +31,212 @@ JLoader::import( 'components.com_fields.libraries.fieldsplugin', JPATH_ADMINISTR
 class PlgFieldsRadicalmultifield extends FieldsPlugin
 {
 
-    /**
-     * Returns the custom fields types.
-     *
-     * @return  string[][]
-     *
-     * @since   3.7.0
-     */
-    public function onCustomFieldsGetTypes()
-    {
-        // Cache filesystem access / checks
-        static $types_cache = [];
+	/**
+	 * Returns the custom fields types.
+	 *
+	 * @return  string[][]
+	 *
+	 * @since   3.7.0
+	 */
+	public function onCustomFieldsGetTypes()
+	{
+		// Cache filesystem access / checks
+		static $types_cache = [];
 
-        if ( isset( $types_cache[ $this->_type . $this->_name ] ) )
-        {
-            return $types_cache[ $this->_type . $this->_name ];
-        }
+		if (isset($types_cache[$this->_type . $this->_name]))
+		{
+			return $types_cache[$this->_type . $this->_name];
+		}
 
-        $types = [];
+		$types = [];
 
-        // The root of the plugin
-        $root = realpath( JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name );
+		// The root of the plugin
+		$root = realpath(JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name);
 
-        $layout = 'radicalmultifield';
+		$layout = 'radicalmultifield';
 
-        // Strip the extension
-        $layout = str_replace( '.php', '', $layout );
+		// Strip the extension
+		$layout = str_replace('.php', '', $layout);
 
-        // The data array
-        $data = [];
+		// The data array
+		$data = [];
 
-        // The language key
-        $key = strtoupper( $layout );
+		// The language key
+		$key = strtoupper($layout);
 
-        if ( $key != strtoupper( $this->_name ) )
-        {
-            $key = strtoupper( $this->_name ) . '_' . $layout;
-        }
+		if ($key != strtoupper($this->_name))
+		{
+			$key = strtoupper($this->_name) . '_' . $layout;
+		}
 
-        // Needed attributes
-        $data['type'] = $layout;
+		// Needed attributes
+		$data['type'] = $layout;
 
-        if ( Factory::getLanguage()->hasKey( 'PLG_FIELDS_' . $key . '_LABEL' ) )
-        {
-            $data[ 'label' ] = Text::sprintf( 'PLG_FIELDS_' . $key . '_LABEL', strtolower( $key ) );
+		if (Factory::getApplication()->getLanguage()->hasKey('PLG_FIELDS_' . $key . '_LABEL'))
+		{
+			$data['label'] = Text::sprintf('PLG_FIELDS_' . $key . '_LABEL', strtolower($key));
 
-            // Fix wrongly set parentheses in RTL languages
-            if ( Factory::getLanguage()->isRTL() )
-            {
-                $data[ 'label' ] = $data[ 'label' ] . '&#x200E;';
-            }
-        }
-        else
-        {
-            $data[ 'label' ] = $key;
-        }
+			// Fix wrongly set parentheses in RTL languages
+			if (Factory::getApplication()->getLanguage()->isRTL())
+			{
+				$data['label'] = $data['label'] . '&#x200E;';
+			}
+		}
+		else
+		{
+			$data['label'] = $key;
+		}
 
-        $path = $root . '/fields';
+		$path = $root . '/fields';
 
-        // Add the path when it exists
-        if ( file_exists( $path ) )
-        {
-            $data[ 'path' ] = $path;
-        }
+		// Add the path when it exists
+		if (file_exists($path))
+		{
+			$data['path'] = $path;
+		}
 
-        $path = $root . '/rules';
+		$path = $root . '/rules';
 
-        // Add the path when it exists
-        if ( file_exists( $path ) )
-        {
-            $data[ 'rules' ] = $path;
-        }
+		// Add the path when it exists
+		if (file_exists($path))
+		{
+			$data['rules'] = $path;
+		}
 
-        $types[] = $data;
-
-
-	    PluginHelper::importPlugin('radicalmultifield');
-	    $radicalmultifieldPlugins = PluginHelper::getPlugin('radicalmultifield');
-	    $language = Factory::getLanguage();
-
-        foreach ($radicalmultifieldPlugins as $radicalmultifieldPlugin)
-        {
-	        $language->load('plg_radicalmultifield_' . $radicalmultifieldPlugin->name, JPATH_ROOT . '/plugins/radicalmultifield/' . $radicalmultifieldPlugin->name, $language->getTag(), true);
-
-	        $types[] = [
-		        'type' => 'radicalmultifield_' . $radicalmultifieldPlugin->name,
-		        'label' => 'Radical MultiField ' . Text::_('PLG_RADICALMULTIFIELD_PLUGIN_NAME_' . mb_strtoupper($radicalmultifieldPlugin->name)),
-		        'path' => JPATH_ROOT . '/plugins/radicalmultifield/' . $radicalmultifieldPlugin->name,
-	        ];
-
-        }
-
-        // Add to cache and return the data
-        $types_cache[ $this->_type . $this->_name ] = $types;
-
-        return $types;
-    }
+		$types[] = $data;
 
 
-    /**
-     * @since   3.7.0
-     */
-    public function onCustomFieldsPrepareDom($field, DOMElement $parent, JForm $form )
-    {
+		PluginHelper::importPlugin('radicalmultifield');
+		$radicalmultifieldPlugins = PluginHelper::getPlugin('radicalmultifield');
+		$language                 = Factory::getApplication()->getLanguage();
 
-    	$fieldNode = parent::onCustomFieldsPrepareDom($field, $parent, $form);
-        if ( !$fieldNode )
-        {
-            return $fieldNode;
-        }
+		foreach ($radicalmultifieldPlugins as $radicalmultifieldPlugin)
+		{
+			$language->load('plg_radicalmultifield_' . $radicalmultifieldPlugin->name, JPATH_ROOT . '/plugins/radicalmultifield/' . $radicalmultifieldPlugin->name, $language->getTag(), true);
 
-        $path = URI::base( true ) . '/templates/' . Factory::getApplication()->getTemplate() . '/';
+			$types[] = [
+				'type'  => 'radicalmultifield_' . $radicalmultifieldPlugin->name,
+				'label' => 'Radical MultiField ' . Text::_('PLG_RADICALMULTIFIELD_PLUGIN_NAME_' . mb_strtoupper($radicalmultifieldPlugin->name)),
+				'path'  => JPATH_ROOT . '/plugins/radicalmultifield/' . $radicalmultifieldPlugin->name,
+			];
 
-        $fieldNode->setAttribute('template', $path);
-        
-        return $fieldNode;
-    }
+		}
 
+		// Add to cache and return the data
+		$types_cache[$this->_type . $this->_name] = $types;
 
-    /**
-     * Prepares the field value.
-     *
-     * @param   string    $context  The context.
-     * @param   stdclass  $item     The item.
-     * @param   stdclass  $field    The field.
-     *
-     * @return  string
-     *
-     * @since   3.7.0
-     */
-    public function onCustomFieldsPrepareField($context, $item, $field)
-    {
-        // Check if the field should be processed by us
-        if (!$this->isTypeSupported($field->type))
-        {
-            return;
-        }
-
-        JLoader::register('RadicalmultifieldHelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'radicalmultifieldhelper']) . '.php');
-
-        $input = Factory::getApplication()->input;
-        $option = $input->get('option', 'com_content');
-        $view = $input->get('view', 'article');
-        $context_input = $option . '.' . $view;
-
-        if(!empty($item->context_radicalmultifield))
-        {
-            $context_input =  $item->context_radicalmultifield;
-        }
-
-        // Merge the params from the plugin and field which has precedence
-        $fieldParams = clone $this->params;
-        $fieldParams->merge($field->fieldparams);
-        $template = $fieldParams->get('templatedefault');
-
-        $template_category = [
-            'com_content.category',
-            'com_content.categories',
-            'com_users.users',
-            'com_contact.categories',
-            'com_tags.tag',
-        ];
-
-        $template_item = [
-            'com_content.article',
-            'com_users.user',
-            'com_contact.contact',
-        ];
-
-        if(empty($template))
-        {
-            if(in_array($context_input, $template_category))
-            {
-                $template = $fieldParams->get('templatecategory', $template);
-            }
-
-            if(in_array($context_input, $template_item))
-            {
-                $template = $fieldParams->get('templatearticle', $template);
-            }
-        }
-
-	    // Get the path for the layout file
-	    if(substr_count($field->type, '_') > 0)
-	    {
-	    	$tmp = explode('_', $field->type);
-		    $path = PluginHelper::getLayoutPath('radicalmultifield', $tmp[1], $template);
-	    }
-	    else
-        {
-		    $path = PluginHelper::getLayoutPath('fields', $field->type, $template);
-	    }
+		return $types;
+	}
 
 
-        // Render the layout
-        ob_start();
-        include $path;
-        $output = ob_get_clean();
+	/**
+	 * @since   3.7.0
+	 */
+	public function onCustomFieldsPrepareDom($field, DOMElement $parent, JForm $form)
+	{
 
-        // Return the output
-        return $output;
-    }
+		$fieldNode = parent::onCustomFieldsPrepareDom($field, $parent, $form);
+		if (!$fieldNode)
+		{
+			return $fieldNode;
+		}
+
+		$path = URI::base(true) . '/templates/' . Factory::getApplication()->getTemplate() . '/';
+
+		$fieldNode->setAttribute('template', $path);
+
+		return $fieldNode;
+	}
+
+
+	/**
+	 * Prepares the field value.
+	 *
+	 * @param   string    $context  The context.
+	 * @param   stdclass  $item     The item.
+	 * @param   stdclass  $field    The field.
+	 *
+	 * @return  string
+	 *
+	 * @since   3.7.0
+	 */
+	public function onCustomFieldsPrepareField($context, $item, $field)
+	{
+		// Check if the field should be processed by us
+		if (!$this->isTypeSupported($field->type))
+		{
+			return;
+		}
+
+		$input         = Factory::getApplication()->input;
+		$option        = $input->get('option', 'com_content');
+		$view          = $input->get('view', 'article');
+		$context_input = $option . '.' . $view;
+
+		if (!empty($item->context_radicalmultifield))
+		{
+			$context_input = $item->context_radicalmultifield;
+		}
+
+		// Merge the params from the plugin and field which has precedence
+		$fieldParams = clone $this->params;
+		$fieldParams->merge($field->fieldparams);
+		$template = $fieldParams->get('templatedefault');
+
+		$template_category = [
+			'com_content.category',
+			'com_content.categories',
+			'com_users.users',
+			'com_contact.categories',
+			'com_tags.tag',
+		];
+
+		$template_item = [
+			'com_content.article',
+			'com_users.user',
+			'com_contact.contact',
+		];
+
+		if (empty($template))
+		{
+			if (in_array($context_input, $template_category))
+			{
+				$template = $fieldParams->get('templatecategory', $template);
+			}
+
+			if (in_array($context_input, $template_item))
+			{
+				$template = $fieldParams->get('templatearticle', $template);
+			}
+		}
+
+		// Get the path for the layout file
+		if (substr_count($field->type, '_') > 0)
+		{
+			$tmp  = explode('_', $field->type);
+			$path = PluginHelper::getLayoutPath('radicalmultifield', $tmp[1], $template);
+		}
+		else
+		{
+			$path = PluginHelper::getLayoutPath('fields', $field->type, $template);
+		}
+
+
+		// Render the layout
+		ob_start();
+		include $path;
+		$output = ob_get_clean();
+
+		// Return the output
+		return $output;
+	}
 
 
 	/**
 	 * The form event. Load additional parameters when available into the field form.
 	 * Only when the type of the form is of interest.
 	 *
-	 * @param   Form     $form  The form
+	 * @param   Form      $form  The form
 	 * @param   stdClass  $data  The data
 	 *
 	 * @return  void
@@ -271,16 +270,17 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 			return;
 		}
 
-		if(substr_count($type, '_') > 0) {
-			$tmp = explode('_', $type);
-			$type = $tmp[0];
+		if (substr_count($type, '_') > 0)
+		{
+			$tmp        = explode('_', $type);
+			$type       = $tmp[0];
 			$pluginType = $tmp[1];
-			$pathType = JPATH_PLUGINS . DIRECTORY_SEPARATOR . 'radicalmultifield' . DIRECTORY_SEPARATOR . $pluginType . DIRECTORY_SEPARATOR . 'params';
+			$pathType   = JPATH_PLUGINS . DIRECTORY_SEPARATOR . 'radicalmultifield' . DIRECTORY_SEPARATOR . $pluginType . DIRECTORY_SEPARATOR . 'params';
 		}
 		else
 		{
 			$pluginType = '';
-			$pathType = '';
+			$pathType   = '';
 		}
 
 		$path = JPATH_PLUGINS . DIRECTORY_SEPARATOR . $this->_type . DIRECTORY_SEPARATOR . $this->_name . DIRECTORY_SEPARATOR . 'params' . DIRECTORY_SEPARATOR . $type . '.xml';
@@ -295,10 +295,12 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 		$paramsfield = file_get_contents($path);
 
-		if(!empty($pluginType)) {
+		if (!empty($pluginType))
+		{
 
-			if(file_exists($pathType . DIRECTORY_SEPARATOR . 'newparams.xml')) {
-				$newParams = file_get_contents($pathType . DIRECTORY_SEPARATOR . 'newparams.xml');
+			if (file_exists($pathType . DIRECTORY_SEPARATOR . 'newparams.xml'))
+			{
+				$newParams   = file_get_contents($pathType . DIRECTORY_SEPARATOR . 'newparams.xml');
 				$paramsfield = str_replace('</fieldset>', $newParams . '</fieldset>', $paramsfield);
 			}
 
@@ -308,25 +310,25 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 		$paramsfieldXml = new SimpleXMLElement($paramsfield);
 
 		$extendfield = explode("\n", $this->params->get('extendfield'));
-		if(count($extendfield))
+		if (count($extendfield))
 		{
 			//TODO переписать, это упарывание какое-то
-			for ($i=0;$i<count($paramsfieldXml->fields->fieldset->field);$i++)
+			for ($i = 0; $i < count($paramsfieldXml->fields->fieldset->field); $i++)
 			{
 				$attr = $paramsfieldXml->fields->fieldset->field[$i]->attributes();
 				foreach ($paramsfieldXml->fields->fieldset->field[$i]->attributes() as $a => $b)
 				{
-					if ((string)$a === 'name' && (string)$b === 'listtype')
+					if ((string) $a === 'name' && (string) $b === 'listtype')
 					{
-						for ($j=0;$j< count($paramsfieldXml->fields->fieldset->field[$i]->form->field);$j++)
+						for ($j = 0; $j < count($paramsfieldXml->fields->fieldset->field[$i]->form->field); $j++)
 						{
 							foreach ($paramsfieldXml->fields->fieldset->field[$i]->form->field[$j]->attributes() as $c => $d)
 							{
-								if ((string)$c === 'type' && (string)$d === 'list')
+								if ((string) $c === 'type' && (string) $d === 'list')
 								{
 									foreach ($extendfield as $extend)
 									{
-										$extend = str_replace(["\r","\n"], '', $extend);
+										$extend    = str_replace(["\r", "\n"], '', $extend);
 										$fileLists = RadicalmultifieldHelper::loadClassExtendField($extend);
 										foreach ($fileLists as $file)
 										{
@@ -346,12 +348,12 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 		// Load the specific plugin parameters
 		$form->load($paramsfieldXml, true, '/form/*');
 
-		if(!empty($pluginType))
+		if (!empty($pluginType))
 		{
 
-			if(file_exists($pathType))
+			if (file_exists($pathType))
 			{
-				$paramsfieldValues = file_get_contents($pathType . DIRECTORY_SEPARATOR . 'default.xml');
+				$paramsfieldValues    = file_get_contents($pathType . DIRECTORY_SEPARATOR . 'default.xml');
 				$paramsfieldValuesXML = new SimpleXMLElement($paramsfieldValues);
 
 				for ($i = 0; $i < count($paramsfieldValuesXML->fields->fieldset->field); $i++)
@@ -362,7 +364,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 					for ($j = 0; $j < $count; $j++)
 					{
 
-						if((string) $paramsfieldXml->fields->fieldset->field[$j]['name'] == (string) $paramsfieldValuesXML->fields->fieldset->field[$i]['name'])
+						if ((string) $paramsfieldXml->fields->fieldset->field[$j]['name'] == (string) $paramsfieldValuesXML->fields->fieldset->field[$i]['name'])
 						{
 							$form->setFieldAttribute((string) $paramsfieldXml->fields->fieldset->field[$j]['name'], 'default', $paramsfieldValuesXML->fields->fieldset->field[$i]['default'], 'fieldparams');
 							break;
@@ -376,73 +378,81 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 		}
 
-		HTMLHelper::_( 'jquery.framework' );
+		// если joomla 3
+		if(!RadicalmultifieldHelper::isJoomla4())
+		{
+			HTMLHelper::_('jquery.framework');
 
-		HTMLHelper::script('plg_fields_radicalmultifield/fix.js', [
-			'version' => filemtime ( __FILE__ ),
-			'relative' => true,
-		]);
+			HTMLHelper::script('plg_fields_radicalmultifield/joomla3/fix.js', [
+				'version'  => filemtime(__FILE__),
+				'relative' => true,
+			]);
+		}
 
 	}
 
-    /**
-     * Returns an array of key values to put in a list from the given field.
-     *
-     * @param   stdClass  $field  The field.
-     *
-     * @return  array
-     *
-     * @since   3.7.0
-     */
-    public function getListTypeFromField( $field )
-    {
-        $data = [];
+	/**
+	 * Returns an array of key values to put in a list from the given field.
+	 *
+	 * @param   stdClass  $field  The field.
+	 *
+	 * @return  array
+	 *
+	 * @since   3.7.0
+	 */
+	public function getListTypeFromField($field)
+	{
+		$data = [];
 
-        // Fetch the options from the plugin
-        $params = clone $this->params;
-        $params->merge( $field->fieldparams );
+		// Fetch the options from the plugin
+		$params = clone $this->params;
+		$params->merge($field->fieldparams);
 
-        foreach ($params->get( 'listtype', []) as $option)
-        {
-            $data[$option['name']] = [
-                "title" => $option['title'],
-                "type" => $option['type'],
-                "options" => $option['options'],
-            ];
-        }
+		foreach ($params->get('listtype', []) as $option)
+		{
+			$data[$option['name']] = [
+				"title"   => $option['title'],
+				"type"    => $option['type'],
+				"options" => $option['options'],
+			];
+		}
 
-        return $data;
-    }
+		return $data;
+	}
 
 
-    public function onAjaxRadicalmultifield()
-    {
-        $app = Factory::getApplication();
-        if($app->isClient('administrator'))
-        {
-            JLoader::register('QuantummanagerHelper', JPATH_ROOT . '/administrator/components/com_quantummanager/helpers/quantummanager.php');
-            QuantummanagerHelper::loadlang();
-            $name = $app->input->get('name', '');
+	public function onAjaxRadicalmultifield()
+	{
+		$app = Factory::getApplication();
 
-            if(empty($name))
-            {
-                return;
-            }
+		if (!$app->isClient('administrator'))
+		{
+			return;
+		}
 
-            $db = Factory::getDBO();
-            $query = $db->getQuery(true)
-                ->select($db->quoteName(array('params', 'fieldparams')))
-                ->from('#__fields')
-                ->where( 'name=' . $db->quote($name));
-            $field = $db->setQuery( $query )->loadObject();
-            $fieldparams = json_decode($field->fieldparams, JSON_OBJECT_AS_ARRAY);
-            $field_path = !empty($fieldparams['filesimportpath']) ? $fieldparams['filesimportpath'] : 'images';
-            $layout = new FileLayout('quantummanager', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, [
-                    'plugins', 'fields', 'radicalmultifield', 'layouts',
-                ]));
-            echo $layout->render(['field_path' => $field_path]);
-        }
-    }
+		JLoader::register('QuantummanagerHelper', JPATH_ROOT . '/administrator/components/com_quantummanager/helpers/quantummanager.php');
+		QuantummanagerHelper::loadlang();
+		$name = $app->input->get('name', '');
+
+		if (empty($name))
+		{
+			return;
+		}
+
+		$db          = Factory::getDBO();
+		$query       = $db->getQuery(true)
+			->select($db->quoteName(array('params', 'fieldparams')))
+			->from('#__fields')
+			->where('name=' . $db->quote($name));
+		$field       = $db->setQuery($query)->loadObject();
+		$fieldparams = json_decode($field->fieldparams, JSON_OBJECT_AS_ARRAY);
+		$field_path  = !empty($fieldparams['filesimportpath']) ? $fieldparams['filesimportpath'] : 'images';
+		$layout      = new FileLayout('quantummanager', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, [
+				'plugins', 'fields', 'radicalmultifield', 'layouts', RadicalmultifieldHelper::isJoomla4() ? 'joomla4' : 'joomla3',
+			]));
+
+		echo $layout->render(['field_path' => $field_path]);
+	}
 
 
 }

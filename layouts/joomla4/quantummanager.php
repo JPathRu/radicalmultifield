@@ -25,11 +25,10 @@ HTMLHelper::_('stylesheet', 'plg_system_quantummanagermedia/modal.css', [
 	'relative' => true
 ]);
 
-HTMLHelper::_('script', 'plg_fields_radicalmultifield/modal.js', [
+HTMLHelper::_('script', 'plg_fields_radicalmultifield/joomla4/modal.js', [
     'version' => filemtime(__FILE__),
     'relative' => true
 ]);
-
 
 ?>
 

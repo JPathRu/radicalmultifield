@@ -1,10 +1,12 @@
-document.addEventListener('DOMContentLoaded' ,function () {
+document.addEventListener('DOMContentLoaded', function () {
 
     window.RadicalMiltifieldContainerActive = '';
+    window.RadicalMiltifieldModalActive = '';
+
     let buttons_fast = document.querySelectorAll('.btn-radicalmiltifield-fast-upload');
     let buttons_select = document.querySelectorAll('.btn-radicalmiltifield-select');
 
-    for(let i=0;i<buttons_fast.length;i++) {
+    for (let i = 0; i < buttons_fast.length; i++) {
         buttons_fast[i].addEventListener('click', function (ev) {
             let filemanager = this.closest('.import-wrap').querySelector('.quantummanager'),
                 index = parseInt(filemanager.getAttribute('data-index'));
@@ -14,11 +16,33 @@ document.addEventListener('DOMContentLoaded' ,function () {
         });
     }
 
-    for(let i=0;i<buttons_select.length;i++) {
+    for (let i = 0; i < buttons_select.length; i++) {
         buttons_select[i].addEventListener('click', function (ev) {
             let filemanager = this.closest('.import-wrap').querySelector('.quantummanager'),
-                index = parseInt(filemanager.getAttribute('data-index'));
+                index = parseInt(filemanager.getAttribute('data-index')),
+                modal_id = this.closest('.import-wrap').getAttribute('data-modal-id');
             RadicalMiltifieldContainerActive = QuantummanagerLists[index].element.closest('.control-group');
+
+            let modal = document.querySelector('#' + modal_id);
+            if (!modal) {
+                return;
+            }
+
+            window.RadicalMiltifieldModalActive = modal;
+
+            Joomla.initialiseModal(modal, {isJoomla: true});
+
+            modal.addEventListener('shown.bs.modal', (event) => {
+                Joomla.Modal.setCurrent(event.target);
+            });
+
+            let currentModal = Joomla.Modal.getCurrent();
+            if (currentModal) {
+                currentModal.close();
+            }
+
+            document.getElementById(modal_id).open();
+
             ev.preventDefault();
         });
     }
@@ -29,9 +53,9 @@ document.addEventListener('DOMContentLoaded' ,function () {
         }
         let name = fm.Qantumupload.filesLists[0];
 
-        jQuery.get(QuantumUtils.getFullUrl("/administrator/index.php?option=com_quantummanager&task=quantumviewfiles.getParsePath&path=" + encodeURIComponent(fm.data.path) + '&scope=' + fm.data.scope + '&v=' + QuantumUtils.randomInteger(111111, 999999))).done(function (response) {
+        QuantumUtils.ajaxGet(QuantumUtils.getFullUrl("index.php?option=com_quantummanager&task=quantumviewfiles.getParsePath&path=" + encodeURIComponent(fm.data.path) + '&scope=' + fm.data.scope + '&v=' + QuantumUtils.randomInteger(111111, 999999))).done(function (response) {
             response = JSON.parse(response);
-            if(response.path !== undefined) {
+            if (response.path !== undefined) {
                 let pathFile = response.path;
                 RadicalMiltifieldContainerActive = fm.element.closest('.control-group');
                 RadicalMiltifieldImport.insert(pathFile, fm.Qantumupload.filesLists);
