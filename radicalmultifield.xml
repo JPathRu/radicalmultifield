@@ -26,8 +26,10 @@
 
 	<files>
 		<folder plugin="radicalmultifield">src</folder>
+		<folder>services</folder>
 		<folder>layouts</folder>
 		<folder>params</folder>
+		<folder>src</folder>
 		<folder>tmpl</folder>
 	</files>
 
