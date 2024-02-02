@@ -8,10 +8,9 @@
  * @link       https://delo-design.ru
  */
 
-use Joomla\CMS\Filter\OutputFilter;
-use Joomla\CMS\Form\Form;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\OutputFilter;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Registry\Registry;

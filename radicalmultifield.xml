@@ -7,8 +7,9 @@
 	<authorUrl>https://delo-design.ru</authorUrl>
 	<copyright>Copyright (C) 2018 "Delo Design". All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
-	<version>3.1.0</version>
+	<version>4.0.0</version>
 	<description>PLG_RADICAL_MULTI_FIELD_XML_DESCRIPTION</description>
+	<namespace path="src">Joomla\Plugin\Fields\RadicalMultiField</namespace>
 
 	<scriptfile>script.php</scriptfile>
 
@@ -24,18 +25,15 @@
 	</updateservers>
 
 	<files>
-		<filename plugin="radicalmultifield">radicalmultifield.php</filename>
-		<filename plugin="radicalmultifield">radicalmultifieldhelper.php</filename>
-		<filename>LICENSE.txt</filename>
-		<folder>fields</folder>
+		<folder plugin="radicalmultifield">src</folder>
 		<folder>layouts</folder>
 		<folder>params</folder>
 		<folder>tmpl</folder>
 	</files>
 
 	<media folder="media" destination="plg_fields_radicalmultifield">
-		<folder>joomla3</folder>
-		<folder>joomla4</folder>
+		<folder>css</folder>
+		<folder>js</folder>
 	</media>
 
 	<config>
