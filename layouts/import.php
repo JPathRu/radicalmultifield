@@ -28,7 +28,7 @@ $class_select_button = 'btn-radicalmiltifield-select-' . $i;
 		'selector' => $class_select_button,
 		'params'   => [
 			'title'      => Text::_('PLG_RADICAL_MULTI_FIELD_FIELD_IMPORT_SELECT'),
-			'url'        => Uri::root() . 'administrator/index.php' . $field_name,
+			'url'        => Uri::root() . 'administrator/index.php?option=com_ajax&plugin=radicalmultifield&group=fields&format=html&tmpl=component&name=' . $field_name,
 			'height'     => '250px',
 			'width'      => '400px',
 			'bodyHeight' => 70,

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
-    <fields name="fieldparams" addfieldpath="/plugins/fields/radicalmultifield/fields">
-        <fieldset name="fieldparams">
+    <fields name="fieldparams">
+        <fieldset name="fieldparams" addfieldprefix="Joomla\Plugin\Fields\RadicalMultiField\Field">
 
              <field
                 name="multiplemin"

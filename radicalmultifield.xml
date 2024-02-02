@@ -39,7 +39,7 @@
 	</media>
 
 	<config>
-		<fields name="params" addfieldpath="/plugins/fields/radicalmultifield">
+		<fields name="params" addfieldprefix="Joomla\Plugin\Fields\RadicalMultiField\Field">
 			<fieldset name="basic">
 				<field
 						name="extendfield"

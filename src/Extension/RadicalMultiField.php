@@ -146,6 +146,7 @@ class RadicalMultiField extends FieldsPlugin
 
 		$path = URI::base(true) . '/templates/' . Factory::getApplication()->getTemplate() . '/';
 
+		$fieldNode->setAttribute('addfieldprefix', 'Joomla\\Plugin\\Fields\\RadicalMultiField\\Field');
 		$fieldNode->setAttribute('template', $path);
 
 		return $fieldNode;
@@ -248,7 +249,6 @@ class RadicalMultiField extends FieldsPlugin
 	 */
 	public function onContentPrepareForm(Form $form, $data)
 	{
-
 
 		// Check if the field form is calling us
 		if (strpos($form->getName(), 'com_fields.field') !== 0)

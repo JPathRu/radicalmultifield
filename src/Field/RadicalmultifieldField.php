@@ -1,4 +1,5 @@
-<?php
+<?php namespace Joomla\Plugin\Fields\RadicalMultiField\Field;
+
 /**
  * @package    Radical MultiField
  *
@@ -10,20 +11,19 @@
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\OutputFilter;
+use Joomla\CMS\Form\Field\SubformField;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Plugin\Fields\RadicalMultiField\Helper\RadicalMultiFieldHelper;
 use Joomla\Registry\Registry;
 
 defined('_JEXEC') or die;
 
-JFormHelper::loadFieldClass('subform');
-JFormHelper::loadFieldClass('folderlist');
-
 /**
- * Class JFormFieldRadicalmultifield
+ * Class RadicalmultifieldField
  */
-class JFormFieldRadicalmultifield extends JFormFieldSubform
+class RadicalmultifieldField extends SubformField
 {
 
 
@@ -122,7 +122,6 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 
 		//подзагружаем кастомные поля
 		Factory::getDocument()->addScriptDeclaration("window.siteUrl = '" . Uri::root() . "'");
-		JLoader::register('RadicalmultifieldHelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'radicalmultifieldhelper']) . '.php');
 
 		if (!empty($extension->params->get('extendfield')) && !empty($extension->params->get('extendfield')))
 		{
@@ -259,19 +258,18 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 		{
 			if ((int) $field->fieldparams->get('filesimport', 0))
 			{
-				$joomla = RadicalmultifieldHelper::isJoomla4() ? 'joomla4' : 'joomla3';
 
-				HTMLHelper::stylesheet('plg_fields_radicalmultifield/' . $joomla . '/import.css', [
+				HTMLHelper::stylesheet('plg_fields_radicalmultifield/import.css', [
 					'version'  => filemtime(__FILE__),
 					'relative' => true,
 				]);
 
-				HTMLHelper::script('plg_fields_radicalmultifield/' . $joomla . '/buttons.js', [
+				HTMLHelper::script('plg_fields_radicalmultifield/buttons.js', [
 					'version'  => filemtime(__FILE__),
 					'relative' => true,
 				]);
 
-				HTMLHelper::script('plg_fields_radicalmultifield/' . $joomla . '/import.js', [
+				HTMLHelper::script('plg_fields_radicalmultifield/import.js', [
 					'version'  => filemtime(__FILE__),
 					'relative' => true,
 				]);
@@ -287,7 +285,7 @@ class JFormFieldRadicalmultifield extends JFormFieldSubform
 					LayoutHelper::render('import', [
 						'field_name' => $field->name,
 						'field_path' => $field_path
-					], JPATH_ROOT . '/plugins/fields/radicalmultifield/layouts/' . $joomla)
+					], JPATH_ROOT . '/plugins/fields/radicalmultifield/layouts')
 					. $html .
 					"</div>";
 

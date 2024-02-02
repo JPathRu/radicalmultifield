@@ -1,4 +1,5 @@
-<?php
+<?php namespace Joomla\Plugin\Fields\RadicalMultiField\Field;
+
 /**
  * @package    Radical MultiField
  *
@@ -18,7 +19,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\Path;
 
-defined('JPATH_PLATFORM') or die;
+defined('_JEXEC') or die;
 
 /**
  *
@@ -26,9 +27,9 @@ defined('JPATH_PLATFORM') or die;
  *
  * @since  1.6
  *
- * Class JFormFieldPluginlayout
+ * Class PluginlayoutField
  */
-class JFormFieldPluginlayout extends FormField
+class PluginlayoutField extends FormField
 {
 	/**
 	 * The form field type.
