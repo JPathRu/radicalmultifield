@@ -10,12 +10,14 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\Plugin\Fields\RadicalMultiField\Helper\RadicalMultiFieldHelper;
+
 if (!$field->value)
 {
 	return;
 }
 
-$values = json_decode($field->value, JSON_OBJECT_AS_ARRAY);
+$values   = json_decode($field->value, JSON_OBJECT_AS_ARRAY);
 $listtype = $this->getListTypeFromField($field);
 
 ?>
@@ -25,22 +27,23 @@ $listtype = $this->getListTypeFromField($field);
 	<?php foreach ($values as $key => $row): ?>
 
 		<?php
-            $preview = '';
-            if(preg_match("/^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$/isu", $row['image']))
-            {
-                $link = preg_replace("|.*?watch\?v\=|isu", '', $row['image']);
-                $link = preg_replace("|.*?\.be\/|isu", '', $link); //для коротких ссылок
-                $link = preg_replace("|[\&\?]{1,}.+|isu", '', $link);
-                $preview = 'https://img.youtube.com/vi/'. $link . '/hqdefault.jpg';
-            }
-            else
-            {
-                $preview = RadicalmultifieldHelper::generateThumb($field, $row['image']);
-            }
+		$preview = '';
+		if (preg_match("/^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$/isu", $row['image']))
+		{
+			$link    = preg_replace("|.*?watch\?v\=|isu", '', $row['image']);
+			$link    = preg_replace("|.*?\.be\/|isu", '', $link); //для коротких ссылок
+			$link    = preg_replace("|[\&\?]{1,}.+|isu", '', $link);
+			$preview = 'https://img.youtube.com/vi/' . $link . '/hqdefault.jpg';
+		}
+		else
+		{
+			$preview = RadicalMultiFieldHelper::generateThumb($field, $row['image']);
+		}
 		?>
 
         <div>
-            <a href="<?= $row['image']?>" data-uk-lightbox="{group:'group-fields-<?= $field->id ?>'}" title="<?= $row['alt'] ?>">
+            <a href="<?= $row['image'] ?>" data-uk-lightbox="{group:'group-fields-<?= $field->id ?>'}"
+               title="<?= $row['alt'] ?>">
                 <img src="<?= $preview ?>" alt="<?= $row['alt'] ?>"/>
             </a>
         </div>

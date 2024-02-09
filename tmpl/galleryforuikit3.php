@@ -7,7 +7,12 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  * @link       https://delo-design.ru
  */
+
 defined('_JEXEC') or die;
+
+use Joomla\Plugin\Fields\RadicalMultiField\Helper\RadicalMultiFieldHelper;
+
+
 if (!$field->value)
 {
 	return;
@@ -35,7 +40,7 @@ if($height === 0) {
             }
             else
             {
-	            $preview = RadicalmultifieldHelper::generateThumb($field, $row['image']);
+	            $preview = RadicalMultiFieldHelper::generateThumb($field, $row['image']);
             }
 	    ?>
 
