@@ -197,6 +197,7 @@ class RadicalMultiField extends FieldsPlugin
 
 		$template_item = [
 			'com_content.article',
+			'com_finder.article',
 			'com_users.user',
 			'com_contact.contact',
 		];
