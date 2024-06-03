@@ -16,6 +16,8 @@ $class_select_button = 'btn-radicalmiltifield-select-' . $i;
 	<?php
 	$field  = '<field dropAreaHidden="0" directory="' . $field_path . '" />';
 	$upload = new QuantumuploadField();
+	$upload->__set('scope', 'images');
+	$upload->__set('directory', $field_path);
 	$upload->setup(new SimpleXMLElement($field), '');
 	echo $upload->getInput();
 
