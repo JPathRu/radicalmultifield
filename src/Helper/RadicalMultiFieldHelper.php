@@ -452,7 +452,7 @@ class RadicalMultiFieldHelper
 		$paths     = explode(DIRECTORY_SEPARATOR, $source);
 		$file      = array_pop($paths);
 		$fileSplit = explode('.', $file);
-		$fileExt   = mb_strtolower(array_pop($fileSplit));
+		$fileExt   = preg_replace('#\?.*?$#', '',mb_strtolower(array_pop($fileSplit)));
 		$extAccept = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
 		if (!in_array($fileExt, $extAccept))
