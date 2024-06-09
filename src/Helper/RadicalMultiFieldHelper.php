@@ -449,10 +449,11 @@ class RadicalMultiFieldHelper
 	public static function generateThumb(&$fieldOrParams, $source, $thumb_path = null)
 	{
 		$source    = str_replace(JPATH_ROOT . DIRECTORY_SEPARATOR, '', $source);
+		$source    = preg_replace('#\#.*?$#', '', $source);
 		$paths     = explode(DIRECTORY_SEPARATOR, $source);
 		$file      = array_pop($paths);
 		$fileSplit = explode('.', $file);
-		$fileExt   = preg_replace('#\?.*?$#', '',mb_strtolower(array_pop($fileSplit)));
+		$fileExt   = preg_replace('#\?.*?$#', '', mb_strtolower(array_pop($fileSplit)));
 		$extAccept = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
 		if (!in_array($fileExt, $extAccept))
