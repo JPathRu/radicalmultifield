@@ -1,4 +1,5 @@
-<?php
+<?php namespace Joomla\Plugin\Fields\RadicalMultiField\Field;
+
 /**
  * @package    Radical MultiField
  *
@@ -9,6 +10,7 @@
  */
 
 use Joomla\CMS\Filter\OutputFilter;
+use Joomla\CMS\Form\Field\SubformField;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
@@ -16,20 +18,18 @@ use Joomla\CMS\Layout\FileLayout;
 
 defined('_JEXEC') or die;
 
-JFormHelper::loadFieldClass('subform');
-JFormHelper::loadFieldClass('folderlist');
 
 /**
- * Class JFormFieldRadicalsubform
+ * Class RadicalsubformField
  */
-class JFormFieldRadicalsubform extends JFormFieldSubform
+class RadicalsubformField extends SubformField
 {
 
 
 	/**
 	 * @var string
 	 */
-	public $type = 'Radicalsubform';
+	public $type = 'radicalsubform';
 
 
 	/**

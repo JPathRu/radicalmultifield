@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
-    <fields name="fieldparams" addfieldpath="/plugins/fields/radicalmultifield/fields">
+    <fields name="fieldparams">
         <fieldset name="fieldparams">
 
              <field
@@ -176,6 +176,7 @@
                 required="true"
                 label="PLG_RADICAL_MULTI_FIELD_FIELD_PARAMS_TYPELIST_LABEL"
                 layout="joomla.form.field.subform.repeatable"
+                addfieldprefix="Joomla\Plugin\Fields\RadicalMultiField\Field"
             >
                 <form>
 

@@ -1,19 +1,20 @@
-<?php
+<?php namespace Joomla\Plugin\Fields\RadicalMultiField\Helper;
 
+use Gumlet\ImageResize;
+use JLoader;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\Path;
-use Joomla\CMS\Version;
 use Joomla\Filesystem\Folder;
-use Gumlet\ImageResize;
-
+use stdClass;
+use Joomla\Libraries\JInterventionimage\Manager;
 
 defined('_JEXEC') or die;
 
 
 /**
- * Class RadicalmultifieldHelper
+ * Class RadicalMultiFieldHelper
  */
-class RadicalmultifieldHelper
+class RadicalMultiFieldHelper
 {
 
 
@@ -448,10 +449,11 @@ class RadicalmultifieldHelper
 	public static function generateThumb(&$fieldOrParams, $source, $thumb_path = null)
 	{
 		$source    = str_replace(JPATH_ROOT . DIRECTORY_SEPARATOR, '', $source);
+		$source    = preg_replace('#\#.*?$#', '', $source);
 		$paths     = explode(DIRECTORY_SEPARATOR, $source);
 		$file      = array_pop($paths);
 		$fileSplit = explode('.', $file);
-		$fileExt   = mb_strtolower(array_pop($fileSplit));
+		$fileExt   = preg_replace('#\?.*?$#', '', mb_strtolower(array_pop($fileSplit)));
 		$extAccept = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
 		if (!in_array($fileExt, $extAccept))
@@ -501,25 +503,12 @@ class RadicalmultifieldHelper
 		$algorithm = $params['filesimportpreviewalgorithm'];
 
 		//если нет, генерируем превью
-		JLoader::register('JInterventionimage', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['libraries', 'jinterventionimage', 'jinterventionimage.php']));
-
-		if (class_exists('JInterventionimage'))
+		if (class_exists('Joomla\\Libraries\\JInterventionimage\\Manager'))
 		{
-			return JInterventionimage::generateThumb($source, $maxWidth, $maxHeight, $algorithm, $thumb_path);
+			return Manager::generateThumb($source, $maxWidth, $maxHeight, $algorithm, $thumb_path);
 		}
 
 		return $file;
-	}
-
-
-	public static function isJoomla4()
-	{
-		if (version_compare((new Version())->getShortVersion(), '4.0', '<'))
-		{
-			return false;
-		}
-
-		return true;
 	}
 
 }

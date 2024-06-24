@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function (ev) {
                 let val = inputs[i].value;
 
                 //проверка на картинку
-                if (val.test('.')) {
+                if ((new RegExp('\.')).test(val)) {
                     let arrayVal = val.split('.');
                     let exs = arrayVal.pop();
                     let exsImage = ['jpg', 'png', 'svg', 'jpeg', 'bmp', 'xcf', 'gif'];
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function (ev) {
                 }
 
                 //проверка на ютуб
-                if (val.test('youtu')) {
+                if ((new RegExp('youtu')).test(val)) {
                     let id = youtubeParser(val);
                     let image = 'https://img.youtube.com/vi/' + id + '/hqdefault.jpg';
 
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function (ev) {
     }
 
     function randomInteger(min, max) {
-        var rand = min - 0.5 + Math.random() * (max - min + 1)
+        let rand = min - 0.5 + Math.random() * (max - min + 1)
         rand = Math.round(rand);
         return rand;
     }
@@ -156,8 +156,8 @@ document.addEventListener('DOMContentLoaded', function (ev) {
     }
 
     function youtubeParser(url) {
-        var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
-        var match = url.match(regExp);
+        let regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+        let match = url.match(regExp);
         return (match && match[7].length == 11) ? match[7] : false;
     }
 

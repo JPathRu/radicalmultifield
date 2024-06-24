@@ -1,4 +1,5 @@
-<?php
+<?php namespace Joomla\Plugin\Fields\RadicalMultiField\Extension;
+
 /**
  * @package    Radical MultiField
  *
@@ -8,19 +9,21 @@
  * @link       https://delo-design.ru
  */
 
+use DOMElement;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
-use Joomla\Database\DatabaseDriver;
+use Joomla\Component\Fields\Administrator\Plugin\FieldsPlugin;
+use Joomla\Plugin\Fields\RadicalMultiField\Helper\RadicalMultiFieldHelper;
+use SimpleXMLElement;
+use stdClass;
+use Joomla\Component\QuantumManager\Administrator\Helper\QuantummanagerHelper;
+
 
 defined('_JEXEC') or die;
-
-JLoader::import('components.com_fields.libraries.fieldsplugin', JPATH_ADMINISTRATOR);
-JLoader::register('RadicalmultifieldHelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'radicalmultifieldhelper']) . '.php');
 
 /**
  * Radical MultiField plugin.
@@ -28,7 +31,7 @@ JLoader::register('RadicalmultifieldHelper', JPATH_ROOT . DIRECTORY_SEPARATOR . 
  * @package  radicalmultifield
  * @since    1.0
  */
-class PlgFieldsRadicalmultifield extends FieldsPlugin
+class RadicalMultiField extends FieldsPlugin
 {
 
 	/**
@@ -132,7 +135,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 	/**
 	 * @since   3.7.0
 	 */
-	public function onCustomFieldsPrepareDom($field, DOMElement $parent, JForm $form)
+	public function onCustomFieldsPrepareDom($field, DOMElement $parent, Form $form)
 	{
 
 		$fieldNode = parent::onCustomFieldsPrepareDom($field, $parent, $form);
@@ -143,6 +146,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 		$path = URI::base(true) . '/templates/' . Factory::getApplication()->getTemplate() . '/';
 
+		$fieldNode->setAttribute('addfieldprefix', 'Joomla\\Plugin\\Fields\\RadicalMultiField\\Field');
 		$fieldNode->setAttribute('template', $path);
 
 		return $fieldNode;
@@ -193,6 +197,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 		$template_item = [
 			'com_content.article',
+			'com_finder.article',
 			'com_users.user',
 			'com_contact.contact',
 		];
@@ -243,9 +248,8 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 	 *
 	 * @since   3.7.0
 	 */
-	public function onContentPrepareForm(JForm $form, $data)
+	public function onContentPrepareForm(Form $form, $data)
 	{
-
 
 		// Check if the field form is calling us
 		if (strpos($form->getName(), 'com_fields.field') !== 0)
@@ -290,8 +294,6 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 		{
 			return;
 		}
-
-		JLoader::register('RadicalmultifieldHelper', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['plugins', 'fields', 'radicalmultifield', 'radicalmultifieldhelper']) . '.php');
 
 		$paramsfield = file_get_contents($path);
 
@@ -378,17 +380,6 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 
 		}
 
-		// если joomla 3
-		if(!RadicalmultifieldHelper::isJoomla4())
-		{
-			HTMLHelper::_('jquery.framework');
-
-			HTMLHelper::script('plg_fields_radicalmultifield/joomla3/fix.js', [
-				'version'  => filemtime(__FILE__),
-				'relative' => true,
-			]);
-		}
-
 	}
 
 	/**
@@ -430,7 +421,6 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 			return;
 		}
 
-		JLoader::register('QuantummanagerHelper', JPATH_ROOT . '/administrator/components/com_quantummanager/helpers/quantummanager.php');
 		QuantummanagerHelper::loadlang();
 		$name = $app->input->get('name', '');
 
@@ -448,7 +438,7 @@ class PlgFieldsRadicalmultifield extends FieldsPlugin
 		$fieldparams = json_decode($field->fieldparams, JSON_OBJECT_AS_ARRAY);
 		$field_path  = !empty($fieldparams['filesimportpath']) ? $fieldparams['filesimportpath'] : 'images';
 		$layout      = new FileLayout('quantummanager', JPATH_ROOT . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, [
-				'plugins', 'fields', 'radicalmultifield', 'layouts', RadicalmultifieldHelper::isJoomla4() ? 'joomla4' : 'joomla3',
+				'plugins', 'fields', 'radicalmultifield', 'layouts',
 			]));
 
 		echo $layout->render(['field_path' => $field_path]);
