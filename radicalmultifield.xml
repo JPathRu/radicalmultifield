@@ -7,7 +7,7 @@
 	<authorUrl>https://delo-design.ru</authorUrl>
 	<copyright>Copyright (C) 2018 "Delo Design". All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
-	<version>4.0.0</version>
+	<version>3.3.0</version>
 	<description>PLG_RADICAL_MULTI_FIELD_XML_DESCRIPTION</description>
 	<namespace path="src">Joomla\Plugin\Fields\RadicalMultiField</namespace>
 
