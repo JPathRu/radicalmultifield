@@ -14,10 +14,10 @@
 	<scriptfile>script.php</scriptfile>
 
 	<languages folder="language">
-		<language tag="en-GB">en-GB/en-GB.plg_fields_radicalmultifield.ini</language>
-		<language tag="en-GB">en-GB/en-GB.plg_fields_radicalmultifield.sys.ini</language>
-		<language tag="ru-RU">ru-RU/ru-RU.plg_fields_radicalmultifield.ini</language>
-		<language tag="ru-RU">ru-RU/ru-RU.plg_fields_radicalmultifield.sys.ini</language>
+		<language tag="en-GB">en-GB/plg_fields_radicalmultifield.ini</language>
+		<language tag="en-GB">en-GB/plg_fields_radicalmultifield.sys.ini</language>
+		<language tag="ru-RU">ru-RU/plg_fields_radicalmultifield.ini</language>
+		<language tag="ru-RU">ru-RU/plg_fields_radicalmultifield.sys.ini</language>
 	</languages>
 
 	<updateservers>
