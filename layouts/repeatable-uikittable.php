@@ -7,6 +7,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+use Joomla\CMS\HTML\HTMLHelper;
+
 defined('_JEXEC') or die;
 
 /**
@@ -29,8 +31,8 @@ extract($displayData);
 // Add script
 if ($multiple)
 {
-	JHtml::_('jquery.ui', array('core', 'sortable'));
-	JHtml::_('script', 'system/subform-repeatable.js', array('version' => 'auto', 'relative' => true));
+	HTMLHelper::_('jquery.ui', array('core', 'sortable'));
+	HTMLHelper::_('script', 'system/subform-repeatable.js', array('version' => 'auto', 'relative' => true));
 }
 
 // Build heading
