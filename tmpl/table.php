@@ -9,6 +9,8 @@
  *
  */
 
+use Joomla\CMS\Factory;
+
 defined('_JEXEC') or die;
 
 if (!$field->value)
@@ -27,7 +29,7 @@ $listtype = $this->getListTypeFromField($field);
         <tr>
             <?php $firstRow = reset($values); ?>
             <?php foreach ($firstRow as $name => $value) : ?>
-                <th><?= $listtype[$name]['title']; ?></th>
+                <th><?php echo $listtype[$name]['title']; ?></th>
             <?php endforeach; ?>
         </tr>
     </thead>
@@ -74,7 +76,7 @@ $listtype = $this->getListTypeFromField($field);
                         break;
 
                     case 'user':
-                        $data = \Joomla\CMS\Factory::getUser($data)->name;
+                        $data = Factory::getApplication()->loadIdentity($data)->name;
                         break;
 
                     case 'color':

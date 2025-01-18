@@ -17,10 +17,30 @@ use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Component\Fields\Administrator\Plugin\FieldsPlugin;
+use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Plugin\Fields\RadicalMultiField\Helper\RadicalMultiFieldHelper;
 use SimpleXMLElement;
 use stdClass;
 use Joomla\Component\QuantumManager\Administrator\Helper\QuantummanagerHelper;
+
+use function count;
+use function defined;
+use function explode;
+use function file_exists;
+use function file_get_contents;
+use function implode;
+use function in_array;
+use function json_decode;
+use function ob_get_clean;
+use function ob_start;
+use function realpath;
+use function str_replace;
+use function strpos;
+use function strtolower;
+use function strtoupper;
+use function substr_count;
+use function trim;
+use function ucfirst;
 
 
 defined('_JEXEC') or die;
@@ -34,6 +54,7 @@ defined('_JEXEC') or die;
 class RadicalMultiField extends FieldsPlugin
 {
 
+	use DatabaseAwareTrait;
 	/**
 	 * Returns the custom fields types.
 	 *
@@ -311,7 +332,7 @@ class RadicalMultiField extends FieldsPlugin
 
 		$paramsfieldXml = new SimpleXMLElement($paramsfield);
 
-		$extendfield = explode("\n", $this->params->get('extendfield'));
+		$extendfield = !empty($this->params->get('extendfield')) ? explode("\n", $this->params->get('extendfield')) : [];
 		if (count($extendfield))
 		{
 			//TODO переписать, это упарывание какое-то
@@ -429,7 +450,7 @@ class RadicalMultiField extends FieldsPlugin
 			return;
 		}
 
-		$db          = Factory::getDBO();
+		$db          = $this->getDatabase();
 		$query       = $db->getQuery(true)
 			->select($db->quoteName(array('params', 'fieldparams')))
 			->from('#__fields')
@@ -443,6 +464,5 @@ class RadicalMultiField extends FieldsPlugin
 
 		echo $layout->render(['field_path' => $field_path]);
 	}
-
 
 }
