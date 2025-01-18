@@ -7,6 +7,23 @@ use Joomla\CMS\Filesystem\Path;
 use Joomla\Filesystem\Folder;
 use stdClass;
 use Joomla\Libraries\JInterventionimage\Manager;
+use function array_merge;
+use function array_pop;
+use function array_slice;
+use function class_exists;
+use function defined;
+use function explode;
+use function implode;
+use function in_array;
+use function is_array;
+use function is_null;
+use function is_object;
+use function json_decode;
+use function json_encode;
+use function key;
+use function preg_replace;
+use function str_replace;
+use function ucfirst;
 
 defined('_JEXEC') or die;
 

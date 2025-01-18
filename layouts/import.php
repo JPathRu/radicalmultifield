@@ -53,6 +53,3 @@ $class_select_button = 'btn-radicalmiltifield-select-' . $i;
     </div>
 
 </div>
-
-
-

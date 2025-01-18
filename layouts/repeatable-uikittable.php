@@ -7,6 +7,10 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
+
 defined('_JEXEC') or die;
 
 /**
@@ -29,8 +33,9 @@ extract($displayData);
 // Add script
 if ($multiple)
 {
-	JHtml::_('jquery.ui', array('core', 'sortable'));
-	JHtml::_('script', 'system/subform-repeatable.js', array('version' => 'auto', 'relative' => true));
+    $wa = Factory::getApplication()->getDocument()->getWebAssetManager();
+	$wa->useScript('jquery')
+    ->registerAndUseScript('radicalmultifield.subform.repeatable.js','system/subform-repeatable.js', ['version' => 'auto', 'relative' => true]);
 }
 
 // Build heading
@@ -39,11 +44,11 @@ $table_head = '';
 if (!empty($groupByFieldset))
 {
 	foreach ($tmpl->getFieldsets() as $fieldset) {
-		$table_head .= '<th>' . JText::_($fieldset->label);
+		$table_head .= '<th>' . Text::_($fieldset->label);
 
 		if (!empty($fieldset->description))
 		{
-			$table_head .= '<br /><small style="font-weight:normal">' . JText::_($fieldset->description) . '</small>';
+			$table_head .= '<br /><small style="font-weight:normal">' . Text::_($fieldset->description) . '</small>';
 		}
 
 		$table_head .= '</th>';
@@ -55,14 +60,14 @@ else
 {
 	foreach ($tmpl->getGroup('') as $field) {
 		$table_head .= '<th>' . strip_tags($field->label);
-		$table_head .= '<br /><small style="font-weight:normal">' . JText::_($field->description) . '</small>';
+		$table_head .= '<br /><small style="font-weight:normal">' . Text::_($field->description) . '</small>';
 		$table_head .= '</th>';
 	}
 
 	$sublayout = 'section';
 
 	// Label will not be shown for sections layout, so reset the margin left
-	JFactory::getDocument()->addStyleDeclaration(
+	$wa->addInlineStyle(
 		'.subform-table-sublayout-section .controls { margin-left: 0px }'
 	);
 }
@@ -86,7 +91,7 @@ else
                     <th style="width: 18%">
 	                    <?php if (!empty($buttons)) : ?>
                             <?php if (!empty($buttons['add'])) : ?>
-                                <a class="group-add-<?php echo $unique_subform_id; ?> btn button uk-button-text uk-button-small" aria-label="<?php echo JText::_('JGLOBAL_FIELD_ADD'); ?>"><span uk-icon="icon: plus"></span> <?php echo JText::_('JGLOBAL_FIELD_ADD'); ?></a>
+                                <a class="group-add-<?php echo $unique_subform_id; ?> btn button uk-button-text uk-button-small" aria-label="<?php echo Text::_('JGLOBAL_FIELD_ADD'); ?>"><span uk-icon="icon: plus"></span> <?php echo Text::_('JGLOBAL_FIELD_ADD'); ?></a>
 		                    <?php endif;?>
                         <?php endif;?>
                     </th>
@@ -111,7 +116,7 @@ else
         <?php if (!empty($buttons)) : ?>
             <?php if (!empty($buttons['add'])) : ?>
                 <div class="uk-text-center uk-margin-bottom">
-                    <a class="group-add-<?php echo $unique_subform_id; ?> button uk-button uk-button-text uk-button-small" aria-label="<?php echo JText::_('JGLOBAL_FIELD_ADD'); ?>"><span uk-icon="icon: plus"></span> <?= JText::_('JGLOBAL_FIELD_ADD') ?></a>
+                    <a class="group-add-<?php echo $unique_subform_id; ?> button uk-button uk-button-text uk-button-small" aria-label="<?php echo Text::_('JGLOBAL_FIELD_ADD'); ?>"><span uk-icon="icon: plus"></span> <?= Text::_('JGLOBAL_FIELD_ADD') ?></a>
                 </div>
             <?php endif; ?>
         <?php endif; ?>

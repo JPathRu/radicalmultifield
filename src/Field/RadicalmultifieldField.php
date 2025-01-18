@@ -17,6 +17,15 @@ use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Plugin\Fields\RadicalMultiField\Helper\RadicalMultiFieldHelper;
 use Joomla\Registry\Registry;
+use function defined;
+use function explode;
+use function filemtime;
+use function is_string;
+use function json_decode;
+use function json_encode;
+use function sprintf;
+use function strpos;
+use function trim;
 
 defined('_JEXEC') or die;
 
@@ -294,6 +303,5 @@ class RadicalmultifieldField extends SubformField
 
 		return $html;
 	}
-
 
 }

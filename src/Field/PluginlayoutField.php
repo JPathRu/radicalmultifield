@@ -16,8 +16,20 @@ use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormField;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\Database\DatabaseInterface;
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\Path;
+use function basename;
+use function count;
+use function defined;
+use function explode;
+use function implode;
+use function in_array;
+use function is_dir;
+use function preg_replace;
+use function realpath;
+use function strtoupper;
+use function substr_count;
 
 defined('_JEXEC') or die;
 
@@ -46,7 +58,7 @@ class PluginlayoutField extends FormField
 	 *
 	 * @since   1.6
 	 */
-	protected function getInput()
+	protected function getInput(): string
 	{
 		// Get the client id.
 		$clientId = $this->element['client_id'];
@@ -87,31 +99,33 @@ class PluginlayoutField extends FormField
 		$template = preg_replace('#\W#', '', $template);
 
 		// Get the style.
-		$template_style_id = '';
-		if ($this->form instanceof Form)
-		{
-			$template_style_id = $this->form->getValue('template_style_id');
-			$template_style_id = preg_replace('#\W#', '', $template_style_id);
+		$template_style_id = 0;
+
+		if ($this->form instanceof Form) {
+			$template_style_id = $this->form->getValue('template_style_id', null, 0);
+			$template_style_id = (int) preg_replace('#\W#', '', $template_style_id);
 		}
 
 		// If an extension and view are present build the options.
 		if ($plugin && $client)
 		{
 			// Load language file
-			$lang = Factory::getLanguage();
+			$lang = Factory::getApplication()->getLanguage();
 			$lang->load($plugin . '.sys', $client->path, null, false, true)
 			|| $lang->load($plugin . '.sys', $client->path . '/plugins/' . $folder . '/' . $plugin, null, false, true);
 
 			// Get the database object and a new query object.
-			$db    = Factory::getDbo();
+			$db    = Factory::getContainer()->get(DatabaseInterface::class);
 			$query = $db->getQuery(true);
 
 			// Build the query.
-			$query->select('element, name')
-				->from('#__extensions as e')
-				->where('e.client_id = ' . (int) $clientId)
-				->where('e.type = ' . $db->quote('template'))
-				->where('e.enabled = 1');
+			$query->select(['element', 'name'])
+				->from($db->quoteName('#__extensions', 'e'))
+				->where([
+					'e.client_id = ' . (int) $clientId,
+					'e.type = ' . $db->quote('template'),
+					'e.enabled = 1'
+				]);
 
 			if ($template)
 			{
