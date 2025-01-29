@@ -42,9 +42,9 @@ $listtype = $this->getListTypeFromField($field);
 		?>
 
         <div>
-            <a href="<?php $row['image'] ?>" data-uk-lightbox="{group:'group-fields-<?php $field->id ?>'}"
-               title="<?php $row['alt'] ?>">
-                <img src="<?php $preview ?>" alt="<?php $row['alt'] ?>"/>
+            <a href="<?php echo $row['image'] ?>" data-uk-lightbox="{group:'group-fields-<?php echo $field->id ?>'}"
+               title="<?php echo $row['alt'] ?>">
+                <img src="<?php echo $preview ?>" alt="<?php echo $row['alt'] ?>"/>
             </a>
         </div>
 

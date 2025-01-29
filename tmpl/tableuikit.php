@@ -27,7 +27,7 @@ $listtype = $this->getListTypeFromField($field);
         <tr>
 			<?php $firstRow = reset($values); ?>
 			<?php foreach ($firstRow as $name => $value) : ?>
-                <th><?= $listtype[$name]['title']; ?></th>
+                <th><?php echo $listtype[$name]['title'] ?></th>
 			<?php endforeach; ?>
         </tr>
         </thead>

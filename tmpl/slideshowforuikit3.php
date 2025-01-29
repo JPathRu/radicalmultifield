@@ -28,7 +28,7 @@ $listtype = $this->getListTypeFromField($field);
 			<?php foreach ($values as $key => $row): ?>
 
                 <li>
-                    <img src="<?php $row['image']?>" alt="<?php echo $row['alt'] ?? '' ?>" uk-cover/>
+                    <img src="<?php echo $row['image']?>" alt="<?php echo $row['alt'] ?? '' ?>" uk-cover/>
                 </li>
 
 			<?php endforeach; ?>

@@ -46,10 +46,10 @@ if($height === 0) {
 
         <div>
             <div class="uk-transition-toggle uk-inline-clip">
-                <canvas width="400" height="<?php $height ?>"></canvas>
-                <img class="uk-cover uk-responsive-height" src="<?php $preview ?>" alt="<?php $row['alt'] ?>"/>
+                <canvas width="400" height="<?php echo $height ?>"></canvas>
+                <img class="uk-cover uk-responsive-height" src="<?php echo $preview ?>" alt="<?php echo $row['alt'] ?>"/>
                 <div class="uk-position-cover uk-overlay uk-overlay-primary uk-transition-fade"></div>
-                <a class="uk-position-cover" href="<?php $row['image'] ?>" data-caption="<?php $row['alt'] ?>"></a>
+                <a class="uk-position-cover" href="<?php echo $row['image'] ?>" data-caption="<?php echo $row['alt'] ?>"></a>
             </div>
         </div>
 

@@ -475,7 +475,7 @@ class RadicalMultiFieldHelper
 
 		if (!in_array($fileExt, $extAccept))
 		{
-			return $file;
+			return $source;
 		}
 
 		if ($thumb_path === null)
